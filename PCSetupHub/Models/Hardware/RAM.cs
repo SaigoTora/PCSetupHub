@@ -12,7 +12,7 @@ namespace PCSetupHub.Models.Hardware
 		public double FirstWordLatency { get; private set; }
 		public int CASLatency { get; private set; }
 		public ICollection<PcConfigurationRAM> PcConfigurationRAMs { get; private set; }
-			= new HashSet<PcConfigurationRAM>();
+			= [];
 
 		public RAM() { }
 		public RAM(string name, bool isDefault, byte memoryType, int frequency, byte modulesCount,

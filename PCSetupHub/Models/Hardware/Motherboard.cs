@@ -7,6 +7,8 @@
 		public int MaxMemory { get; private set; }
 		public byte MemorySlots { get; private set; }
 		public string? Color { get; private set; }
+		public ICollection<PcConfiguration> PcConfigurations { get; private set; }
+			= [];
 
 		public Motherboard() { }
 		public Motherboard(string name, bool isDefault, string socket, string formFactor,

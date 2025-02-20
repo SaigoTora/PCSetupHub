@@ -8,6 +8,8 @@
 		public int? BoostClock { get; private set; }
 		public string? Color { get; private set; }
 		public int Length { get; private set; }
+		public ICollection<PcConfiguration> PcConfigurations { get; private set; }
+			= [];
 
 		public VideoCard() { }
 		public VideoCard(string name, bool isDefault, string chipset, int memory, int coreClock,

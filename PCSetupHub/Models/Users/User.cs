@@ -12,11 +12,15 @@ namespace PCSetupHub.Models.Users
 		public PcConfiguration PcConfiguration { get; private set; } = new PcConfiguration();
 		public int PcConfigurationID { get; private set; }
 		public ICollection<Friendship> Friendships { get; private set; }
-			= new HashSet<Friendship>();
-		public ICollection<Comment> Comments { get; private set; }
-			= new HashSet<Comment>();
-		public ICollection<Message> Messages { get; private set; }
-			= new HashSet<Message>();
+			= [];
+		public ICollection<Comment> WrittenComments { get; private set; }
+			= [];
+		public ICollection<Comment> ReceivedComments { get; private set; }
+			= [];
+		public ICollection<Message> SentMessages { get; private set; }
+			= [];
+		public ICollection<Message> ReceivedMessages { get; private set; }
+			= [];
 
 		public User() { }
 		public User(string login, string password, string name,
