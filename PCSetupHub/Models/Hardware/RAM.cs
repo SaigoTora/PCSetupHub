@@ -4,19 +4,19 @@ namespace PCSetupHub.Models.Hardware
 {
 	public class RAM : HardwareComponent
 	{
-		public byte MemoryType { get; private set; }
-		public int Frequency { get; private set; }
-		public byte ModulesCount { get; private set; }
-		public int ModuleCapacity { get; private set; }
-		public string? Color { get; private set; }
-		public double FirstWordLatency { get; private set; }
-		public int CASLatency { get; private set; }
+		public byte MemoryType { get; set; }
+		public int Frequency { get; set; }
+		public byte ModulesCount { get; set; }
+		public int ModuleCapacity { get; set; }
+		public string? Color { get; set; }
+		public double FirstWordLatency { get; set; }
+		public double CASLatency { get; set; }
 		public ICollection<PcConfigurationRAM> PcConfigurationRAMs { get; private set; }
 			= [];
 
 		public RAM() { }
 		public RAM(string name, bool isDefault, byte memoryType, int frequency, byte modulesCount,
-			int moduleCapacity, string? color, double firstWordLatency, int cASLatency)
+			int moduleCapacity, string? color, double firstWordLatency, double cASLatency)
 			: base(name, isDefault)
 		{
 			MemoryType = memoryType;

@@ -2,12 +2,12 @@
 {
 	public class Processor : HardwareComponent
 	{
-		public byte CoreCount { get; private set; }
-		public float CoreClock { get; private set; }
-		public float? BoostClock { get; private set; }
-		public int TDP { get; private set; }
-		public string? Graphics { get; private set; }
-		public bool SMT { get; private set; }
+		public byte CoreCount { get; set; }
+		public float CoreClock { get; set; }
+		public float? BoostClock { get; set; }
+		public int TDP { get; set; }
+		public string? Graphics { get; set; }
+		public bool SMT { get; set; }
 		public ICollection<PcConfiguration> PcConfigurations { get; private set; }
 			= [];
 

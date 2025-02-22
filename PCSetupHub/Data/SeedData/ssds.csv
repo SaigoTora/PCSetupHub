@@ -1,4 +1,4 @@
-name,price,capacity,price_per_gb,type,cache,form_factor,interface
+Name,Price,Capacity,PricePerGb,Type,Cache,FormFactor,Interface
 Samsung 980 Pro,169.99,2000,0.085,SSD,2048,M.2-2280,M.2 PCIe 4.0 X4
 Kingston NV2,60.99,1000,0.061,SSD,,M.2-2280,M.2 PCIe 4.0 X4
 Samsung 970 Evo Plus,97.5,1000,0.098,SSD,1024,M.2-2280,M.2 PCIe 3.0 X4

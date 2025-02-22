@@ -1,4 +1,4 @@
-name,price,core_count,core_clock,boost_clock,tdp,graphics,smt
+Name,Price,CoreCount,CoreClock,BoostClock,TDP,Graphics,SMT
 AMD Ryzen 7 7800X3D,339,8,4.2,5,120,Radeon,true
 AMD Ryzen 5 7600X,204.99,6,4.7,5.3,105,Radeon,true
 AMD Ryzen 5 5600X,144.31,6,3.7,4.6,65,,true

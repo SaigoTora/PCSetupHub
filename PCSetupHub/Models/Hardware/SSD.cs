@@ -4,16 +4,16 @@ namespace PCSetupHub.Models.Hardware
 {
 	public class SSD : HardwareComponent
 	{
-		public int Capacity { get; private set; }
-		public string Type { get; private set; } = string.Empty;
-		public int? Cache { get; private set; }
-		public string FormFactor { get; private set; } = string.Empty;
-		public string Interface { get; private set; } = string.Empty;
+		public float Capacity { get; set; }
+		public string Type { get; set; } = string.Empty;
+		public int? Cache { get; set; }
+		public string FormFactor { get; set; } = string.Empty;
+		public string Interface { get; set; } = string.Empty;
 		public ICollection<PcConfigurationSSD> PcConfigurationSSDs { get; private set; }
 			= [];
 
 		public SSD() { }
-		public SSD(string name, bool isDefault, int capacity, string type, int? cache,
+		public SSD(string name, bool isDefault, float capacity, string type, int? cache,
 			string formFactor, string @interface)
 			: base(name, isDefault)
 		{

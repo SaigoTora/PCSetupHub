@@ -1,4 +1,4 @@
-name,price,type,interface,capacity,price_per_gb,color
+Name,Price,Type,Interface,Capacity,PricePerGb,Color
 Apricorn Aegis Fortress L3,12999,Portable,"USB Type-A 3.2 Gen 1, USB Type-C 3.2 Gen 1",20000,0.65,Black
 Western Digital My Book Duo,1199.99,Desktop,"USB Type-A 3.2 Gen 1, USB Type-C 3.2 Gen 1",44000,0.027,Black
 Apricorn Padlock DT FIPS,661.99,Desktop,USB Type-A 3.2 Gen 1,10000,0.066,Black

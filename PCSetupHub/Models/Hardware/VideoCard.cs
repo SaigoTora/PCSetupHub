@@ -2,12 +2,12 @@
 {
 	public class VideoCard : HardwareComponent
 	{
-		public string Chipset { get; private set; } = string.Empty;
-		public int Memory { get; private set; }
-		public int CoreClock { get; private set; }
-		public int? BoostClock { get; private set; }
-		public string? Color { get; private set; }
-		public int Length { get; private set; }
+		public string Chipset { get; set; } = string.Empty;
+		public float Memory { get; set; }
+		public int? CoreClock { get; set; }
+		public int? BoostClock { get; set; }
+		public string? Color { get; set; }
+		public int? Length { get; set; }
 		public ICollection<PcConfiguration> PcConfigurations { get; private set; }
 			= [];
 

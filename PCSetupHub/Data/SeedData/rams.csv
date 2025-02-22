@@ -1,4 +1,4 @@
-name,price,speed,modules,price_per_gb,color,first_word_latency,cas_latency
+Name,Price,Speed,Modules,PricePerGb,Color,FirstWordLatency,CASLatency
 Corsair Vengeance LPX 16 GB,38.99,"4,3200","2,8",2.437,Black / Yellow,10,16
 Corsair Vengeance 32 GB,113.99,"5,5600","2,16",3.562,Black,12.857,36
 G.Skill Trident Z5 RGB 32 GB,117.99,"5,6000","2,16",3.687,Black,12,36

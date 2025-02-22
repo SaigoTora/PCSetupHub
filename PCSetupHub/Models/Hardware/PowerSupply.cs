@@ -2,11 +2,11 @@
 {
 	public class PowerSupply : HardwareComponent
 	{
-		public string Type { get; private set; } = string.Empty;
-		public string? Efficiency { get; private set; }
-		public int Wattage { get; private set; }
-		public string Modular { get; private set; } = string.Empty;
-		public string? Color { get; private set; }
+		public string Type { get; set; } = string.Empty;
+		public string? Efficiency { get; set; }
+		public int Wattage { get; set; }
+		public string Modular { get; set; } = string.Empty;
+		public string? Color { get; set; }
 		public ICollection<PcConfiguration> PcConfigurations { get; private set; }
 			= [];
 

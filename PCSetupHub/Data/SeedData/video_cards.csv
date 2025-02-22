@@ -1,4 +1,4 @@
-name,price,chipset,memory,core_clock,boost_clock,color,length
+Name,Price,Chipset,Memory,CoreClock,BoostClock,Color,Length
 MSI GeForce RTX 3060 Ventus 2X 12G,288,GeForce RTX 3060 12GB,12,1320,1777,Black,235
 Gigabyte WINDFORCE OC,581.19,GeForce RTX 4070,12,1920,2490,Black,261
 Asus ROG STRIX GAMING OC,1979.99,GeForce RTX 4090,24,2235,2640,Black,358
