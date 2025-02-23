@@ -8,8 +8,7 @@
 		public int TDP { get; set; }
 		public string? Graphics { get; set; }
 		public bool SMT { get; set; }
-		public ICollection<PcConfiguration> PcConfigurations { get; private set; }
-			= [];
+		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 
 		public Processor() { }
 		public Processor(string name, bool isDefault, byte coreCount, float coreClock,

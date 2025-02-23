@@ -11,8 +11,7 @@ namespace PCSetupHub.Models.Hardware
 		public string? Color { get; set; }
 		public double FirstWordLatency { get; set; }
 		public double CASLatency { get; set; }
-		public ICollection<PcConfigurationRAM> PcConfigurationRAMs { get; private set; }
-			= [];
+		public ICollection<PcConfigurationRAM>? PcConfigurationRAMs { get; private set; }
 
 		public RAM() { }
 		public RAM(string name, bool isDefault, byte memoryType, int frequency, byte modulesCount,

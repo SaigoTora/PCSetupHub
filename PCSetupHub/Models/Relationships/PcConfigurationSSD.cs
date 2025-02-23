@@ -7,8 +7,8 @@ namespace PCSetupHub.Models.Relationships
 	{
 		public int PcConfigurationID { get; private set; }
 		public int SSDID { get; private set; }
-		public PcConfiguration PcConfiguration { get; private set; } = new PcConfiguration();
-		public SSD SSD { get; private set; } = new SSD();
+		public PcConfiguration? PcConfiguration { get; private set; }
+		public SSD? SSD { get; private set; }
 
 		public PcConfigurationSSD() { }
 		public PcConfigurationSSD(int pcConfigurationID, int ssdID)

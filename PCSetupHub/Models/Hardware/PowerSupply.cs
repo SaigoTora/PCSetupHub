@@ -7,8 +7,7 @@
 		public int Wattage { get; set; }
 		public string Modular { get; set; } = string.Empty;
 		public string? Color { get; set; }
-		public ICollection<PcConfiguration> PcConfigurations { get; private set; }
-			= [];
+		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 
 		public PowerSupply() { }
 		public PowerSupply(string name, bool isDefault, string type, string? efficiency,

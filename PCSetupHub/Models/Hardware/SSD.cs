@@ -9,8 +9,7 @@ namespace PCSetupHub.Models.Hardware
 		public int? Cache { get; set; }
 		public string FormFactor { get; set; } = string.Empty;
 		public string Interface { get; set; } = string.Empty;
-		public ICollection<PcConfigurationSSD> PcConfigurationSSDs { get; private set; }
-			= [];
+		public ICollection<PcConfigurationSSD>? PcConfigurationSSDs { get; private set; }
 
 		public SSD() { }
 		public SSD(string name, bool isDefault, float capacity, string type, int? cache,

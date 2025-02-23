@@ -8,8 +8,7 @@ namespace PCSetupHub.Models.Hardware
 		public string? Interface { get; set; }
 		public int Capacity { get; set; }
 		public string? Color { get; set; }
-		public ICollection<PcConfigurationHDD> PcConfigurationHDDs { get; private set; }
-			= [];
+		public ICollection<PcConfigurationHDD>? PcConfigurationHDDs { get; private set; }
 
 		public HDD() { }
 		public HDD(string name, bool isDefault, string type, string? @interface,

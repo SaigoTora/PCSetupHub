@@ -90,14 +90,14 @@ namespace PCSetupHub.Data
 		private void SetFriendshipRelationships()
 		{
 			_modelBuilder.Entity<Friendship>()
-				.HasOne(f => f.User)
-				.WithMany(u => u.Friendships)
-				.HasForeignKey(f => f.UserID)
+				.HasOne(f => f.Initiator)
+				.WithMany(u => u.SentFriendRequests)
+				.HasForeignKey(f => f.InitiatorId)
 				.OnDelete(DeleteBehavior.Cascade);
 
 			_modelBuilder.Entity<Friendship>()
 				.HasOne(f => f.Friend)
-				.WithMany()
+				.WithMany(u => u.ReceivedFriendRequests)
 				.HasForeignKey(f => f.FriendID)
 				.OnDelete(DeleteBehavior.ClientSetNull);
 

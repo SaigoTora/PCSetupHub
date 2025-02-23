@@ -1,8 +1,11 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using System.Globalization;
+
 using PCSetupHub.Data.CsvModels;
 using PCSetupHub.Models.Hardware;
-using System.Globalization;
+using PCSetupHub.Models.Relationships;
+using PCSetupHub.Models.Users;
 
 namespace PCSetupHub.Data
 {
@@ -71,7 +74,13 @@ namespace PCSetupHub.Data
 		}
 		private static void SeedFriendshipStatuses()
 		{
+			_context?.FriendshipStatuses.AddRange(
+				new FriendshipStatus("Pending"),
+				new FriendshipStatus("Accepted"),
+				new FriendshipStatus("Cancelled")
+			);
 
+			_context?.SaveChanges();
 		}
 		private static void SeedHDDs()
 		{
@@ -176,19 +185,43 @@ namespace PCSetupHub.Data
 
 		private static void SeedPcConfigurations()
 		{
+			_context?.PcConfigurations.AddRange(
+				new PcConfiguration(null, null, null, null),
+				new PcConfiguration(null, null, null, null),
+				new PcConfiguration(54, 940, null, null),
+				new PcConfiguration(32, 276, 505, 280),
+				new PcConfiguration(41, 24, 725, 1651));
 
+			_context?.SaveChanges();
 		}
 		private static void SeedPcConfigurationHDDs()
 		{
+			_context?.PcConfigurationHDDs.AddRange(
+				new PcConfigurationHDD(3, 219),
+				new PcConfigurationHDD(3, 334),
+				new PcConfigurationHDD(5, 214));
 
+			_context?.SaveChanges();
 		}
 		private static void SeedPcConfigurationRAMs()
 		{
+			_context?.PcConfigurationRAMs.AddRange(
+				new PcConfigurationRAM(2, 5251),
+				new PcConfigurationRAM(3, 1136),
+				new PcConfigurationRAM(3, 3879),
+				new PcConfigurationRAM(5, 2165));
 
+			_context?.SaveChanges();
 		}
 		private static void SeedPcConfigurationSSDs()
 		{
+			_context?.PcConfigurationSSDs.AddRange(
+				new PcConfigurationSSD(2, 3965),
+				new PcConfigurationSSD(2, 2673),
+				new PcConfigurationSSD(3, 850),
+				new PcConfigurationSSD(5, 1755));
 
+			_context?.SaveChanges();
 		}
 		#endregion
 
@@ -203,19 +236,58 @@ namespace PCSetupHub.Data
 
 		private static void SeedUsers()
 		{
+			_context?.Users.AddRange(
+				new User("max_power", "StrongPass567!", "Maxim", "max_power@gmail.com", 1),
+				new User("anna_dev", "AnnaPass123!", "Anna", "anna_dev@gmail.com", 2),
+				new User("alex_gamer", "Pass1234!", "Alexander", "alex_gamer@gmail.com", 3),
+				new User("kate_player", "KateGamer456!", "Kate", "kate_player@gmail.com", 4),
+				new User("niko_coder", "Secure789!", "Nikolay", "niko_coder@gmail.com", 5));
 
+			_context?.SaveChanges();
 		}
 		private static void SeedComments()
 		{
-
+			_context?.Comments.AddRange(
+				new Comment(4, 2, "Cool profile, but a little lacking in information about your PC."),
+				new Comment(5, 3, "I had a similar build once, more to come!" +
+				"\nPlease add the motherboard and power supply so we can fully evaluate your build."),
+				new Comment(2, 4, "Not bad, but I think the video card should be improved."),
+				new Comment(4, 4, "Yes, I agree. I'm going to upgrade the video card this year when " +
+				"I save up some money. =)"),
+				new Comment(3, 4, "This is another level! Incredible components!"),
+				new Comment(2, 5, "Excellent build!"),
+				new Comment(4, 5, "Great combination! But I think the power supply will need to be updated soon!"),
+				new Comment(2, 5, "I dream of a similar build!"));
 		}
 		private static void SeedFriendships()
 		{
+			_context?.Friendships.AddRange(
+				new Friendship(2, 3, 2),
+				new Friendship(2, 4, 1),
+				new Friendship(2, 5, 3),
+				new Friendship(3, 4, 2),
+				new Friendship(3, 5, 1),
+				new Friendship(4, 5, 2));
 
+			_context?.SaveChanges();
 		}
 		private static void SeedMessages()
 		{
+			_context?.Messages.AddRange(
+				new Message(1, 3, "Hi, I think we could be friends, what do you think?", true),
+				new Message(1, 5, "Hi! I think we could be friends, what do you think?", false),
+				new Message(2, 3, "Hello, I'm thinking about upgrading my PC.", true),
+				new Message(2, 3, "Any recommendations?", true),
+				new Message(2, 4, "Good evening, you have a cool profile!", true),
+				new Message(2, 4, "Add me as your friend.", false),
+				new Message(3, 4, "Good morning, let's meet at our place today.", true),
+				new Message(4, 3, "Sorry, I'm busy today. =(\nLet's do it another time.", false),
+				new Message(4, 5, "Hey, how's it going?", true),
+				new Message(5, 4, "Hey! Pretty good, just finished work.", true),
+				new Message(5, 4, "You?", true),
+				new Message(4, 5, "Same here. Today I'll go to a cafe with my family.", true));
 
+			_context?.SaveChanges();
 		}
 		#endregion
 		#endregion

@@ -6,8 +6,8 @@ namespace PCSetupHub.Models.Users
 	{
 		public int SenderID { get; private set; }
 		public int ReceiverID { get; private set; }
-		public User Sender { get; private set; } = new User();
-		public User Receiver { get; private set; } = new User();
+		public User? Sender { get; private set; }
+		public User? Receiver { get; private set; }
 		public string Text { get; private set; } = string.Empty;
 		public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 		public bool IsRead { get; private set; } = false;
