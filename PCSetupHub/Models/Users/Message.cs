@@ -4,8 +4,8 @@ namespace PCSetupHub.Models.Users
 {
 	public class Message : BaseEntity
 	{
-		public int SenderID { get; private set; }
-		public int ReceiverID { get; private set; }
+		public int? SenderID { get; private set; }
+		public int? ReceiverID { get; private set; }
 		public User? Sender { get; private set; }
 		public User? Receiver { get; private set; }
 		public string Text { get; private set; } = string.Empty;

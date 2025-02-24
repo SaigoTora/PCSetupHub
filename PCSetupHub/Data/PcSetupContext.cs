@@ -85,7 +85,7 @@ namespace PCSetupHub.Data
 				.HasOne(c => c.Commentator)
 				.WithMany(u => u.WrittenComments)
 				.HasForeignKey(c => c.CommentatorID)
-				.OnDelete(DeleteBehavior.ClientSetNull);
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 		private void SetFriendshipRelationships()
 		{
@@ -93,13 +93,13 @@ namespace PCSetupHub.Data
 				.HasOne(f => f.Initiator)
 				.WithMany(u => u.SentFriendRequests)
 				.HasForeignKey(f => f.InitiatorId)
-				.OnDelete(DeleteBehavior.Cascade);
+				.OnDelete(DeleteBehavior.Restrict);
 
 			_modelBuilder.Entity<Friendship>()
 				.HasOne(f => f.Friend)
 				.WithMany(u => u.ReceivedFriendRequests)
 				.HasForeignKey(f => f.FriendID)
-				.OnDelete(DeleteBehavior.ClientSetNull);
+				.OnDelete(DeleteBehavior.Restrict);
 
 			_modelBuilder.Entity<Friendship>()
 				.HasOne(f => f.FriendshipStatus)
@@ -127,7 +127,7 @@ namespace PCSetupHub.Data
 				.HasOne(u => u.PcConfiguration)
 				.WithOne(pc => pc.User)
 				.HasForeignKey<User>(u => u.PcConfigurationID)
-				.OnDelete(DeleteBehavior.Restrict);
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 		private void SetPcConfigurationRelationships()
 		{
