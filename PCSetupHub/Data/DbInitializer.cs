@@ -141,7 +141,7 @@ namespace PCSetupHub.Data
 			{
 				(byte memoryType, int frequency) = GetByteInt(csvRam.Speed);
 				(byte modulesCount, int moduleCapacity) = GetByteInt(csvRam.Modules);
-				rams.Add(new RAM(csvRam.Name, csvRam.IsDefault, memoryType, frequency,
+				rams.Add(new RAM(csvRam.Name, csvRam.Price, csvRam.IsDefault, memoryType, frequency,
 					modulesCount, moduleCapacity, csvRam.Color, csvRam.FirstWordLatency,
 					csvRam.CASLatency));
 			}

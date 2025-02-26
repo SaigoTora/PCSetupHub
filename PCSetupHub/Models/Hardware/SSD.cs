@@ -12,9 +12,9 @@ namespace PCSetupHub.Models.Hardware
 		public ICollection<PcConfigurationSSD>? PcConfigurationSSDs { get; private set; }
 
 		public SSD() { }
-		public SSD(string name, bool isDefault, float capacity, string type, int? cache,
+		public SSD(string name, double? price, bool isDefault, float capacity, string type, int? cache,
 			string formFactor, string @interface)
-			: base(name, isDefault)
+			: base(name, price, isDefault)
 		{
 			Capacity = capacity;
 			Type = type;

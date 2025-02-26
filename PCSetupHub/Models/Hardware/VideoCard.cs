@@ -11,9 +11,9 @@
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 
 		public VideoCard() { }
-		public VideoCard(string name, bool isDefault, string chipset, int memory, int coreClock,
+		public VideoCard(string name, double? price, bool isDefault, string chipset, int memory, int coreClock,
 			int? boostClock, string? color, int length)
-			: base(name, isDefault)
+			: base(name, price, isDefault)
 		{
 			Chipset = chipset;
 			Memory = memory;

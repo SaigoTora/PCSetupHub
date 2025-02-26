@@ -10,9 +10,9 @@
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 
 		public PowerSupply() { }
-		public PowerSupply(string name, bool isDefault, string type, string? efficiency,
+		public PowerSupply(string name, double? price, bool isDefault, string type, string? efficiency,
 			int wattage, string modular, string? color)
-			: base(name, isDefault)
+			: base(name, price, isDefault)
 		{
 			Type = type;
 			Efficiency = efficiency;

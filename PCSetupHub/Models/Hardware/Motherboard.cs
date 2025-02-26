@@ -10,9 +10,9 @@
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 
 		public Motherboard() { }
-		public Motherboard(string name, bool isDefault, string socket, string formFactor,
+		public Motherboard(string name, double? price, bool isDefault, string socket, string formFactor,
 			int maxMemory, byte memorySlots, string? color)
-			: base(name, isDefault)
+			: base(name, price, isDefault)
 		{
 			Socket = socket;
 			FormFactor = formFactor;

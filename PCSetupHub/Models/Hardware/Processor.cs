@@ -11,9 +11,9 @@
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 
 		public Processor() { }
-		public Processor(string name, bool isDefault, byte coreCount, float coreClock,
+		public Processor(string name, double? price, bool isDefault, byte coreCount, float coreClock,
 			float? boostClock, short tDP, string? graphics, bool sMT)
-			: base(name, isDefault)
+			: base(name, price, isDefault)
 		{
 			CoreCount = coreCount;
 			CoreClock = coreClock;

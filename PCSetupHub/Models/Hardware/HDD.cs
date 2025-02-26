@@ -11,9 +11,9 @@ namespace PCSetupHub.Models.Hardware
 		public ICollection<PcConfigurationHDD>? PcConfigurationHDDs { get; private set; }
 
 		public HDD() { }
-		public HDD(string name, bool isDefault, string type, string? @interface,
+		public HDD(string name, double? price, bool isDefault, string type, string? @interface,
 			int capacity, string? color)
-			: base(name, isDefault)
+			: base(name, price, isDefault)
 		{
 			Type = type;
 			Interface = @interface;

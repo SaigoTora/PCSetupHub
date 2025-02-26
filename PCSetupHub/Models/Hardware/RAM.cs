@@ -14,9 +14,9 @@ namespace PCSetupHub.Models.Hardware
 		public ICollection<PcConfigurationRAM>? PcConfigurationRAMs { get; private set; }
 
 		public RAM() { }
-		public RAM(string name, bool isDefault, byte memoryType, int frequency, byte modulesCount,
+		public RAM(string name, double? price, bool isDefault, byte memoryType, int frequency, byte modulesCount,
 			int moduleCapacity, string? color, double firstWordLatency, double cASLatency)
-			: base(name, isDefault)
+			: base(name, price, isDefault)
 		{
 			MemoryType = memoryType;
 			Frequency = frequency;
