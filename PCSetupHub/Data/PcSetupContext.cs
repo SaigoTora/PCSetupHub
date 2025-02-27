@@ -46,10 +46,12 @@ namespace PCSetupHub.Data
 			base.OnModelCreating(_modelBuilder);
 
 			SetTableNames();
+			SetUniqueness();
 			SetTableRelationships();
 		}
 		private void SetTableNames()
 		{
+			_modelBuilder.Entity<Color>().ToTable("Color");
 			_modelBuilder.Entity<Comment>().ToTable("Comment");
 			_modelBuilder.Entity<Friendship>().ToTable("Friendship");
 			_modelBuilder.Entity<FriendshipStatus>().ToTable("FriendshipStatus");
@@ -63,9 +65,34 @@ namespace PCSetupHub.Data
 			_modelBuilder.Entity<RAM>().ToTable("RAM");
 			_modelBuilder.Entity<SSD>().ToTable("SSD");
 			_modelBuilder.Entity<VideoCard>().ToTable("VideoCard");
+			_modelBuilder.Entity<ColorHDD>().ToTable("ColorHDD");
+			_modelBuilder.Entity<ColorMotherboard>().ToTable("ColorMotherboard");
+			_modelBuilder.Entity<ColorPowerSupply>().ToTable("ColorPowerSupply");
+			_modelBuilder.Entity<ColorRAM>().ToTable("ColorRAM");
+			_modelBuilder.Entity<ColorVideoCard>().ToTable("ColorVideoCard");
 			_modelBuilder.Entity<PcConfigurationHDD>().ToTable("PcConfigurationHDD");
 			_modelBuilder.Entity<PcConfigurationSSD>().ToTable("PcConfigurationSSD");
 			_modelBuilder.Entity<PcConfigurationRAM>().ToTable("PcConfigurationRAM");
+		}
+		private void SetUniqueness()
+		{
+			_modelBuilder.Entity<FriendshipStatus>()
+				.HasIndex(fs => fs.Status)
+				.IsUnique();
+
+			_modelBuilder.Entity<Color>()
+				.HasIndex(c => c.Name)
+				.IsUnique();
+
+			_modelBuilder.Entity<User>()
+				.HasIndex(u => u.Name)
+				.IsUnique();
+			_modelBuilder.Entity<User>()
+				.HasIndex(u => u.Email)
+				.IsUnique();
+			_modelBuilder.Entity<User>()
+				.HasIndex(u => u.PcConfigurationID)
+				.IsUnique();
 		}
 
 		#region Relationships
