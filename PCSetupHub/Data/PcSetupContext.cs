@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using PCSetupHub.Models.Attributes;
 using PCSetupHub.Models.Hardware;
 using PCSetupHub.Models.Relationships;
 using PCSetupHub.Models.Users;
@@ -8,6 +9,7 @@ namespace PCSetupHub.Data
 {
 	public class PcSetupContext : DbContext
 	{
+		public DbSet<Color> Colors { get; set; }
 		public DbSet<Comment> Comments { get; set; }
 		public DbSet<Friendship> Friendships { get; set; }
 		public DbSet<FriendshipStatus> FriendshipStatuses { get; set; }
@@ -21,6 +23,11 @@ namespace PCSetupHub.Data
 		public DbSet<RAM> RAMs { get; set; }
 		public DbSet<SSD> SSDs { get; set; }
 		public DbSet<VideoCard> VideoCards { get; set; }
+		public DbSet<ColorHDD> ColorHDDs { get; set; }
+		public DbSet<ColorMotherboard> ColorMotherboards { get; set; }
+		public DbSet<ColorPowerSupply> ColorPowerSupplies { get; set; }
+		public DbSet<ColorRAM> ColorRams { get; set; }
+		public DbSet<ColorVideoCard> ColorVideoCards { get; set; }
 		public DbSet<PcConfigurationHDD> PcConfigurationHDDs { get; set; }
 		public DbSet<PcConfigurationSSD> PcConfigurationSSDs { get; set; }
 		public DbSet<PcConfigurationRAM> PcConfigurationRAMs { get; set; }
@@ -68,11 +75,19 @@ namespace PCSetupHub.Data
 			SetFriendshipRelationships();
 			SetMessageRelationships();
 			SetUserRelationships();
+
 			SetPcConfigurationRelationships();
-			SetPcConfigurationHDDsRelationships();
-			SetPcConfigurationRAMsRelationships();
-			SetPcConfigurationSSDsRelationships();
+			SetPcConfigurationHDDRelationships();
+			SetPcConfigurationRAMRelationships();
+			SetPcConfigurationSSDRelationships();
+
+			SetColorHDDRelationships();
+			SetColorMotherboardRelationships();
+			SetColorPowerSupplyRelationships();
+			SetColorRAMRelationships();
+			SetColorVideoCardRelationships();
 		}
+
 		private void SetCommentRelationships()
 		{
 			_modelBuilder.Entity<Comment>()
@@ -129,6 +144,7 @@ namespace PCSetupHub.Data
 				.HasForeignKey<User>(u => u.PcConfigurationID)
 				.OnDelete(DeleteBehavior.Cascade);
 		}
+
 		private void SetPcConfigurationRelationships()
 		{
 			_modelBuilder.Entity<PcConfiguration>()
@@ -155,46 +171,117 @@ namespace PCSetupHub.Data
 				.HasForeignKey(pc => pc.VideoCardID)
 				.OnDelete(DeleteBehavior.Restrict);
 		}
-		private void SetPcConfigurationHDDsRelationships()
+		private void SetPcConfigurationHDDRelationships()
 		{
 			_modelBuilder.Entity<PcConfigurationHDD>()
-				.HasOne(pchdd => pchdd.PcConfiguration)
+				.HasOne(pcHdd => pcHdd.PcConfiguration)
 				.WithMany(pc => pc.PcConfigurationHDDs)
-				.HasForeignKey(pchdd => pchdd.PcConfigurationID)
+				.HasForeignKey(pcHdd => pcHdd.PcConfigurationID)
 				.OnDelete(DeleteBehavior.Cascade);
 
 			_modelBuilder.Entity<PcConfigurationHDD>()
-				.HasOne(pchdd => pchdd.HDD)
+				.HasOne(pcHdd => pcHdd.HDD)
 				.WithMany(hdd => hdd.PcConfigurationHDDs)
-				.HasForeignKey(pchdd => pchdd.HDDID)
+				.HasForeignKey(pcHdd => pcHdd.HDDID)
 				.OnDelete(DeleteBehavior.Cascade);
 		}
-		private void SetPcConfigurationRAMsRelationships()
+		private void SetPcConfigurationRAMRelationships()
 		{
 			_modelBuilder.Entity<PcConfigurationRAM>()
-				.HasOne(pcram => pcram.PcConfiguration)
+				.HasOne(pcRam => pcRam.PcConfiguration)
 				.WithMany(pc => pc.PcConfigurationRAMs)
-				.HasForeignKey(pcram => pcram.PcConfigurationID)
+				.HasForeignKey(pcRam => pcRam.PcConfigurationID)
 				.OnDelete(DeleteBehavior.Cascade);
 
 			_modelBuilder.Entity<PcConfigurationRAM>()
-				.HasOne(pcram => pcram.RAM)
+				.HasOne(pcRam => pcRam.RAM)
 				.WithMany(ram => ram.PcConfigurationRAMs)
-				.HasForeignKey(pcram => pcram.RAMID)
+				.HasForeignKey(pcRam => pcRam.RAMID)
 				.OnDelete(DeleteBehavior.Cascade);
 		}
-		private void SetPcConfigurationSSDsRelationships()
+		private void SetPcConfigurationSSDRelationships()
 		{
 			_modelBuilder.Entity<PcConfigurationSSD>()
-				.HasOne(pcssd => pcssd.PcConfiguration)
+				.HasOne(pcSsd => pcSsd.PcConfiguration)
 				.WithMany(pc => pc.PcConfigurationSSDs)
-				.HasForeignKey(pcssd => pcssd.PcConfigurationID)
+				.HasForeignKey(pcSsd => pcSsd.PcConfigurationID)
 				.OnDelete(DeleteBehavior.Cascade);
 
 			_modelBuilder.Entity<PcConfigurationSSD>()
-				.HasOne(pcssd => pcssd.SSD)
+				.HasOne(pcSsd => pcSsd.SSD)
 				.WithMany(ssd => ssd.PcConfigurationSSDs)
-				.HasForeignKey(pcssd => pcssd.SSDID)
+				.HasForeignKey(pcSsd => pcSsd.SSDID)
+				.OnDelete(DeleteBehavior.Cascade);
+		}
+
+		private void SetColorHDDRelationships()
+		{
+			_modelBuilder.Entity<ColorHDD>()
+				.HasOne(colorHdd => colorHdd.Color)
+				.WithMany(c => c.ColorHDDs)
+				.HasForeignKey(colorHdd => colorHdd.ColorID)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			_modelBuilder.Entity<ColorHDD>()
+				.HasOne(colorHdd => colorHdd.HDD)
+				.WithMany(hdd => hdd.ColorHDDs)
+				.HasForeignKey(colorHdd => colorHdd.HDDID)
+				.OnDelete(DeleteBehavior.Cascade);
+		}
+		private void SetColorMotherboardRelationships()
+		{
+			_modelBuilder.Entity<ColorMotherboard>()
+				.HasOne(colorM => colorM.Color)
+				.WithMany(c => c.ColorMotherboards)
+				.HasForeignKey(colorM => colorM.ColorID)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			_modelBuilder.Entity<ColorMotherboard>()
+				.HasOne(colorM => colorM.Motherboard)
+				.WithMany(m => m.ColorMotherboards)
+				.HasForeignKey(colorM => colorM.MotherboardID)
+				.OnDelete(DeleteBehavior.Cascade);
+		}
+		private void SetColorPowerSupplyRelationships()
+		{
+			_modelBuilder.Entity<ColorPowerSupply>()
+				.HasOne(colorPS => colorPS.Color)
+				.WithMany(c => c.ColorPowerSupplies)
+				.HasForeignKey(colorPS => colorPS.ColorID)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			_modelBuilder.Entity<ColorPowerSupply>()
+				.HasOne(colorPS => colorPS.PowerSupply)
+				.WithMany(ps => ps.ColorPowerSupplies)
+				.HasForeignKey(colorPS => colorPS.PowerSupplyID)
+				.OnDelete(DeleteBehavior.Cascade);
+		}
+		private void SetColorRAMRelationships()
+		{
+			_modelBuilder.Entity<ColorRAM>()
+				.HasOne(colorRam => colorRam.Color)
+				.WithMany(c => c.ColorRAMs)
+				.HasForeignKey(colorRam => colorRam.ColorID)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			_modelBuilder.Entity<ColorRAM>()
+				.HasOne(colorRam => colorRam.RAM)
+				.WithMany(ram => ram.ColorRAMs)
+				.HasForeignKey(colorRam => colorRam.RAMID)
+				.OnDelete(DeleteBehavior.Cascade);
+		}
+		private void SetColorVideoCardRelationships()
+		{
+			_modelBuilder.Entity<ColorVideoCard>()
+				.HasOne(colorVC => colorVC.Color)
+				.WithMany(c => c.ColorVideoCards)
+				.HasForeignKey(colorVC => colorVC.ColorID)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			_modelBuilder.Entity<ColorVideoCard>()
+				.HasOne(colorVC => colorVC.VideoCard)
+				.WithMany(vc => vc.ColorVideoCards)
+				.HasForeignKey(colorVC => colorVC.VideoCardID)
 				.OnDelete(DeleteBehavior.Cascade);
 		}
 		#endregion

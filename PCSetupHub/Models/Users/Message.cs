@@ -13,12 +13,15 @@ namespace PCSetupHub.Models.Users
 		public bool IsRead { get; private set; } = false;
 
 		public Message() { }
-		public Message(int senderID, int receiverID, string text, bool isRead)
+		public Message(int senderID, int receiverID, string text, bool isRead = false)
 		{
 			SenderID = senderID;
 			ReceiverID = receiverID;
 			Text = text;
 			IsRead = isRead;
 		}
+
+		public void SetAsRead()
+			=> IsRead = true;
 	}
 }

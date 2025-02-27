@@ -1,4 +1,6 @@
-﻿namespace PCSetupHub.Models.Hardware
+﻿using PCSetupHub.Models.Relationships;
+
+namespace PCSetupHub.Models.Hardware
 {
 	public class VideoCard : HardwareComponent
 	{
@@ -6,20 +8,19 @@
 		public float Memory { get; set; }
 		public int? CoreClock { get; set; }
 		public int? BoostClock { get; set; }
-		public string? Color { get; set; }
 		public int? Length { get; set; }
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
+		public ICollection<ColorVideoCard>? ColorVideoCards { get; private set; }
 
 		public VideoCard() { }
-		public VideoCard(string name, double? price, bool isDefault, string chipset, int memory, int coreClock,
-			int? boostClock, string? color, int length)
+		public VideoCard(string name, double? price, bool isDefault, string chipset, float memory,
+			int? coreClock, int? boostClock, int? length)
 			: base(name, price, isDefault)
 		{
 			Chipset = chipset;
 			Memory = memory;
 			CoreClock = coreClock;
 			BoostClock = boostClock;
-			Color = color;
 			Length = length;
 		}
 	}

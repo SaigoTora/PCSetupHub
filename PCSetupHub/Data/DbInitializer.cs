@@ -1,8 +1,11 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 using PCSetupHub.Data.CsvModels;
+using PCSetupHub.Models.Attributes;
+using PCSetupHub.Models.Base;
 using PCSetupHub.Models.Hardware;
 using PCSetupHub.Models.Relationships;
 using PCSetupHub.Models.Users;
@@ -13,6 +16,8 @@ namespace PCSetupHub.Data
 	{
 		private static PcSetupContext? _context;
 		private static CsvConfiguration? _csvConfig;
+
+		private static readonly Dictionary<string, Color> existingColors = [];
 
 		public static void Initialize(PcSetupContext context)
 		{
@@ -53,7 +58,7 @@ namespace PCSetupHub.Data
 			SeedVideoCards();
 		}
 
-		private static List<T> GetCsvData<T>(string fileName, string? dataFolderPath = null)
+		private static T[] GetCsvData<T>(string fileName, string? dataFolderPath = null)
 			where T : HardwareComponent
 		{
 			string path = dataFolderPath ?? Path.Combine(Environment.CurrentDirectory,
@@ -67,8 +72,9 @@ namespace PCSetupHub.Data
 			using var reader = new StreamReader(filePath);
 			using var csv = new CsvReader(reader, _csvConfig!);
 
-			var records = csv.GetRecords<T>().ToList();
-			records.ForEach(record => record.IsDefault = true);
+			var records = csv.GetRecords<T>().ToArray();
+			for (int i = 0; i < records.Length; i++)
+				records[i].IsDefault = true;
 
 			return records;
 		}
@@ -85,23 +91,28 @@ namespace PCSetupHub.Data
 		private static void SeedHDDs()
 		{
 			const string hddsCsvFileName = "hdds.csv";
+			var csvHdds = GetCsvData<CsvHDD>(hddsCsvFileName);
 
-			_context?.HDDs.AddRange(GetCsvData<HDD>(hddsCsvFileName));
-			_context?.SaveChanges();
+			SeedColoredHardware(csvHdds, _context!.HDDs, _context.ColorHDDs,
+				(colorID, hddID) => new ColorHDD(colorID, hddID));
 		}
 		private static void SeedMotherboards()
 		{
 			const string motherboardsCsvFileName = "motherboards.csv";
+			var csvMotherboards = GetCsvData<CsvMotherboard>(motherboardsCsvFileName);
 
-			_context?.Motherboards.AddRange(GetCsvData<Motherboard>(motherboardsCsvFileName));
-			_context?.SaveChanges();
+			SeedColoredHardware(csvMotherboards, _context!.Motherboards,
+				_context.ColorMotherboards,
+				(colorID, motherboardId) => new ColorMotherboard(colorID, motherboardId));
 		}
 		private static void SeedPowerSupplies()
 		{
 			const string powerSuppliesCsvFileName = "power_supplies.csv";
+			var csvPowerSupplies = GetCsvData<CsvPowerSupply>(powerSuppliesCsvFileName);
 
-			_context?.PowerSupplies.AddRange(GetCsvData<PowerSupply>(powerSuppliesCsvFileName));
-			_context?.SaveChanges();
+			SeedColoredHardware(csvPowerSupplies, _context!.PowerSupplies,
+				_context.ColorPowerSupplies,
+				(colorID, powerSupplyID) => new ColorPowerSupply(colorID, powerSupplyID));
 		}
 		private static void SeedProcessors()
 		{
@@ -113,10 +124,10 @@ namespace PCSetupHub.Data
 		private static void SeedRAMs()
 		{
 			const string ramsCsvFileName = "rams.csv";
-
 			var csvRams = GetCsvData<CsvRAM>(ramsCsvFileName);
-			_context?.RAMs.AddRange(ConvertToRams(csvRams));
-			_context?.SaveChanges();
+
+			SeedColoredHardware(csvRams, _context!.RAMs, _context.ColorRams,
+				(colorID, ramID) => new ColorRAM(colorID, ramID));
 		}
 		private static void SeedSSDs()
 		{
@@ -128,49 +139,83 @@ namespace PCSetupHub.Data
 		private static void SeedVideoCards()
 		{
 			const string videoCardsCsvFileName = "video_cards.csv";
+			var csvVideoCards = GetCsvData<CsvVideoCard>(videoCardsCsvFileName);
 
-			_context?.VideoCards.AddRange(GetCsvData<VideoCard>(videoCardsCsvFileName));
-			_context?.SaveChanges();
+			SeedColoredHardware(csvVideoCards, _context!.VideoCards, _context.ColorVideoCards,
+				(colorID, videoCardID) => new ColorVideoCard(colorID, videoCardID));
 		}
 
-		private static List<RAM> ConvertToRams(List<CsvRAM> csvRams)
+		private static void SeedColoredHardware<T1, T2, T3>(T1[] csvModels,
+			DbSet<T2> dbModelSet, DbSet<T3> dbColorRelationSet,
+			Func<int, int, T3> createColorRelation)
+			where T1 : ICsvConvertible<T2>, ICsvColorModel
+			where T2 : class
+			where T3 : class
 		{
-			List<RAM> rams = [];
+			T2[] newModels = csvModels.Select(csvModel => csvModel.ConvertToModel()).ToArray();
+			dbModelSet.AddRange(newModels);
+			_context?.SaveChanges();
 
-			foreach (var csvRam in csvRams)
+			AddUniqueColorsToContext(csvModels);
+			AddNewColorRelationships(csvModels, newModels, dbColorRelationSet,
+				createColorRelation);
+		}
+		private static void AddNewColorRelationships<T1, T2, T3>(T1[] csvModels,
+			T2[] newModels, DbSet<T3> dbSet, Func<int, int, T3> createColorRelation)
+			where T1 : ICsvColorModel
+			where T3 : class
+		{
+			List<T3> colorRelationTable = [];
+
+			for (int i = 0; i < csvModels.Length; i++)
 			{
-				(byte memoryType, int frequency) = GetByteInt(csvRam.Speed);
-				(byte modulesCount, int moduleCapacity) = GetByteInt(csvRam.Modules);
-				rams.Add(new RAM(csvRam.Name, csvRam.Price, csvRam.IsDefault, memoryType, frequency,
-					modulesCount, moduleCapacity, csvRam.Color, csvRam.FirstWordLatency,
-					csvRam.CASLatency));
+				if (newModels[i] is not BaseEntity model)
+					continue;
+
+				string[] colors = ParseColors(csvModels[i].Color);
+				foreach (var colorName in colors)
+					colorRelationTable.Add(createColorRelation(existingColors[colorName].ID,
+						model.ID));
 			}
 
-			return rams;
+			dbSet.AddRange(colorRelationTable);
+			_context?.SaveChanges();
 		}
-		private static (byte, int) GetByteInt(string str)
+		private static void AddUniqueColorsToContext<T>(T[] csvModels)
+			where T : ICsvColorModel
 		{
-			const char SEPARATOR = ',';
-			var parts = str.Split(SEPARATOR);
-			if (parts.Length == 0 || parts.Length > 2)
-				return (0, 0);
+			List<Color> newColors = [];
 
-			(byte number, bool valid) first = (default, default);
-			first.valid = byte.TryParse(parts[0], out first.number);
-			if (parts.Length == 1)
-				return (0, int.Parse(parts[0]));
+			for (int i = 0; i < csvModels.Length; i++)
+			{
+				string[] colors = ParseColors(csvModels[i].Color);
 
-			(int number, bool valid) second = (default, default);
-			second.valid = int.TryParse(parts[1], out second.number);
+				foreach (var colorName in colors)
+					if (!existingColors.ContainsKey(colorName))
+					{
+						var newColor = new Color(colorName);
+						newColors.Add(newColor);
+						existingColors[colorName] = newColor;
+					}
+			}
 
-			if (!first.valid && !second.valid)
-				return (0, 0);
-			else if (!first.valid)
-				return (0, second.number);
-			else if (!second.valid)
-				return (first.number, 0);
+			if (newColors.Count > 0)
+			{
+				_context?.Colors.AddRange(newColors);
+				_context?.SaveChanges();
+			}
+		}
+		private static string[] ParseColors(string? str)
+		{
+			const char SEPARATOR = '/';
+			if (string.IsNullOrWhiteSpace(str))
+				return [];
 
-			return (first.number, second.number);
+			string[] resultArr = str.Split(SEPARATOR);
+			for (int i = 0; i < resultArr.Length; i++)
+				resultArr[i] = resultArr[i].Trim(' ');
+
+			return resultArr;
 		}
 		#endregion
 
@@ -248,15 +293,18 @@ namespace PCSetupHub.Data
 		private static void SeedComments()
 		{
 			_context?.Comments.AddRange(
-				new Comment(4, 2, "Cool profile, but a little lacking in information about your PC."),
+				new Comment(4, 2, "Cool profile, but a little lacking in " +
+				"information about your PC."),
 				new Comment(5, 3, "I had a similar build once, more to come!" +
-				"\nPlease add the motherboard and power supply so we can fully evaluate your build."),
+				"\nPlease add the motherboard and power supply " +
+				"so we can fully evaluate your build."),
 				new Comment(2, 4, "Not bad, but I think the video card should be improved."),
-				new Comment(4, 4, "Yes, I agree. I'm going to upgrade the video card this year when " +
-				"I save up some money. =)"),
+				new Comment(4, 4, "Yes, I agree. I'm going to upgrade the video card " +
+				"this year when I save up some money. =)"),
 				new Comment(3, 4, "This is another level! Incredible components!"),
 				new Comment(2, 5, "Excellent build!"),
-				new Comment(4, 5, "Great combination! But I think the power supply will need to be updated soon!"),
+				new Comment(4, 5, "Great combination! But I think the power supply will need " +
+				"to be updated soon!"),
 				new Comment(2, 5, "I dream of a similar build!"));
 		}
 		private static void SeedFriendships()
