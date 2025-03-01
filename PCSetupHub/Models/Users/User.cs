@@ -1,4 +1,6 @@
-﻿using PCSetupHub.Models.Base;
+﻿using System.Text.Json.Serialization;
+
+using PCSetupHub.Models.Base;
 using PCSetupHub.Models.Hardware;
 
 namespace PCSetupHub.Models.Users
@@ -6,6 +8,7 @@ namespace PCSetupHub.Models.Users
 	public class User : BaseEntity
 	{
 		public string Login { get; private set; } = string.Empty;
+		[JsonIgnore]
 		public string Password { get; private set; } = string.Empty;
 		public string Name { get; private set; } = string.Empty;
 		public string Email { get; private set; } = string.Empty;
@@ -23,10 +26,15 @@ namespace PCSetupHub.Models.Users
 			string email, int pcConfigurationID)
 		{
 			Login = login;
-			Password = password;
+			SetPassword(password);
 			Name = name;
 			Email = email;
 			PcConfigurationID = pcConfigurationID;
 		}
+
+		public void SetPassword(string password)
+			=> Password = BCrypt.Net.BCrypt.HashPassword(password);
+		public bool VerifyPassword(string password)
+			=> BCrypt.Net.BCrypt.Verify(password, Password);
 	}
 }
