@@ -2,6 +2,6 @@
 {
 	public class BaseEntity
 	{
-		public int ID { get; protected set; }
+		public int Id { get; protected set; }
 	}
 }

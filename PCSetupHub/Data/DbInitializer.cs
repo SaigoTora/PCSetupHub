@@ -174,8 +174,8 @@ namespace PCSetupHub.Data
 
 				string[] colors = ParseColors(csvModels[i].Color);
 				foreach (var colorName in colors)
-					colorRelationTable.Add(createColorRelation(existingColors[colorName].ID,
-						model.ID));
+					colorRelationTable.Add(createColorRelation(existingColors[colorName].Id,
+						model.Id));
 			}
 
 			dbSet.AddRange(colorRelationTable);

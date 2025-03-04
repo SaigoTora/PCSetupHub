@@ -34,7 +34,7 @@ namespace PCSetupHub.Data
 
 		private ModelBuilder _modelBuilder = new();
 
-		private PcSetupContext()
+		public PcSetupContext()
 		{ }
 		public PcSetupContext(DbContextOptions<PcSetupContext> options)
 			: base(options)
