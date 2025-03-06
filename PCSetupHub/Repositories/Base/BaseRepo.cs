@@ -6,7 +6,7 @@ using PCSetupHub.Models.Base;
 
 namespace PCSetupHub.Repositories.Base
 {
-	public class BaseRepo<T> : IAsyncDisposable, IRepository<T> where T : BaseEntity, new()
+	public class BaseRepo<T> : IDisposable, IRepository<T> where T : BaseEntity, new()
 	{
 		private readonly DbSet<T> _table;
 		private readonly PcSetupContext _context;
@@ -75,10 +75,6 @@ namespace PCSetupHub.Repositories.Base
 			params object[] sqlParametersObjects)
 			=> await _table.FromSqlRaw(sql, sqlParametersObjects).ToListAsync();
 
-		public async ValueTask DisposeAsync()
-		{
-			await _context.DisposeAsync();
-			GC.SuppressFinalize(this);
-		}
+		public void Dispose() => _context?.Dispose();
 	}
 }

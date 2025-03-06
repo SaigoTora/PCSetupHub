@@ -9,7 +9,7 @@ namespace PCSetupHub.Models.Users
 	{
 		public string Login { get; private set; } = string.Empty;
 		[JsonIgnore]
-		public string Password { get; private set; } = string.Empty;
+		public string PasswordHash { get; private set; } = string.Empty;
 		public string Name { get; private set; } = string.Empty;
 		public string Email { get; private set; } = string.Empty;
 		public PcConfiguration? PcConfiguration { get; private set; }
@@ -22,19 +22,21 @@ namespace PCSetupHub.Models.Users
 		public ICollection<Message>? ReceivedMessages { get; private set; }
 
 		public User() { }
-		public User(string login, string password, string name,
-			string email, int pcConfigurationID)
+		public User(string login, string passwordHash, string name,
+			string email, int? pcConfigurationID)
 		{
 			Login = login;
-			SetPassword(password);
+			PasswordHash = passwordHash;
 			Name = name;
 			Email = email;
-			PcConfigurationID = pcConfigurationID;
+
+			if (pcConfigurationID.HasValue)
+				PcConfigurationID = pcConfigurationID.Value;
+			else
+				PcConfiguration = new PcConfiguration();
 		}
 
-		public void SetPassword(string password)
-			=> Password = BCrypt.Net.BCrypt.HashPassword(password);
-		public bool VerifyPassword(string password)
-			=> BCrypt.Net.BCrypt.Verify(password, Password);
+		public void ChangePasswordHash(string newPasswordHash)
+			=> PasswordHash = newPasswordHash;
 	}
 }

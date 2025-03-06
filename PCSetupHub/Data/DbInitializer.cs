@@ -9,6 +9,7 @@ using PCSetupHub.Models.Base;
 using PCSetupHub.Models.Hardware;
 using PCSetupHub.Models.Relationships;
 using PCSetupHub.Models.Users;
+using PCSetupHub.Services;
 
 namespace PCSetupHub.Data
 {
@@ -16,12 +17,14 @@ namespace PCSetupHub.Data
 	{
 		private static PcSetupContext? _context;
 		private static CsvConfiguration? _csvConfig;
+		private static UserService? _userService;
 
 		private static readonly Dictionary<string, Color> existingColors = [];
 
-		public static void Initialize(PcSetupContext context)
+		public static void Initialize(PcSetupContext context, UserService userService)
 		{
 			context.Database.EnsureCreated();
+			_userService = userService;
 
 			_context = context;
 			_csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -281,12 +284,11 @@ namespace PCSetupHub.Data
 
 		private static void SeedUsers()
 		{
-			_context?.Users.AddRange(
-				new User("max_power", "StrongPass567!", "Maxim", "max_power@gmail.com", 1),
-				new User("anna_dev", "AnnaPass123!", "Anna", "anna_dev@gmail.com", 2),
-				new User("alex_gamer", "Pass1234!", "Alexander", "alex_gamer@gmail.com", 3),
-				new User("kate_player", "KateGamer456!", "Kate", "kate_player@gmail.com", 4),
-				new User("niko_coder", "Secure789!", "Nikolay", "niko_coder@gmail.com", 5));
+			_userService?.RegisterAsync("max_power", "StrongPass567!", "Maxim", "max_power@gmail.com", 1);
+			_userService?.RegisterAsync("anna_dev", "AnnaPass123!", "Anna", "anna_dev@gmail.com", 2);
+			_userService?.RegisterAsync("alex_gamer", "Pass1234!", "Alexander", "alex_gamer@gmail.com", 3);
+			_userService?.RegisterAsync("kate_player", "KateGamer456!", "Kate", "kate_player@gmail.com", 4);
+			_userService?.RegisterAsync("niko_coder", "Secure789!", "Nikolay", "niko_coder@gmail.com", 5);
 
 			_context?.SaveChanges();
 		}

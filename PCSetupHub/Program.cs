@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+
+using PCSetupHub;
 using PCSetupHub.Data;
+using PCSetupHub.Repositories;
+using PCSetupHub.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +13,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<PcSetupContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddAuth(builder.Configuration);
 
 var app = builder.Build();
 CreateDbIfNotExists(app);
@@ -24,6 +31,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -43,7 +51,8 @@ static void CreateDbIfNotExists(IHost host)
 	try
 	{
 		var context = services.GetRequiredService<PcSetupContext>();
-		DbInitializer.Initialize(context);
+		var userService = services.GetRequiredService<UserService>();
+		DbInitializer.Initialize(context, userService);
 	}
 	catch (Exception ex)
 	{
