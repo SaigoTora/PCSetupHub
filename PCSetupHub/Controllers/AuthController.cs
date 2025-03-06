@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using PCSetupHub.DTOs;
-using PCSetupHub.Services;
+using PCSetupHub.Core.DTOs;
+using PCSetupHub.Core.Services;
 
 namespace PCSetupHub.Controllers
 {

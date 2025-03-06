@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 
-using PCSetupHub;
+using PCSetupHub.Core.Extensions;
+using PCSetupHub.Core.Services;
 using PCSetupHub.Data;
-using PCSetupHub.Repositories;
-using PCSetupHub.Services;
+using PCSetupHub.Data.Repositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,7 +52,7 @@ static void CreateDbIfNotExists(IHost host)
 	{
 		var context = services.GetRequiredService<PcSetupContext>();
 		var userService = services.GetRequiredService<UserService>();
-		DbInitializer.Initialize(context, userService);
+		DbInitializer.Initialize(context, userService.RegisterAsync);
 	}
 	catch (Exception ex)
 	{

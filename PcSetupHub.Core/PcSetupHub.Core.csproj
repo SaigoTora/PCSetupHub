@@ -1,17 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PcSetupHub.Core\PcSetupHub.Core.csproj" />
     <ProjectReference Include="..\PcSetupHub.Data\PcSetupHub.Data.csproj" />
   </ItemGroup>
 
