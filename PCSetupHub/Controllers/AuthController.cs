@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using PcSetupHub.Core.Interfaces;
 using PCSetupHub.Core.DTOs;
-using PCSetupHub.Core.Services;
 
 namespace PCSetupHub.Controllers
 {
-	public class AuthController(UserService userService) : Controller
+	public class AuthController(IUserService userService) : Controller
 	{
-		private readonly UserService _userService = userService;
+		private readonly IUserService _userService = userService;
 
 		[HttpPost]
-		public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
+		public async Task<IActionResult> Register([FromBody] RegisterRequest request)
 		{
 			await _userService.RegisterAsync(request.Login, request.Password, request.Name,
 				request.Email);

@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
+using PcSetupHub.Core.Interfaces;
+using PcSetupHub.Data.Repositories.Interfaces;
 using PCSetupHub.Data.Models.Users;
-using PCSetupHub.Data.Repositories;
 
 namespace PCSetupHub.Core.Services
 {
-	public class UserService(UserRepository userRepository, JwtService jwtService)
+	public class UserService(IUserRepository userRepository, JwtService jwtService) : IUserService
 	{
-		private readonly UserRepository _userRepository = userRepository;
+		private readonly IUserRepository _userRepository = userRepository;
 		private readonly JwtService _jwtService = jwtService;
 
 		public async Task RegisterAsync(string login, string password, string name, string email,

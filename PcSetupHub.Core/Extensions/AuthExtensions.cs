@@ -15,7 +15,8 @@ namespace PCSetupHub.Core.Extensions
 			IConfiguration configuration)
 		{
 			serviceCollection.AddScoped<JwtService>();
-			serviceCollection.Configure<AuthSettings>(configuration.GetSection("AuthSettings"));
+			serviceCollection.Configure<AuthSettings>(
+					configuration.GetSection(nameof(AuthSettings)));
 
 			var authSettings = configuration.GetSection(nameof(AuthSettings)).Get<AuthSettings>();
 
