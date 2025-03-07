@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
-using PcSetupHub.Core.Interfaces;
-using PcSetupHub.Data.Repositories.Interfaces;
+using PCSetupHub.Core.Interfaces;
+using PCSetupHub.Data.Repositories.Interfaces;
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Services;
 using PCSetupHub.Data;

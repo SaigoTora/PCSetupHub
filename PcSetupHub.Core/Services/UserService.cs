@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-using PcSetupHub.Core.Interfaces;
-using PcSetupHub.Data.Repositories.Interfaces;
+using PCSetupHub.Core.Interfaces;
+using PCSetupHub.Data.Repositories.Interfaces;
 using PCSetupHub.Data.Models.Users;
 
 namespace PCSetupHub.Core.Services

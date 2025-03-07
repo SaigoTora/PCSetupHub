@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using PcSetupHub.Core.Interfaces;
+using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Core.DTOs;
 
 namespace PCSetupHub.Controllers
@@ -9,18 +9,30 @@ namespace PCSetupHub.Controllers
 	{
 		private readonly IUserService _userService = userService;
 
+		public IActionResult Register() => View();
+
 		[HttpPost]
-		public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Register(RegisterRequest request)
 		{
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
 			await _userService.RegisterAsync(request.Login, request.Password, request.Name,
 				request.Email);
-			return NoContent();
+
+			return RedirectToAction("Index", "Home");
 		}
+
+		public IActionResult Login() => View();
+
 		[HttpPost]
-		public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Login(LoginRequest loginRequest)
 		{
 			string token = await _userService.LoginAsync(loginRequest.Login,
 				loginRequest.Password);
+
 			return Ok(token);
 		}
 	}

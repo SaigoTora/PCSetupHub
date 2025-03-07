@@ -1,0 +1,36 @@
+﻿@using PCSetupHub.Core.DTOs
+
+@model RegisterRequest
+
+@{
+	ViewData["Title"] = "Register";
+}
+
+
+<h1>Register</h1>
+
+<form asp-controller="Auth" asp-action="Register" method="post">
+	<div class="form-group">
+		<label asp-for="Login" class="control-label">Login: </label>
+		<input asp-for="Login" class="form-control" />
+	</div>
+
+	<div class="form-group">
+		<label asp-for="Password" class="control-label">Password: </label>
+		<input asp-for="Password" class="form-control" />
+	</div>
+
+	<div class="form-group">
+		<label asp-for="Name" class="control-label">Name: </label>
+		<input asp-for="Name" class="form-control" />
+	</div>
+
+	<div class="form-group">
+		<label asp-for="Email" class="control-label">Email: </label>
+		<input asp-for="Email" class="form-control" />
+	</div>
+
+	<div class="form-group">
+		<button type="submit" class="btn btn-primary">Register</button>
+	</div>
+</form>

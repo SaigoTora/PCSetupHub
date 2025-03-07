@@ -1,4 +1,4 @@
-﻿namespace PcSetupHub.Core.Interfaces
+﻿namespace PCSetupHub.Core.Interfaces
 {
 	public interface IUserService
 	{

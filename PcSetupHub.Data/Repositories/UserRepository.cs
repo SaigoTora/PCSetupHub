@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using PcSetupHub.Data.Repositories.Interfaces;
+using PCSetupHub.Data.Repositories.Interfaces;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Base;
 

@@ -1,8 +1,16 @@
 ﻿namespace PCSetupHub.Core.DTOs
 {
-	public class LoginRequest(string login, string password)
+	public class LoginRequest
 	{
-		public string Login { get; init; } = login;
-		public string Password { get; init; } = password;
+		public required string Login { get; init; }
+		public required string Password { get; init; }
+
+		public LoginRequest()
+		{ }
+		public LoginRequest(string login, string password)
+		{
+			Login = login;
+			Password = password;
+		}
 	}
 }

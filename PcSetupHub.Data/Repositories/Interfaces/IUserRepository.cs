@@ -1,7 +1,7 @@
 ﻿using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Base;
 
-namespace PcSetupHub.Data.Repositories.Interfaces
+namespace PCSetupHub.Data.Repositories.Interfaces
 {
 	public interface IUserRepository : IRepository<User>
 	{
