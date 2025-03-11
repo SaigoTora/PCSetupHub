@@ -4,18 +4,18 @@ using PCSetupHub.Data.Models.Hardware;
 
 namespace PCSetupHub.Data.Models.Relationships
 {
-	public class ColorHDD : BaseEntity
+	public class ColorHdd : BaseEntity
 	{
-		public int ColorID { get; private set; }
-		public int HDDID { get; private set; }
+		public int ColorId { get; private set; }
+		public int HddId { get; private set; }
 		public Color? Color { get; private set; }
-		public HDD? HDD { get; private set; }
+		public Hdd? Hdd { get; private set; }
 
-		public ColorHDD() { }
-		public ColorHDD(int colorID, int hddID)
+		public ColorHdd() { }
+		public ColorHdd(int colorId, int hddId)
 		{
-			ColorID = colorID;
-			HDDID = hddID;
+			ColorId = colorId;
+			HddId = hddId;
 		}
 	}
 }

@@ -61,12 +61,12 @@ namespace PCSetupHub.Data
 		private static void SeedStaticData()
 		{
 			SeedFriendshipStatuses();
-			SeedHDDs();
+			SeedHdds();
 			SeedMotherboards();
 			SeedPowerSupplies();
 			SeedProcessors();
-			SeedRAMs();
-			SeedSSDs();
+			SeedRams();
+			SeedSsds();
 			SeedVideoCards();
 		}
 
@@ -101,13 +101,13 @@ namespace PCSetupHub.Data
 
 			_context?.SaveChanges();
 		}
-		private static void SeedHDDs()
+		private static void SeedHdds()
 		{
 			const string hddsCsvFileName = "hdds.csv";
-			var csvHdds = GetCsvData<CsvHDD>(hddsCsvFileName);
+			var csvHdds = GetCsvData<CsvHdd>(hddsCsvFileName);
 
-			SeedColoredHardware(csvHdds, _context!.HDDs, _context.ColorHDDs,
-				(colorID, hddID) => new ColorHDD(colorID, hddID));
+			SeedColoredHardware(csvHdds, _context!.Hdds, _context.ColorHdds,
+				(colorId, hddId) => new ColorHdd(colorId, hddId));
 		}
 		private static void SeedMotherboards()
 		{
@@ -116,7 +116,7 @@ namespace PCSetupHub.Data
 
 			SeedColoredHardware(csvMotherboards, _context!.Motherboards,
 				_context.ColorMotherboards,
-				(colorID, motherboardId) => new ColorMotherboard(colorID, motherboardId));
+				(colorId, motherboardId) => new ColorMotherboard(colorId, motherboardId));
 		}
 		private static void SeedPowerSupplies()
 		{
@@ -125,7 +125,7 @@ namespace PCSetupHub.Data
 
 			SeedColoredHardware(csvPowerSupplies, _context!.PowerSupplies,
 				_context.ColorPowerSupplies,
-				(colorID, powerSupplyID) => new ColorPowerSupply(colorID, powerSupplyID));
+				(colorId, powerSupplyId) => new ColorPowerSupply(colorId, powerSupplyId));
 		}
 		private static void SeedProcessors()
 		{
@@ -134,19 +134,19 @@ namespace PCSetupHub.Data
 			_context?.Processors.AddRange(GetCsvData<Processor>(processorsCsvFileName));
 			_context?.SaveChanges();
 		}
-		private static void SeedRAMs()
+		private static void SeedRams()
 		{
 			const string ramsCsvFileName = "rams.csv";
-			var csvRams = GetCsvData<CsvRAM>(ramsCsvFileName);
+			var csvRams = GetCsvData<CsvRam>(ramsCsvFileName);
 
-			SeedColoredHardware(csvRams, _context!.RAMs, _context.ColorRams,
-				(colorID, ramID) => new ColorRAM(colorID, ramID));
+			SeedColoredHardware(csvRams, _context!.Rams, _context.ColorRams,
+				(colorId, ramId) => new ColorRam(colorId, ramId));
 		}
-		private static void SeedSSDs()
+		private static void SeedSsds()
 		{
 			const string ssdsCsvFileName = "ssds.csv";
 
-			_context?.SSDs.AddRange(GetCsvData<SSD>(ssdsCsvFileName));
+			_context?.Ssds.AddRange(GetCsvData<Ssd>(ssdsCsvFileName));
 			_context?.SaveChanges();
 		}
 		private static void SeedVideoCards()
@@ -155,7 +155,7 @@ namespace PCSetupHub.Data
 			var csvVideoCards = GetCsvData<CsvVideoCard>(videoCardsCsvFileName);
 
 			SeedColoredHardware(csvVideoCards, _context!.VideoCards, _context.ColorVideoCards,
-				(colorID, videoCardID) => new ColorVideoCard(colorID, videoCardID));
+				(colorId, videoCardId) => new ColorVideoCard(colorId, videoCardId));
 		}
 
 		private static void SeedColoredHardware<T1, T2, T3>(T1[] csvModels,
@@ -232,13 +232,13 @@ namespace PCSetupHub.Data
 		}
 		#endregion
 
-		#region Seed pc configuration data
+		#region Seed PC configuration data
 		private static void SeedPcConfigurationData()
 		{
 			SeedPcConfigurations();
-			SeedPcConfigurationHDDs();
-			SeedPcConfigurationRAMs();
-			SeedPcConfigurationSSDs();
+			SeedPcConfigurationHdds();
+			SeedPcConfigurationRams();
+			SeedPcConfigurationSsds();
 		}
 
 		private static void SeedPcConfigurations()
@@ -252,32 +252,32 @@ namespace PCSetupHub.Data
 
 			_context?.SaveChanges();
 		}
-		private static void SeedPcConfigurationHDDs()
+		private static void SeedPcConfigurationHdds()
 		{
-			_context?.PcConfigurationHDDs.AddRange(
-				new PcConfigurationHDD(3, 219),
-				new PcConfigurationHDD(3, 334),
-				new PcConfigurationHDD(5, 214));
+			_context?.PcConfigurationHdds.AddRange(
+				new PcConfigurationHdd(3, 219),
+				new PcConfigurationHdd(3, 334),
+				new PcConfigurationHdd(5, 214));
 
 			_context?.SaveChanges();
 		}
-		private static void SeedPcConfigurationRAMs()
+		private static void SeedPcConfigurationRams()
 		{
-			_context?.PcConfigurationRAMs.AddRange(
-				new PcConfigurationRAM(2, 5251),
-				new PcConfigurationRAM(3, 1136),
-				new PcConfigurationRAM(3, 3879),
-				new PcConfigurationRAM(5, 2165));
+			_context?.PcConfigurationRams.AddRange(
+				new PcConfigurationRam(2, 5251),
+				new PcConfigurationRam(3, 1136),
+				new PcConfigurationRam(3, 3879),
+				new PcConfigurationRam(5, 2165));
 
 			_context?.SaveChanges();
 		}
-		private static void SeedPcConfigurationSSDs()
+		private static void SeedPcConfigurationSsds()
 		{
-			_context?.PcConfigurationSSDs.AddRange(
-				new PcConfigurationSSD(2, 3965),
-				new PcConfigurationSSD(2, 2673),
-				new PcConfigurationSSD(3, 850),
-				new PcConfigurationSSD(5, 1755));
+			_context?.PcConfigurationSsds.AddRange(
+				new PcConfigurationSsd(2, 3965),
+				new PcConfigurationSsd(2, 2673),
+				new PcConfigurationSsd(3, 850),
+				new PcConfigurationSsd(5, 1755));
 
 			_context?.SaveChanges();
 		}

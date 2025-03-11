@@ -2,16 +2,16 @@
 
 namespace PCSetupHub.Data.Models.Hardware
 {
-	public class HDD : HardwareComponent
+	public class Hdd : HardwareComponent
 	{
 		public string Type { get; set; } = string.Empty;
 		public string? Interface { get; set; }
 		public int Capacity { get; set; }
-		public ICollection<PcConfigurationHDD>? PcConfigurationHDDs { get; private set; }
-		public ICollection<ColorHDD>? ColorHDDs { get; private set; }
+		public ICollection<PcConfigurationHdd>? PcConfigurationHdds { get; private set; }
+		public ICollection<ColorHdd>? ColorHdds { get; private set; }
 
-		public HDD() { }
-		public HDD(string name, double? price, bool isDefault,
+		public Hdd() { }
+		public Hdd(string name, double? price, bool isDefault,
 			string type, string? @interface, int capacity)
 			: base(name, price, isDefault)
 		{

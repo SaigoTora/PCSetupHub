@@ -2,7 +2,7 @@
 
 namespace PCSetupHub.Data.Models.Hardware
 {
-	public class RAM : HardwareComponent
+	public class Ram : HardwareComponent
 	{
 		public byte MemoryType { get; set; }
 		public int Frequency { get; set; }
@@ -10,11 +10,11 @@ namespace PCSetupHub.Data.Models.Hardware
 		public int ModuleCapacity { get; set; }
 		public double FirstWordLatency { get; set; }
 		public double CASLatency { get; set; }
-		public ICollection<PcConfigurationRAM>? PcConfigurationRAMs { get; private set; }
-		public ICollection<ColorRAM>? ColorRAMs { get; private set; }
+		public ICollection<PcConfigurationRam>? PcConfigurationRams { get; private set; }
+		public ICollection<ColorRam>? ColorRams { get; private set; }
 
-		public RAM() { }
-		public RAM(string name, double? price, bool isDefault, byte memoryType, int frequency,
+		public Ram() { }
+		public Ram(string name, double? price, bool isDefault, byte memoryType, int frequency,
 			byte modulesCount, int moduleCapacity, double firstWordLatency, double cASLatency)
 			: base(name, price, isDefault)
 		{

@@ -6,16 +6,16 @@ namespace PCSetupHub.Data.Models.Relationships
 {
 	public class ColorPowerSupply : BaseEntity
 	{
-		public int ColorID { get; private set; }
-		public int PowerSupplyID { get; private set; }
+		public int ColorId { get; private set; }
+		public int PowerSupplyId { get; private set; }
 		public Color? Color { get; private set; }
 		public PowerSupply? PowerSupply { get; private set; }
 
 		public ColorPowerSupply() { }
-		public ColorPowerSupply(int colorID, int powerSupplyID)
+		public ColorPowerSupply(int colorId, int powerSupplyId)
 		{
-			ColorID = colorID;
-			PowerSupplyID = powerSupplyID;
+			ColorId = colorId;
+			PowerSupplyId = powerSupplyId;
 		}
 	}
 }

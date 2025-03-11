@@ -3,18 +3,18 @@ using PCSetupHub.Data.Models.Hardware;
 
 namespace PCSetupHub.Data.Models.Relationships
 {
-	public class PcConfigurationRAM : BaseEntity
+	public class PcConfigurationRam : BaseEntity
 	{
-		public int PcConfigurationID { get; private set; }
-		public int RAMID { get; private set; }
+		public int PcConfigurationId { get; private set; }
+		public int RamId { get; private set; }
 		public PcConfiguration? PcConfiguration { get; private set; }
-		public RAM? RAM { get; private set; }
+		public Ram? Ram { get; private set; }
 
-		public PcConfigurationRAM() { }
-		public PcConfigurationRAM(int pcConfigurationID, int ramID)
+		public PcConfigurationRam() { }
+		public PcConfigurationRam(int pcConfigurationId, int ramId)
 		{
-			PcConfigurationID = pcConfigurationID;
-			RAMID = ramID;
+			PcConfigurationId = pcConfigurationId;
+			RamId = ramId;
 		}
 	}
 }

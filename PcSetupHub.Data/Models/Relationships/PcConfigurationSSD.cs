@@ -3,18 +3,18 @@ using PCSetupHub.Data.Models.Hardware;
 
 namespace PCSetupHub.Data.Models.Relationships
 {
-	public class PcConfigurationSSD : BaseEntity
+	public class PcConfigurationSsd : BaseEntity
 	{
-		public int PcConfigurationID { get; private set; }
-		public int SSDID { get; private set; }
+		public int PcConfigurationId { get; private set; }
+		public int SsdId { get; private set; }
 		public PcConfiguration? PcConfiguration { get; private set; }
-		public SSD? SSD { get; private set; }
+		public Ssd? Ssd { get; private set; }
 
-		public PcConfigurationSSD() { }
-		public PcConfigurationSSD(int pcConfigurationID, int ssdID)
+		public PcConfigurationSsd() { }
+		public PcConfigurationSsd(int pcConfigurationId, int ssdId)
 		{
-			PcConfigurationID = pcConfigurationID;
-			SSDID = ssdID;
+			PcConfigurationId = pcConfigurationId;
+			SsdId = ssdId;
 		}
 	}
 }

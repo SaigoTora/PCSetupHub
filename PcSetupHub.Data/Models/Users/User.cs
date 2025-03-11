@@ -13,7 +13,7 @@ namespace PCSetupHub.Data.Models.Users
 		public string Name { get; private set; } = string.Empty;
 		public string Email { get; private set; } = string.Empty;
 		public PcConfiguration? PcConfiguration { get; private set; }
-		public int PcConfigurationID { get; private set; }
+		public int PcConfigurationId { get; private set; }
 		public ICollection<Friendship>? ReceivedFriendRequests { get; private set; }
 		public ICollection<Friendship>? SentFriendRequests { get; private set; }
 		public ICollection<Comment>? WrittenComments { get; private set; }
@@ -23,15 +23,15 @@ namespace PCSetupHub.Data.Models.Users
 
 		public User() { }
 		public User(string login, string passwordHash, string name,
-			string email, int? pcConfigurationID)
+			string email, int? pcConfigurationId)
 		{
 			Login = login;
 			PasswordHash = passwordHash;
 			Name = name;
 			Email = email;
 
-			if (pcConfigurationID.HasValue)
-				PcConfigurationID = pcConfigurationID.Value;
+			if (pcConfigurationId.HasValue)
+				PcConfigurationId = pcConfigurationId.Value;
 			else
 				PcConfiguration = new PcConfiguration();
 		}

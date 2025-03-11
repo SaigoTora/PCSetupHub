@@ -2,11 +2,11 @@
 
 namespace PCSetupHub.Data.CsvModels
 {
-	public class CsvHDD : HDD, ICsvConvertible<HDD>, ICsvColorModel
+	public class CsvHdd : Hdd, ICsvConvertible<Hdd>, ICsvColorModel
 	{
 		public string? Color { get; set; } = string.Empty;
 
-		public HDD ConvertToModel()
+		public Hdd ConvertToModel()
 			=> new(Name, Price, IsDefault, Type, Interface, Capacity);
 	}
 }

@@ -10,23 +10,23 @@ namespace PCSetupHub.Data.Models.Hardware
 		public VideoCard? VideoCard { get; private set; }
 		public Motherboard? Motherboard { get; private set; }
 		public PowerSupply? PowerSupply { get; private set; }
-		public int? ProcessorID { get; private set; }
-		public int? VideoCardID { get; private set; }
-		public int? MotherboardID { get; private set; }
-		public int? PowerSupplyID { get; private set; }
+		public int? ProcessorId { get; private set; }
+		public int? VideoCardId { get; private set; }
+		public int? MotherboardId { get; private set; }
+		public int? PowerSupplyId { get; private set; }
 		public User? User { get; private set; }
-		public ICollection<PcConfigurationSSD>? PcConfigurationSSDs { get; private set; }
-		public ICollection<PcConfigurationHDD>? PcConfigurationHDDs { get; private set; }
-		public ICollection<PcConfigurationRAM>? PcConfigurationRAMs { get; private set; }
+		public ICollection<PcConfigurationSsd>? PcConfigurationSsds { get; private set; }
+		public ICollection<PcConfigurationHdd>? PcConfigurationHdds { get; private set; }
+		public ICollection<PcConfigurationRam>? PcConfigurationRams { get; private set; }
 
 		public PcConfiguration() { }
-		public PcConfiguration(int? processorID, int? videoCardID,
-			int? motherboardID, int? powerSupplyID)
+		public PcConfiguration(int? processorId, int? videoCardId,
+			int? motherboardId, int? powerSupplyId)
 		{
-			ProcessorID = processorID;
-			VideoCardID = videoCardID;
-			MotherboardID = motherboardID;
-			PowerSupplyID = powerSupplyID;
+			ProcessorId = processorId;
+			VideoCardId = videoCardId;
+			MotherboardId = motherboardId;
+			PowerSupplyId = powerSupplyId;
 		}
 	}
 }

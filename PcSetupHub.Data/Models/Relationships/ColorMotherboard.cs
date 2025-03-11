@@ -6,16 +6,16 @@ namespace PCSetupHub.Data.Models.Relationships
 {
 	public class ColorMotherboard : BaseEntity
 	{
-		public int ColorID { get; private set; }
-		public int MotherboardID { get; private set; }
+		public int ColorId { get; private set; }
+		public int MotherboardId { get; private set; }
 		public Color? Color { get; private set; }
 		public Motherboard? Motherboard { get; private set; }
 
 		public ColorMotherboard() { }
-		public ColorMotherboard(int colorID, int motherboardID)
+		public ColorMotherboard(int colorId, int motherboardId)
 		{
-			ColorID = colorID;
-			MotherboardID = motherboardID;
+			ColorId = colorId;
+			MotherboardId = motherboardId;
 		}
 	}
 }

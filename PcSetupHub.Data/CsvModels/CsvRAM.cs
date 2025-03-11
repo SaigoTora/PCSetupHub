@@ -2,18 +2,18 @@
 
 namespace PCSetupHub.Data.CsvModels
 {
-	public class CsvRAM : RAM, ICsvConvertible<RAM>, ICsvColorModel
+	public class CsvRam : Ram, ICsvConvertible<Ram>, ICsvColorModel
 	{
 		public string Speed { get; set; } = string.Empty;
 		public string Modules { get; set; } = string.Empty;
 		public string? Color { get; set; } = string.Empty;
 
-		public RAM ConvertToModel()
+		public Ram ConvertToModel()
 		{
 			(byte memoryType, int frequency) = GetByteInt(this.Speed);
 			(byte modulesCount, int moduleCapacity) = GetByteInt(this.Modules);
 
-			return new RAM(Name, Price, IsDefault, memoryType, frequency,
+			return new Ram(Name, Price, IsDefault, memoryType, frequency,
 				modulesCount, moduleCapacity, FirstWordLatency, CASLatency);
 		}
 		private static (byte, int) GetByteInt(string str)

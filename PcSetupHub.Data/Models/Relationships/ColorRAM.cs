@@ -4,18 +4,18 @@ using PCSetupHub.Data.Models.Hardware;
 
 namespace PCSetupHub.Data.Models.Relationships
 {
-	public class ColorRAM : BaseEntity
+	public class ColorRam : BaseEntity
 	{
-		public int ColorID { get; private set; }
-		public int RAMID { get; private set; }
+		public int ColorId { get; private set; }
+		public int RamId { get; private set; }
 		public Color? Color { get; private set; }
-		public RAM? RAM { get; private set; }
+		public Ram? Ram { get; private set; }
 
-		public ColorRAM() { }
-		public ColorRAM(int colorID, int ramID)
+		public ColorRam() { }
+		public ColorRam(int colorId, int ramId)
 		{
-			ColorID = colorID;
-			RAMID = ramID;
+			ColorId = colorId;
+			RamId = ramId;
 		}
 	}
 }
