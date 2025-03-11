@@ -37,5 +37,12 @@ namespace PCSetupHub.Core.Services
 			else
 				throw new UnauthorizedAccessException("Invalid password.");
 		}
+		public async Task<bool> IsUserLoggedIn(string accessToken, string refreshToken)
+		{
+			(bool isRefreshTokenValid, _)
+				= await _jwtService.ValidateAndRefreshTokensAsync(accessToken, refreshToken);
+
+			return isRefreshTokenValid;
+		}
 	}
 }

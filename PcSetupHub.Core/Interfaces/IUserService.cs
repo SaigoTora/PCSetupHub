@@ -7,5 +7,6 @@ namespace PCSetupHub.Core.Interfaces
 		public Task RegisterAsync(string login, string password, string name, string email,
 			int? pcConfigurationId = null);
 		public Task<AuthResponse> LoginAsync(string login, string password);
+		public Task<bool> IsUserLoggedIn(string accessToken, string refreshToken);
 	}
 }
