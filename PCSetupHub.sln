@@ -5,9 +5,9 @@ VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCSetupHub", "PCSetupHub\PCSetupHub.csproj", "{1784EE0E-8115-405F-9D11-B14A48EEE515}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PcSetupHub.Core", "PcSetupHub.Core\PcSetupHub.Core.csproj", "{4F5CF8BA-D979-4C75-AD21-4ADEE10C3030}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCSetupHub.Core", "PcSetupHub.Core\PCSetupHub.Core.csproj", "{4F5CF8BA-D979-4C75-AD21-4ADEE10C3030}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PcSetupHub.Data", "PcSetupHub.Data\PcSetupHub.Data.csproj", "{F5799953-A800-4F26-BD67-7C1D0FA1958C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCSetupHub.Data", "PcSetupHub.Data\PCSetupHub.Data.csproj", "{F5799953-A800-4F26-BD67-7C1D0FA1958C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

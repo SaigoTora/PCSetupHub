@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PcSetupHub.Data\PcSetupHub.Data.csproj" />
+    <ProjectReference Include="..\PCSetupHub.Data\PCSetupHub.Data.csproj" />
   </ItemGroup>
 
 </Project>

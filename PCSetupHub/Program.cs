@@ -1,11 +1,12 @@
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 
-using PCSetupHub.Core.Interfaces;
-using PCSetupHub.Data.Repositories.Interfaces;
 using PCSetupHub.Core.Extensions;
+using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Core.Services;
 using PCSetupHub.Data;
 using PCSetupHub.Data.Repositories;
+using PCSetupHub.Data.Repositories.Interfaces;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +33,13 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+	MinimumSameSitePolicy = SameSiteMode.Strict,
+	HttpOnly = HttpOnlyPolicy.Always,
+	Secure = CookieSecurePolicy.Always
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

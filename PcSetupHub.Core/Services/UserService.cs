@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
+using PCSetupHub.Core.DTOs;
 using PCSetupHub.Core.Interfaces;
-using PCSetupHub.Data.Repositories.Interfaces;
 using PCSetupHub.Data.Models.Users;
+using PCSetupHub.Data.Repositories.Interfaces;
 
 namespace PCSetupHub.Core.Services
 {
@@ -20,16 +21,19 @@ namespace PCSetupHub.Core.Services
 
 			await _userRepository.AddAsync(user);
 		}
-		public async Task<string> LoginAsync(string login, string password)
+		public async Task<AuthResponse> LoginAsync(string login, string password)
 		{
 			User? user = await _userRepository.GetByLoginAsync(login)
 				?? throw new UnauthorizedAccessException("User not found.");
 
-			var result = new PasswordHasher<User>()
+			PasswordVerificationResult result = new PasswordHasher<User>()
 				.VerifyHashedPassword(user, user.PasswordHash, password);
 
 			if (result == PasswordVerificationResult.Success)
-				return _jwtService.GenerateToken(user);
+			{
+				return new AuthResponse(_jwtService.GenerateAccessToken(user),
+					_jwtService.GenerateRefreshToken());
+			}
 			else
 				throw new UnauthorizedAccessException("Invalid password.");
 		}

@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PcSetupHub.Core\PcSetupHub.Core.csproj" />
-    <ProjectReference Include="..\PcSetupHub.Data\PcSetupHub.Data.csproj" />
+    <ProjectReference Include="..\PCSetupHub.Core\PCSetupHub.Core.csproj" />
+    <ProjectReference Include="..\PCSetupHub.Data\PCSetupHub.Data.csproj" />
   </ItemGroup>
 
 </Project>
