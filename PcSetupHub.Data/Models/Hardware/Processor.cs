@@ -12,15 +12,15 @@
 
 		public Processor() { }
 		public Processor(string name, double? price, bool isDefault, byte coreCount,
-			float coreClock, float? boostClock, int tDP, string? graphics, bool sMT)
+			float coreClock, float? boostClock, int tdp, string? graphics, bool smt)
 			: base(name, price, isDefault)
 		{
 			CoreCount = coreCount;
 			CoreClock = coreClock;
 			BoostClock = boostClock;
-			TDP = tDP;
+			TDP = tdp;
 			Graphics = graphics;
-			SMT = sMT;
+			SMT = smt;
 		}
 	}
 }

@@ -8,13 +8,13 @@ namespace PCSetupHub.Data.Models.Hardware
 		public float Memory { get; set; }
 		public int? CoreClock { get; set; }
 		public int? BoostClock { get; set; }
-		public int? Length { get; set; }
+		public short? Length { get; set; }
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 		public ICollection<ColorVideoCard>? ColorVideoCards { get; private set; }
 
 		public VideoCard() { }
 		public VideoCard(string name, double? price, bool isDefault, string chipset, float memory,
-			int? coreClock, int? boostClock, int? length)
+			int? coreClock, int? boostClock, short? length)
 			: base(name, price, isDefault)
 		{
 			Chipset = chipset;

@@ -4,7 +4,7 @@ namespace PCSetupHub.Data.Models.Hardware
 {
 	public class Ssd : HardwareComponent
 	{
-		public float Capacity { get; set; }
+		public double Capacity { get; set; }
 		public string Type { get; set; } = string.Empty;
 		public int? Cache { get; set; }
 		public string FormFactor { get; set; } = string.Empty;

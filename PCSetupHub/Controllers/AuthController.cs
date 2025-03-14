@@ -7,7 +7,8 @@ using PCSetupHub.Core.Settings;
 
 namespace PCSetupHub.Controllers
 {
-	public class AuthController(IUserService userService, IOptions<AuthSettings> options) : Controller
+	public class AuthController(IUserService userService, IOptions<AuthSettings> options) 
+		: Controller
 	{
 		private readonly IUserService _userService = userService;
 		private readonly IOptions<AuthSettings> _options = options;

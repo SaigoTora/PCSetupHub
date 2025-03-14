@@ -1,4 +1,6 @@
-﻿using PCSetupHub.Data.Models.Base;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+using PCSetupHub.Data.Models.Base;
 
 namespace PCSetupHub.Data.Models.Users
 {
@@ -10,7 +12,10 @@ namespace PCSetupHub.Data.Models.Users
 		public User? Initiator { get; private set; }
 		public User? Friend { get; private set; }
 		public FriendshipStatus? FriendshipStatus { get; private set; }
+		[Column(TypeName = "date")]
 		public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+		[Column(TypeName = "date")]
+		public DateTime? AcceptedAt { get; private set; }
 
 		public Friendship() { }
 		public Friendship(int initiatorId, int friendId, int friendshipStatusId)
@@ -19,5 +24,7 @@ namespace PCSetupHub.Data.Models.Users
 			InitiatorId = initiatorId;
 			FriendshipStatusId = friendshipStatusId;
 		}
+		public void SetAccepted()
+			=> AcceptedAt = DateTime.UtcNow;
 	}
 }

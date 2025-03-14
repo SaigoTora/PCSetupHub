@@ -324,14 +324,21 @@ namespace PCSetupHub.Data
 		}
 		private static void SeedFriendships()
 		{
-			_context?.Friendships.AddRange(
+			Friendship[] friendships =
+			[
 				new Friendship(2, 3, 2),
 				new Friendship(2, 4, 1),
 				new Friendship(2, 5, 3),
 				new Friendship(3, 4, 2),
 				new Friendship(3, 5, 1),
-				new Friendship(4, 5, 2));
+				new Friendship(4, 5, 2)
+			];
 
+			foreach (Friendship friendship in friendships)
+				if (friendship.FriendshipStatusId == 2)
+					friendship.SetAccepted();
+
+			_context?.Friendships.AddRange(friendships);
 			_context?.SaveChanges();
 		}
 		private static void SeedMessages()

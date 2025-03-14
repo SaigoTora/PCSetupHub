@@ -15,7 +15,7 @@ namespace PCSetupHub.Data.Models.Hardware
 
 		public Ram() { }
 		public Ram(string name, double? price, bool isDefault, byte memoryType, int frequency,
-			byte modulesCount, int moduleCapacity, double firstWordLatency, double cASLatency)
+			byte modulesCount, int moduleCapacity, double firstWordLatency, double casLatency)
 			: base(name, price, isDefault)
 		{
 			MemoryType = memoryType;
@@ -23,7 +23,7 @@ namespace PCSetupHub.Data.Models.Hardware
 			ModulesCount = modulesCount;
 			ModuleCapacity = moduleCapacity;
 			FirstWordLatency = firstWordLatency;
-			CASLatency = cASLatency;
+			CASLatency = casLatency;
 		}
 	}
 }
