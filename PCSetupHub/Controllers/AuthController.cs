@@ -26,7 +26,7 @@ namespace PCSetupHub.Controllers
 		public async Task<IActionResult> Register(RegisterRequest request)
 		{
 			if (!ModelState.IsValid)
-				return BadRequest(ModelState);
+				return View();
 
 			await _userService.RegisterAsync(request.Login, request.Password, request.Name,
 				request.Email);
@@ -46,6 +46,9 @@ namespace PCSetupHub.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Login(LoginRequest loginRequest)
 		{
+			if (!ModelState.IsValid)
+				return View();
+
 			AuthResponse authResponse = await _userService.LoginAsync(loginRequest.Login,
 			loginRequest.Password);
 
