@@ -10,5 +10,7 @@ namespace PCSetupHub.Data.Repositories
 	{
 		public async Task<User?> GetByLoginAsync(string login)
 			=> await Context.Users.FirstOrDefaultAsync(u => u.Login == login);
+		public async Task<bool> ExistsByLoginAsync(string login)
+			=> await Context.Users.AnyAsync(u => u.Login == login);
 	}
 }

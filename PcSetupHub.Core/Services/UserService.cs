@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Security.Authentication;
 
 using PCSetupHub.Core.DTOs;
+using PCSetupHub.Core.Exceptions;
 using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Interfaces;
@@ -15,6 +17,9 @@ namespace PCSetupHub.Core.Services
 		public async Task RegisterAsync(string login, string password, string name, string email,
 			int? pcConfigurationId = null)
 		{
+			if (await _userRepository.ExistsByLoginAsync(login))
+				throw new UserAlreadyExistsException($"User with login '{login}' already exists.");
+
 			User user = new(login, password, name, email, pcConfigurationId);
 			string passwordHash = new PasswordHasher<User>().HashPassword(user, password);
 			user.ChangePasswordHash(passwordHash);
@@ -24,7 +29,7 @@ namespace PCSetupHub.Core.Services
 		public async Task<AuthResponse> LoginAsync(string login, string password)
 		{
 			User? user = await _userRepository.GetByLoginAsync(login)
-				?? throw new UnauthorizedAccessException("User not found.");
+				?? throw new AuthenticationException("User not found.");
 
 			PasswordVerificationResult result = new PasswordHasher<User>()
 				.VerifyHashedPassword(user, user.PasswordHash, password);
@@ -35,7 +40,7 @@ namespace PCSetupHub.Core.Services
 					_jwtService.GenerateRefreshToken());
 			}
 			else
-				throw new UnauthorizedAccessException("Invalid password.");
+				throw new AuthenticationException("Invalid password.");
 		}
 		public async Task<bool> IsUserLoggedIn(string accessToken, string refreshToken)
 		{

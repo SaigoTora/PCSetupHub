@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Security.Authentication;
 
 using PCSetupHub.Core.DTOs;
+using PCSetupHub.Core.Exceptions;
 using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Core.Settings;
 
 namespace PCSetupHub.Controllers
 {
-	public class AuthController(IUserService userService, IOptions<AuthSettings> options) 
+	public class AuthController(IUserService userService, IOptions<AuthSettings> options)
 		: Controller
 	{
 		private readonly IUserService _userService = userService;
@@ -28,8 +30,16 @@ namespace PCSetupHub.Controllers
 			if (!ModelState.IsValid)
 				return View();
 
-			await _userService.RegisterAsync(request.Login, request.Password, request.Name,
-				request.Email);
+			try
+			{
+				await _userService.RegisterAsync(request.Login, request.Password, request.Name,
+					request.Email);
+			}
+			catch (UserAlreadyExistsException ex)
+			{
+				ModelState.AddModelError("Login", ex.Message);
+				return View();
+			}
 
 			return RedirectToAction("Index", "Home");
 		}
@@ -49,10 +59,18 @@ namespace PCSetupHub.Controllers
 			if (!ModelState.IsValid)
 				return View();
 
-			AuthResponse authResponse = await _userService.LoginAsync(loginRequest.Login,
-			loginRequest.Password);
+			try
+			{
+				AuthResponse authResponse = await _userService.LoginAsync(loginRequest.Login,
+				loginRequest.Password);
 
-			AddTokensToCookies(authResponse);
+				AddTokensToCookies(authResponse);
+			}
+			catch (AuthenticationException)
+			{
+				ModelState.AddModelError("Login", "Invalid login or password.");
+				return View();
+			}
 
 			return RedirectToAction("Index", "Home");
 		}

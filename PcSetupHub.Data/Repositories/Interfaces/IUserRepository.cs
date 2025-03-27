@@ -6,5 +6,6 @@ namespace PCSetupHub.Data.Repositories.Interfaces
 	public interface IUserRepository : IRepository<User>
 	{
 		public Task<User?> GetByLoginAsync(string login);
+		public Task<bool> ExistsByLoginAsync(string login);
 	}
 }
