@@ -85,7 +85,7 @@ namespace PCSetupHub.Data
 				.IsUnique();
 
 			_modelBuilder.Entity<User>()
-				.HasIndex(u => u.Name)
+				.HasIndex(u => u.Login)
 				.IsUnique();
 			_modelBuilder.Entity<User>()
 				.HasIndex(u => u.Email)

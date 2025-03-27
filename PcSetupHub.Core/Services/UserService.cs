@@ -15,9 +15,9 @@ namespace PCSetupHub.Core.Services
 		private readonly JwtService _jwtService = jwtService;
 
 		public async Task RegisterAsync(string login, string password, string name, string email,
-			int? pcConfigurationId = null)
+			int? pcConfigurationId = null, bool checkLoginUniqueness = true)
 		{
-			if (await _userRepository.ExistsByLoginAsync(login))
+			if (checkLoginUniqueness && await _userRepository.ExistsByLoginAsync(login))
 				throw new UserAlreadyExistsException($"User with login '{login}' already exists.");
 
 			User user = new(login, password, name, email, pcConfigurationId);

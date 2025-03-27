@@ -2,6 +2,7 @@
 using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.Reflection;
 
 using PCSetupHub.Data.CsvModels;
 using PCSetupHub.Data.Models.Attributes;
@@ -9,7 +10,6 @@ using PCSetupHub.Data.Models.Base;
 using PCSetupHub.Data.Models.Hardware;
 using PCSetupHub.Data.Models.Relationships;
 using PCSetupHub.Data.Models.Users;
-using System.Reflection;
 
 namespace PCSetupHub.Data
 {
@@ -18,7 +18,8 @@ namespace PCSetupHub.Data
 		string password,
 		string name,
 		string email,
-		int? pcConfigurationId
+		int? pcConfigurationId,
+		bool checkLoginUniqueness
 		);
 
 
@@ -295,15 +296,15 @@ namespace PCSetupHub.Data
 		private static void SeedUsers()
 		{
 			_registerFunc!("max_power", "StrongPass567!", "Maxim",
-				"max_power@gmail.com", 1);
+				"max_power@gmail.com", 1, false);
 			_registerFunc!("anna_dev", "AnnaPass123!", "Anna",
-				"anna_dev@gmail.com", 2);
+				"anna_dev@gmail.com", 2, false);
 			_registerFunc!("alex_gamer", "Pass1234!", "Alexander",
-				"alex_gamer@gmail.com", 3);
+				"alex_gamer@gmail.com", 3, false);
 			_registerFunc!("kate_player", "KateGamer456!", "Kate",
-				"kate_player@gmail.com", 4);
+				"kate_player@gmail.com", 4, false);
 			_registerFunc!("niko_coder", "Secure789!", "Nikolay",
-				"niko_coder@gmail.com", 5);
+				"niko_coder@gmail.com", 5, false);
 		}
 		private static void SeedComments()
 		{

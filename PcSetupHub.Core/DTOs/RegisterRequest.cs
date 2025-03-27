@@ -17,6 +17,9 @@ namespace PCSetupHub.Core.DTOs
 		[StringLength(64)]
 		[PasswordValidation]
 		public required string Password { get; init; }
+		[Required(ErrorMessage = "Password confirmation is required.")]
+		[Compare("Password", ErrorMessage = "Passwords do not match.")]
+		public required string ConfirmPassword { get; init; }
 
 		[Required(ErrorMessage = "Name is required.")]
 		[StringLength(64, MinimumLength = 2,
