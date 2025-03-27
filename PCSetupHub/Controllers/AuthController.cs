@@ -25,15 +25,20 @@ namespace PCSetupHub.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Register(RegisterRequest request)
+		public async Task<IActionResult> Register(RegisterRequest registerRequest)
 		{
 			if (!ModelState.IsValid)
 				return View();
 
 			try
 			{
-				await _userService.RegisterAsync(request.Login, request.Password, request.Name,
-					request.Email);
+				await _userService.RegisterAsync(registerRequest.Login, registerRequest.Password,
+					registerRequest.Name, registerRequest.Email);
+
+				AuthResponse authResponse = await _userService.LoginAsync(registerRequest.Login,
+					registerRequest.Password);
+
+				AddTokensToCookies(authResponse);
 			}
 			catch (UserAlreadyExistsException ex)
 			{
