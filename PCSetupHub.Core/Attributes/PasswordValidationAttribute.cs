@@ -5,6 +5,17 @@ namespace PCSetupHub.Core.Attributes
 {
 	public class PasswordValidationAttribute : ValidationAttribute
 	{
+		private static readonly HashSet<string> _weakPasswords =
+		[
+			"ab123456", "ab654321", "qw123456", "qw654321", "ab111111", "ab000000", "qw111111",
+			"qw000000", "ab123123", "qw123123", "baseball12", "football12", "dragon12",
+			"letmein12", "monkey12", "welcome12", "password12", "password123", "admin123",
+			"passw0rd1", "passw0rd12", "passw0rd123", "qwerty12", "qwerty123", "qwerty1234",
+			"iloveyou12", "1q2w3e4r", "1a2b3c4d", "trustno12", "abc12345", "abcd1234",
+			"abcde123", "abcdef12"
+		];
+
+
 		public override bool IsValid(object? value)
 		{
 			if (value is not string password)
@@ -31,6 +42,12 @@ namespace PCSetupHub.Core.Attributes
 			if (Regex.Matches(password, @"\d").Count < 2)
 			{
 				ErrorMessage = "Password must contain at least two digits.";
+				return false;
+			}
+
+			if (_weakPasswords.Contains(password.ToLower()))
+			{
+				ErrorMessage = "Password is too weak, please choose a stronger one.";
 				return false;
 			}
 
