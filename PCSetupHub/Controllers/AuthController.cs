@@ -45,6 +45,11 @@ namespace PCSetupHub.Controllers
 				ModelState.AddModelError("Login", ex.Message);
 				return View();
 			}
+			catch (EmailAlreadyExistsException ex)
+			{
+				ModelState.AddModelError("Email", ex.Message);
+				return View();
+			}
 
 			return RedirectToAction("Index", "Home");
 		}
