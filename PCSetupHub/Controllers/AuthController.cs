@@ -27,6 +27,9 @@ namespace PCSetupHub.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Register(RegisterRequest registerRequest)
 		{
+			TempData["Password"] = registerRequest.Password ?? string.Empty;
+			TempData["ConfirmPassword"] = registerRequest.ConfirmPassword ?? string.Empty;
+
 			if (!ModelState.IsValid)
 				return View();
 
@@ -51,6 +54,8 @@ namespace PCSetupHub.Controllers
 				return View();
 			}
 
+			TempData.Remove("Password");
+			TempData.Remove("ConfirmPassword");
 			return RedirectToAction("Index", "Home");
 		}
 
