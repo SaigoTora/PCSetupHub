@@ -23,7 +23,7 @@ namespace PCSetupHub.Core.DTOs
 
 		[Required(ErrorMessage = "Name is required.")]
 		[StringLength(64, MinimumLength = 2,
-			ErrorMessage = "Username must be between 2 and 64 characters long.")]
+			ErrorMessage = "Name must be between 2 and 64 characters long.")]
 		[RegularExpression(@"^[\p{L}]+$",
 			ErrorMessage = "Name can only contain letters from any alphabet.")]
 		public required string Name { get; init; }

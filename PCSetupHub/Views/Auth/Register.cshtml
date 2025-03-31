@@ -4,45 +4,45 @@
 
 @{
 	ViewData["Title"] = "Register";
+	Layout = "_AuthLayout";
 }
 
-
-<h1>Register</h1>
-
 <form asp-controller="Auth" asp-action="Register" method="post">
-	<div class="form-group">
-		<label asp-for="Login" class="control-label">Login: </label>
-		<input asp-for="Login" class="form-control" />
-		<span asp-validation-for="Login" class="text-danger"></span>
+	<h2>Register</h2>
+
+	<div class="input-field">
+		<input asp-for="Login" type="text" required />
+		<label asp-for="Login">Login:</label>
 	</div>
 
-	<div class="form-group">
-		<label asp-for="Password" class="control-label">Password: </label>
-		<input asp-for="Password" class="form-control" type="password"
-			   value="@TempData["Password"]" />
-		<span asp-validation-for="Password" class="text-danger"></span>
+	<div class="input-field">
+		<input asp-for="Password" type="password" value="@TempData["Password"]" required />
+		<label asp-for="Password">Password:</label>
 	</div>
 
-	<div class="form-group">
-		<label asp-for="ConfirmPassword" class="control-label">Confirm Password: </label>
-		<input asp-for="ConfirmPassword" class="form-control" type="password"
-			   value="@TempData["ConfirmPassword"]" />
-		<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+	<div class="input-field">
+		<input asp-for="ConfirmPassword" type="password" value="@TempData["ConfirmPassword"]" required />
+		<label asp-for="ConfirmPassword">Confirm Password:</label>
 	</div>
 
-	<div class="form-group">
-		<label asp-for="Name" class="control-label">Name: </label>
-		<input asp-for="Name" class="form-control" />
-		<span asp-validation-for="Name" class="text-danger"></span>
+	<div class="input-field">
+		<input asp-for="Name" type="text" required />
+		<label asp-for="Name">Name:</label>
 	</div>
 
-	<div class="form-group">
-		<label asp-for="Email" class="control-label">Email: </label>
-		<input asp-for="Email" class="form-control" />
-		<span asp-validation-for="Email" class="text-danger"></span>
+	<div class="input-field mb-5">
+		<input asp-for="Email" type="text" required />
+		<label asp-for="Email">Email:</label>
 	</div>
 
-	<div class="form-group">
-		<button type="submit" class="btn btn-primary">Register</button>
+	@if (ViewData["FirstError"] != null)
+	{
+		<span class="text-danger mb-3">@ViewData["FirstError"]</span>
+	}
+
+	<button type="submit">Register</button>
+
+	<div class="register">
+		<p>Already have an account? <a asp-controller="Auth" asp-action="Login">Login</a></p>
 	</div>
 </form>

@@ -4,24 +4,30 @@
 
 @{
 	ViewData["Title"] = "Login";
+	Layout = "_AuthLayout";
 }
 
-<h1>Login</h1>
-
 <form asp-controller="Auth" asp-action="Login" method="post">
-	<div class="form-group">
-		<label asp-for="Login" class="control-label">Login: </label>
-		<input asp-for="Login" class="form-control" />
-		<span asp-validation-for="Login" class="text-danger"></span>
+	<h2>Login</h2>
+
+	<div class="input-field">
+		<input asp-for="Login" type="text" required />
+		<label asp-for="Login">Login:</label>
 	</div>
 
-	<div class="form-group">
-		<label asp-for="Password" class="control-label">Password: </label>
-		<input asp-for="Password" class="form-control" type="password" />
-		<span asp-validation-for="Password" class="text-danger"></span>
+	<div class="input-field mb-5">
+		<input asp-for="Password" type="password" required />
+		<label asp-for="Password">Password:</label>
 	</div>
 
-	<div class="form-group">
-		<button type="submit" class="btn btn-primary">Login</button>
+	@if (ViewData["FirstError"] != null)
+	{
+		<span class="text-danger mb-3">@ViewData["FirstError"]</span>
+	}
+
+	<button type="submit">Log In</button>
+
+	<div class="register">
+		<p>Don't have an account? <a asp-controller="Auth" asp-action="Register">Register</a></p>
 	</div>
 </form>

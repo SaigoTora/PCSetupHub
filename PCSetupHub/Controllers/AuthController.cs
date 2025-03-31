@@ -31,7 +31,10 @@ namespace PCSetupHub.Controllers
 			TempData["ConfirmPassword"] = registerRequest.ConfirmPassword ?? string.Empty;
 
 			if (!ModelState.IsValid)
+			{
+				SetFirstError();
 				return View();
+			}
 
 			try
 			{
@@ -46,11 +49,13 @@ namespace PCSetupHub.Controllers
 			catch (UserAlreadyExistsException ex)
 			{
 				ModelState.AddModelError("Login", ex.Message);
+				SetFirstError();
 				return View();
 			}
 			catch (EmailAlreadyExistsException ex)
 			{
 				ModelState.AddModelError("Email", ex.Message);
+				SetFirstError();
 				return View();
 			}
 
@@ -72,7 +77,10 @@ namespace PCSetupHub.Controllers
 		public async Task<IActionResult> Login(LoginRequest loginRequest)
 		{
 			if (!ModelState.IsValid)
+			{
+				SetFirstError();
 				return View();
+			}
 
 			try
 			{
@@ -84,12 +92,20 @@ namespace PCSetupHub.Controllers
 			catch (AuthenticationException)
 			{
 				ModelState.AddModelError("Login", "Invalid login or password.");
+				SetFirstError();
 				return View();
 			}
 
 			return RedirectToAction("Index", "Home");
 		}
 
+		private void SetFirstError()
+		{
+			ViewData["FirstError"] = ModelState.Values
+				.SelectMany(v => v.Errors)
+				.Select(e => e.ErrorMessage)
+				.FirstOrDefault();
+		}
 		private void AddTokensToCookies(AuthResponse authResponse)
 		{
 			TokenSettings accessTokenSettings = _options.Value.AccessToken;
