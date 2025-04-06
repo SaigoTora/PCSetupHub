@@ -31,15 +31,5 @@ namespace PCSetupHub.Core.DTOs
 		[Required(ErrorMessage = "Email is required.")]
 		[EmailAddress(ErrorMessage = "Invalid email address.")]
 		public required string Email { get; init; }
-
-		public RegisterRequest()
-		{ }
-		public RegisterRequest(string login, string password, string name, string email)
-		{
-			Login = login;
-			Password = password;
-			Name = name;
-			Email = email;
-		}
 	}
 }

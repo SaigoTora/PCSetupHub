@@ -20,14 +20,47 @@
 		<label asp-for="Password">Password:</label>
 	</div>
 
-	@if (ViewData["FirstError"] != null)
+	<div class="forget">
+		<label for="remember">
+			<input asp-for="RememberMe" type="checkbox" id="remember">
+			<p>Remember me</p>
+		</label>
+
+	</div>
+
+	<div id="cookieWarning" class="mt-2">
+		<p class="small text-warning mb-0">
+			⚠️ If you didn’t select "Remember Me", your session will end when the browser is closed.
+			However, some browsers (like <b>Google Chrome</b>) may still preserve session cookies.
+			To ensure logout, please click <b>“Sign Out”</b> manually.
+		</p>
+	</div>
+
+
+	@if (!string.IsNullOrWhiteSpace(ViewData["FirstError"]?.ToString()))
 	{
-		<span class="text-danger mb-3">@ViewData["FirstError"]</span>
+		<span class="text-danger mt-3" id="error-container">@ViewData["FirstError"]</span>
 	}
 
-	<button type="submit">Log In</button>
+	<button class="mt-4" type="submit">Log In</button>
 
 	<div class="register">
 		<p>Don't have an account? <a asp-controller="Auth" asp-action="Register">Register</a></p>
 	</div>
 </form>
+
+<script>
+	const checkbox = document.getElementById('remember');
+	const warning = document.getElementById('cookieWarning');
+	const errorContainer = document.getElementById('error-container');
+
+	checkbox.addEventListener('change', function () {
+		warning.style.display = this.checked ? 'none' : 'block';
+
+		if (errorContainer) {
+			errorContainer.innerHTML = '';
+		}
+	});
+
+	warning.style.display = checkbox.checked ? 'none' : 'block';
+</script>

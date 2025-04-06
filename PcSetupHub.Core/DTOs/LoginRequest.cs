@@ -10,13 +10,6 @@ namespace PCSetupHub.Core.DTOs
 		[Required(ErrorMessage = "Password is required.")]
 		[StringLength(64)]
 		public required string Password { get; init; }
-
-		public LoginRequest()
-		{ }
-		public LoginRequest(string login, string password)
-		{
-			Login = login;
-			Password = password;
-		}
+		public required bool RememberMe { get; init; } = true;
 	}
 }

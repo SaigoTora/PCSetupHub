@@ -38,13 +38,13 @@ namespace PCSetupHub.Controllers
 
 			try
 			{
-				await _userService.RegisterAsync(registerRequest.Login, registerRequest.Password,
+				await _userService.RegisterAsync(registerRequest.Login, registerRequest.Password!,
 					registerRequest.Name, registerRequest.Email);
 
 				AuthResponse authResponse = await _userService.LoginAsync(registerRequest.Login,
-					registerRequest.Password);
+					registerRequest.Password!);
 
-				AddTokensToCookies(authResponse);
+				AddTokensToCookies(authResponse, false);
 			}
 			catch (UserAlreadyExistsException ex)
 			{
@@ -64,17 +64,17 @@ namespace PCSetupHub.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
-		public async Task<IActionResult> Login()
+		public async Task<IActionResult> Login(LoginRequest loginRequest)
 		{
 			if (await IsUserLoggedIn())
 				return RedirectToAction("Index", "Home");
 
-			return View();
+			return View(loginRequest);
 		}
 
-		[HttpPost]
+		[HttpPost, ActionName("Login")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Login(LoginRequest loginRequest)
+		public async Task<IActionResult> LoginSubmit(LoginRequest loginRequest)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -87,7 +87,7 @@ namespace PCSetupHub.Controllers
 				AuthResponse authResponse = await _userService.LoginAsync(loginRequest.Login,
 				loginRequest.Password);
 
-				AddTokensToCookies(authResponse);
+				AddTokensToCookies(authResponse, !loginRequest.RememberMe);
 			}
 			catch (AuthenticationException)
 			{
@@ -106,18 +106,23 @@ namespace PCSetupHub.Controllers
 				.Select(e => e.ErrorMessage)
 				.FirstOrDefault();
 		}
-		private void AddTokensToCookies(AuthResponse authResponse)
+		private void AddTokensToCookies(AuthResponse authResponse, bool isSessionCookies)
 		{
 			TokenSettings accessTokenSettings = _options.Value.AccessToken;
 			TokenSettings refreshTokenSettings = _options.Value.RefreshToken;
 
+			DateTime? accessTokenExpires = isSessionCookies ?
+				null : DateTime.UtcNow.Add(refreshTokenSettings.Lifetime);
+			DateTime? refreshTokenExpires = isSessionCookies ?
+				null : DateTime.UtcNow.Add(refreshTokenSettings.Lifetime);
+
 			HttpContext.Response.Cookies.Append(accessTokenSettings.CookieName,
 				authResponse.AccessToken!,
-				new CookieOptions { Expires = DateTime.UtcNow.Add(refreshTokenSettings.Lifetime) });
+				new CookieOptions { Expires = accessTokenExpires });
 
 			HttpContext.Response.Cookies.Append(refreshTokenSettings.CookieName,
 				authResponse.RefreshToken!,
-				new CookieOptions { Expires = DateTime.UtcNow.Add(refreshTokenSettings.Lifetime) });
+				new CookieOptions { Expires = refreshTokenExpires });
 		}
 		private async Task<bool> IsUserLoggedIn()
 		{
