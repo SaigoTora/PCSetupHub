@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using System.Security.Authentication;
 
@@ -25,6 +26,7 @@ namespace PCSetupHub.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> Register(RegisterRequest registerRequest)
 		{
 			TempData["Password"] = registerRequest.Password ?? string.Empty;
@@ -74,6 +76,7 @@ namespace PCSetupHub.Controllers
 
 		[HttpPost, ActionName("Login")]
 		[ValidateAntiForgeryToken]
+		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> LoginSubmit(LoginRequest loginRequest)
 		{
 			if (!ModelState.IsValid)

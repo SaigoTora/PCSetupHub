@@ -14,29 +14,18 @@ if (checkbox)
 
 document.getElementById('toggle-password').addEventListener('click', function () {
     const passwordField = document.getElementById('Password');
-    const confirmPasswordField = document.getElementById('ConfirmPassword');
     const passwordIcon = this.querySelector('i');
 
     if (passwordField.type === 'password') {
         passwordField.type = 'text';
         passwordIcon.classList.remove('fa-eye');
         passwordIcon.classList.add('fa-eye-slash');
-        if (confirmPasswordField) {
-            this.title = 'Hide passwords';
-            confirmPasswordField.type = 'text';
-        }
-        else
-            this.title = 'Hide password';
+        this.title = 'Hide password';
     } else {
         passwordField.type = 'password';
         passwordIcon.classList.remove('fa-eye-slash');
         passwordIcon.classList.add('fa-eye');
-        if (confirmPasswordField) {
-            this.title = 'Show passwords';
-            confirmPasswordField.type = 'password';
-        }
-        else
-            this.title = 'Show password';
+        this.title = 'Show password';
     }
 });
 

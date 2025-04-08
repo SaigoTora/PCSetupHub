@@ -7,6 +7,7 @@ using PCSetupHub.Core.Services;
 using PCSetupHub.Data;
 using PCSetupHub.Data.Repositories;
 using PCSetupHub.Data.Repositories.Interfaces;
+using System.Threading.RateLimiting;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,28 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAuth(builder.Configuration);
 
+builder.Services.AddRateLimiter(options =>
+{
+	options.AddPolicy("LimitPerUser", context =>
+	RateLimitPartition.GetFixedWindowLimiter(
+		partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "global",
+		factory: _ => new FixedWindowRateLimiterOptions
+		{
+			PermitLimit = 10,
+			Window = TimeSpan.FromMinutes(7)
+		}));
+
+	options.OnRejected = async (context, token) =>
+	{
+		string redirectUrl = "/Error/429";
+
+		context.HttpContext.Response.Redirect(redirectUrl);
+		await Task.CompletedTask;
+	};
+});
+
+
+
 var app = builder.Build();
 CreateDbIfNotExists(app);
 
@@ -28,6 +51,11 @@ if (!app.Environment.IsDevelopment())
 {
 	app.UseExceptionHandler("/Home/Error");
 	app.UseHsts();
+}
+else
+{
+	app.UseExceptionHandler("/Error/Index");
+	app.UseStatusCodePagesWithReExecute("/Error/{0}");
 }
 
 app.UseHttpsRedirection();
@@ -40,6 +68,7 @@ app.UseCookiePolicy(new CookiePolicyOptions
 	Secure = CookieSecurePolicy.Always
 });
 
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 

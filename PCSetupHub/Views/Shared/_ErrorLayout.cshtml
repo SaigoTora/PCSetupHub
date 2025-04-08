@@ -1,19 +1,18 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - PC Setup Hub</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewData["Title"]</title>
 	<script type="importmap"></script>
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="~/css/error.css" asp-append-version="true">
 </head>
 <body>
-	<header>
-	</header>
-	<div class="wrapper">
+	<div class="error-container">
 		@RenderBody()
+		<a asp-controller="Home" asp-action="Index" class="btn">Go Back to Home</a>
 	</div>
 
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
