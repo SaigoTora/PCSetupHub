@@ -40,10 +40,10 @@
 
 	@if (ViewData["FirstError"] != null)
 	{
-		<span class="text-danger">@ViewData["FirstError"]</span>
+		<span class="text-danger mb-3">@ViewData["FirstError"]</span>
 	}
 
-	<button class="mt-4" type="submit">Register</button>
+	<button type="submit">Register</button>
 
 	<div class="register">
 		<p>Already have an account? <a asp-controller="Auth" asp-action="Login">Login</a></p>

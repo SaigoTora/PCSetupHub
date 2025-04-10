@@ -90,7 +90,7 @@ input:not(:focus):valid ~ label {
 #toggle-password {
     position: absolute;
     top: 50%;
-    right: -24px;
+    right: -22px;
     transform: translateY(-50%);
     background: none;
     border: none;
@@ -105,6 +105,7 @@ input:not(:focus):valid ~ label {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 36px;
     color: #fff;
 }
 
@@ -117,7 +118,7 @@ input:not(:focus):valid ~ label {
     align-items: center;
 }
 
-    .forget label p {
+    .forget label span {
         margin-left: 8px;
     }
 
@@ -153,6 +154,40 @@ button {
     text-align: center;
     margin-top: 30px;
     color: #fff;
+}
+
+.google-button {
+    float: right;
+    max-width: 320px;
+    display: flex;
+    padding: 0.5rem 1.4rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    font-family: "Montserrat", sans-serif;
+    vertical-align: middle;
+    align-items: center;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    gap: 0.75rem;
+    color: #c4d2dc;
+    background-color: #19242b;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0, 0.87, 0.12, 1);
+}
+
+    .google-button:hover {
+        transform: scale(1.025);
+    }
+
+    .google-button:active {
+        transform: scale(0.975);
+    }
+
+button svg {
+    height: 24px;
+    width: auto;
 }
 
 input:-webkit-autofill,
