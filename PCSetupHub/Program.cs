@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.RateLimiting;
 
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Interfaces;
@@ -8,12 +10,6 @@ using PCSetupHub.Core.Services;
 using PCSetupHub.Data;
 using PCSetupHub.Data.Repositories;
 using PCSetupHub.Data.Repositories.Interfaces;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.WebUtilities;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,26 +36,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAuth(builder.Configuration);
-
-builder.Services.AddRateLimiter(options =>
-{
-	options.AddPolicy("LimitPerUser", context =>
-	RateLimitPartition.GetFixedWindowLimiter(
-		partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "global",
-		factory: _ => new FixedWindowRateLimiterOptions
-		{
-			PermitLimit = 10,
-			Window = TimeSpan.FromMinutes(7)
-		}));
-
-	options.OnRejected = async (context, token) =>
-	{
-		string redirectUrl = "/Error/429";
-
-		context.HttpContext.Response.Redirect(redirectUrl);
-		await Task.CompletedTask;
-	};
-});
+builder.Services.ConfigureRateLimiter();
 
 
 var app = builder.Build();
