@@ -29,5 +29,11 @@ document.getElementById('toggle-password').addEventListener('click', function ()
     }
 });
 
+const googleButton = document.getElementById('google-button');
+if (googleButton) {
+    googleButton.addEventListener('click', function () {
+        window.location.href = '/Auth/GoogleLogin';
+    });
+}
 
 warning.style.display = checkbox.checked ? 'none' : 'block';

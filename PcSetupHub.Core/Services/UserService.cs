@@ -34,7 +34,7 @@ namespace PCSetupHub.Core.Services
 				?? throw new AuthenticationException("User not found.");
 
 			PasswordVerificationResult result = new PasswordHasher<User>()
-				.VerifyHashedPassword(user, user.PasswordHash, password);
+				.VerifyHashedPassword(user, user.PasswordHash!, password);
 
 			if (result == PasswordVerificationResult.Success)
 			{
@@ -43,6 +43,20 @@ namespace PCSetupHub.Core.Services
 			}
 			else
 				throw new AuthenticationException("Invalid password.");
+		}
+		public async Task<AuthResponse> LoginOrRegisterByGoogleId(string googleId, string email,
+			string name)
+		{
+			User? user = await _userRepository.GetByGoogleIdAsync(googleId);
+			if (user == null)
+			{
+				user = new User(email, null, name, email, null);
+				user.ChangeGoogleId(googleId);
+				await _userRepository.AddAsync(user);
+			}
+
+			return new AuthResponse(_jwtService.GenerateAccessToken(user),
+				_jwtService.GenerateRefreshToken());
 		}
 		public async Task<bool> IsUserLoggedIn(string accessToken, string refreshToken)
 		{

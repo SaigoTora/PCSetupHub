@@ -16,7 +16,7 @@
 	</div>
 
 	<div class="input-field">
-		<input asp-for="Password" type="password" value="@TempData["Password"]" required />
+		<input asp-for="Password" type="password" value="@TempData["Password"]" required autocomplete="off" />
 		<label asp-for="Password">Password:</label>
 		<button type="button" id="toggle-password" title="Show password" tabindex="-1">
 			<i class="fas fa-eye"></i>
@@ -24,7 +24,7 @@
 	</div>
 
 	<div class="input-field">
-		<input asp-for="ConfirmPassword" type="password" value="@TempData["ConfirmPassword"]" required />
+		<input asp-for="ConfirmPassword" type="password" value="@TempData["ConfirmPassword"]" required autocomplete="off" />
 		<label asp-for="ConfirmPassword">Confirm Password:</label>
 	</div>
 

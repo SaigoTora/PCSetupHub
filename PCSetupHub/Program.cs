@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.RateLimiting;
 
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Interfaces;
@@ -7,10 +8,29 @@ using PCSetupHub.Core.Services;
 using PCSetupHub.Data;
 using PCSetupHub.Data.Repositories;
 using PCSetupHub.Data.Repositories.Interfaces;
-using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.WebUtilities;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+})
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+.AddGoogle(googleOptions =>
+{
+	googleOptions.ClientId = configuration["Authentication:Google:ClientId"]!;
+	googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
+	googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -40,7 +60,6 @@ builder.Services.AddRateLimiter(options =>
 		await Task.CompletedTask;
 	};
 });
-
 
 
 var app = builder.Build();

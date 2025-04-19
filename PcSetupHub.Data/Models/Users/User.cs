@@ -9,7 +9,8 @@ namespace PCSetupHub.Data.Models.Users
 	{
 		public string Login { get; private set; } = string.Empty;
 		[JsonIgnore]
-		public string PasswordHash { get; private set; } = string.Empty;
+		public string? PasswordHash { get; private set; }
+		public string? GoogleId { get; private set; }
 		public string Name { get; private set; } = string.Empty;
 		public string Email { get; private set; } = string.Empty;
 		public PcConfiguration? PcConfiguration { get; private set; }
@@ -22,7 +23,7 @@ namespace PCSetupHub.Data.Models.Users
 		public ICollection<Message>? ReceivedMessages { get; private set; }
 
 		public User() { }
-		public User(string login, string passwordHash, string name,
+		public User(string login, string? passwordHash, string name,
 			string email, int? pcConfigurationId)
 		{
 			Login = login;
@@ -38,5 +39,7 @@ namespace PCSetupHub.Data.Models.Users
 
 		public void ChangePasswordHash(string newPasswordHash)
 			=> PasswordHash = newPasswordHash;
+		public void ChangeGoogleId(string googleId)
+			=> GoogleId = googleId;
 	}
 }

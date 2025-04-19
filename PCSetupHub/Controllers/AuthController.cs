@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using System.Security.Authentication;
+using System.Security.Claims;
 
 using PCSetupHub.Core.DTOs;
 using PCSetupHub.Core.Exceptions;
@@ -14,7 +18,8 @@ namespace PCSetupHub.Controllers
 		: Controller
 	{
 		private readonly IUserService _userService = userService;
-		private readonly IOptions<AuthSettings> _options = options;
+		private readonly TokenSettings _accessTokenSettings = options.Value.AccessToken;
+		private readonly TokenSettings _refreshTokenSettings = options.Value.RefreshToken;
 
 		public async Task<IActionResult> Register()
 		{
@@ -66,6 +71,7 @@ namespace PCSetupHub.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
+		[HttpGet]
 		public async Task<IActionResult> Login(LoginRequest loginRequest)
 		{
 			if (await IsUserLoggedIn())
@@ -88,7 +94,7 @@ namespace PCSetupHub.Controllers
 			try
 			{
 				AuthResponse authResponse = await _userService.LoginAsync(loginRequest.Login,
-				loginRequest.Password);
+					loginRequest.Password);
 
 				AddTokensToCookies(authResponse, !loginRequest.RememberMe);
 			}
@@ -102,6 +108,54 @@ namespace PCSetupHub.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
+		[HttpGet]
+		[EnableRateLimiting("LimitPerUser")]
+		public IActionResult GoogleLogin()
+		{
+			var redirectUrl = Url.Action("GoogleResponse", "Auth");
+			var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+			return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+		}
+		[HttpGet]
+		public async Task<IActionResult> GoogleResponse()
+		{
+			const string DEFAULT_NAME = "User";
+			var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+			if (result == null || !result.Succeeded)
+				return HandleGoogleAuthError();
+
+			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			var claims = result.Principal.Identities.FirstOrDefault()?.Claims;
+
+			string? googleId = claims?.FirstOrDefault(
+				c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+			string? email = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+			string? name = claims?.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value;
+
+			if (googleId == null || email == null)
+				return HandleGoogleAuthError();
+
+			if (string.IsNullOrWhiteSpace(name))
+				name = DEFAULT_NAME;
+
+			AuthResponse authResponse = await _userService.LoginOrRegisterByGoogleId(googleId!,
+				email!, name!);
+			AddTokensToCookies(authResponse, false);
+
+			return RedirectToAction("Index", "Home");
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> Logout()
+		{
+			DeleteTokensCookies();
+			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+			return RedirectToAction("Index", "Home");
+		}
+
+
 		private void SetFirstError()
 		{
 			ViewData["FirstError"] = ModelState.Values
@@ -109,31 +163,36 @@ namespace PCSetupHub.Controllers
 				.Select(e => e.ErrorMessage)
 				.FirstOrDefault();
 		}
+		private ViewResult HandleGoogleAuthError()
+		{
+			ModelState.AddModelError("Login", "Google authentication failed.");
+			SetFirstError();
+			return View("Login");
+		}
 		private void AddTokensToCookies(AuthResponse authResponse, bool isSessionCookies)
 		{
-			TokenSettings accessTokenSettings = _options.Value.AccessToken;
-			TokenSettings refreshTokenSettings = _options.Value.RefreshToken;
-
 			DateTime? accessTokenExpires = isSessionCookies ?
-				null : DateTime.UtcNow.Add(refreshTokenSettings.Lifetime);
+				null : DateTime.UtcNow.Add(_refreshTokenSettings.Lifetime);
 			DateTime? refreshTokenExpires = isSessionCookies ?
-				null : DateTime.UtcNow.Add(refreshTokenSettings.Lifetime);
+				null : DateTime.UtcNow.Add(_refreshTokenSettings.Lifetime);
 
-			HttpContext.Response.Cookies.Append(accessTokenSettings.CookieName,
+			HttpContext.Response.Cookies.Append(_accessTokenSettings.CookieName,
 				authResponse.AccessToken!,
 				new CookieOptions { Expires = accessTokenExpires });
 
-			HttpContext.Response.Cookies.Append(refreshTokenSettings.CookieName,
+			HttpContext.Response.Cookies.Append(_refreshTokenSettings.CookieName,
 				authResponse.RefreshToken!,
 				new CookieOptions { Expires = refreshTokenExpires });
 		}
+		private void DeleteTokensCookies()
+		{
+			HttpContext.Response.Cookies.Delete(_accessTokenSettings.CookieName);
+			HttpContext.Response.Cookies.Delete(_refreshTokenSettings.CookieName);
+		}
 		private async Task<bool> IsUserLoggedIn()
 		{
-			TokenSettings accessTokenSettings = _options.Value.AccessToken;
-			TokenSettings refreshTokenSettings = _options.Value.RefreshToken;
-
-			string? accessToken = HttpContext.Request.Cookies[accessTokenSettings.CookieName];
-			string? refreshToken = HttpContext.Request.Cookies[refreshTokenSettings.CookieName];
+			string? accessToken = HttpContext.Request.Cookies[_accessTokenSettings.CookieName];
+			string? refreshToken = HttpContext.Request.Cookies[_refreshTokenSettings.CookieName];
 
 			return await _userService.IsUserLoggedIn(accessToken!, refreshToken!);
 		}
