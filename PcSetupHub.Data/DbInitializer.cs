@@ -18,6 +18,7 @@ namespace PCSetupHub.Data
 		string password,
 		string name,
 		string email,
+		string? description,
 		int? pcConfigurationId,
 		bool checkLoginUniqueness
 		);
@@ -295,16 +296,24 @@ namespace PCSetupHub.Data
 
 		private static void SeedUsers()
 		{
+			string? firstDescription = "Enthusiast of custom PC builds, GPU benchmarks, " +
+				"and airflow optimization. Always searching for the perfect setup and the " +
+				"ultimate performance. 🔧🖥️";
+			string? secondDescription = "Welcome to my profile!";
+			string? thirdDescription = "Love building rigs, testing hardware, " +
+				"and chasing top-tier performance.";
+
+
 			_registerFunc!("max_power", "StrongPass567!", "Maxim",
-				"max_power@gmail.com", 1, false);
+				"max_power@gmail.com", firstDescription, 1, false);
 			_registerFunc!("anna_dev", "AnnaPass123!", "Anna",
-				"anna_dev@gmail.com", 2, false);
+				"anna_dev@gmail.com", null, 2, false);
 			_registerFunc!("alex_gamer", "Pass1234!", "Alexander",
-				"alex_gamer@gmail.com", 3, false);
+				"alex_gamer@gmail.com", secondDescription, 3, false);
 			_registerFunc!("kate_player", "KateGamer456!", "Kate",
-				"kate_player@gmail.com", 4, false);
+				"kate_player@gmail.com", null, 4, false);
 			_registerFunc!("niko_coder", "Secure789!", "Nikolay",
-				"niko_coder@gmail.com", 5, false);
+				"niko_coder@gmail.com", thirdDescription, 5, false);
 		}
 		private static void SeedComments()
 		{

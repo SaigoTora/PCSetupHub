@@ -21,6 +21,7 @@ namespace PCSetupHub.Controllers
 		private readonly TokenSettings _accessTokenSettings = options.Value.AccessToken;
 		private readonly TokenSettings _refreshTokenSettings = options.Value.RefreshToken;
 
+		[HttpGet]
 		public async Task<IActionResult> Register()
 		{
 			if (await IsUserLoggedIn())
@@ -46,7 +47,7 @@ namespace PCSetupHub.Controllers
 			try
 			{
 				await _userService.RegisterAsync(registerRequest.Login, registerRequest.Password!,
-					registerRequest.Name, registerRequest.Email);
+					registerRequest.Name, registerRequest.Email, null);
 
 				AuthResponse authResponse = await _userService.LoginAsync(registerRequest.Login,
 					registerRequest.Password!);

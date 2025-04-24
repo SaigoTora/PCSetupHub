@@ -15,14 +15,14 @@ namespace PCSetupHub.Core.Services
 		private readonly JwtService _jwtService = jwtService;
 
 		public async Task RegisterAsync(string login, string password, string name, string email,
-			int? pcConfigurationId = null, bool checkUniqueness = true)
+			string? description, int? pcConfigurationId = null, bool checkUniqueness = true)
 		{
 			if (checkUniqueness && await _userRepository.ExistsByLoginAsync(login))
 				throw new UserAlreadyExistsException($"User with login '{login}' already exists.");
 			if (checkUniqueness && await _userRepository.ExistsByEmailAsync(email))
 				throw new EmailAlreadyExistsException($"User with email '{email}' already exists.");
 
-			User user = new(login, password, name, email, pcConfigurationId);
+			User user = new(login, password, name, email, description, pcConfigurationId);
 			string passwordHash = new PasswordHasher<User>().HashPassword(user, password);
 			user.ChangePasswordHash(passwordHash);
 
@@ -50,7 +50,7 @@ namespace PCSetupHub.Core.Services
 			User? user = await _userRepository.GetByGoogleIdAsync(googleId);
 			if (user == null)
 			{
-				user = new User(email, null, name, email, null);
+				user = new User(email, null, name, email, null, null);
 				user.ChangeGoogleId(googleId);
 				await _userRepository.AddAsync(user);
 			}
