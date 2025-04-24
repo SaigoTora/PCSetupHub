@@ -82,11 +82,11 @@ main {
     position: sticky;
     top: 0;
     z-index: 1000;
-    padding: 25px 15px 30px 15px;
+    padding: 25px 15px 12px 15px;
 }
 
 .brand-container {
-    margin-bottom: 8rem;
+    margin-bottom: 6rem;
     text-align: center;
 }
 
@@ -96,7 +96,7 @@ main {
     font-weight: normal;
 }
 
-.navbar-brand-accent{
+.navbar-brand-accent {
     color: var(--color-accent);
 }
 
@@ -113,6 +113,14 @@ main {
         background-color: var(--color-dark-background-hover);
     }
 
+.login-menu-item {
+    background-color: #3498db;
+}
+
+    .login-menu-item:hover {
+        background-color: #2980b9;
+    }
+
 i {
     font-size: var(--nav-menu-item-size);
     width: var(--nav-menu-item-size);
@@ -125,6 +133,10 @@ i {
     margin-left: 10px;
     margin-right: 7px;
     color: var(--color-light-text);
+}
+
+.nav-menu-text {
+    font-weight: normal;
 }
 
 .nav-link {

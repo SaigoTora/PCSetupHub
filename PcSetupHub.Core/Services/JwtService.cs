@@ -84,8 +84,9 @@ namespace PCSetupHub.Core.Services
 			if (user != null)
 				claims =
 				[
-					new Claim("userName", user!.Name),
-					new Claim("userId", user.Id.ToString())
+					new Claim("userId", user.Id.ToString()),
+					new Claim("userLogin", user.Login),
+					new Claim("userName", user!.Name)
 				];
 
 			JwtSecurityToken jwtToken = new(

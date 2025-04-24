@@ -45,13 +45,9 @@ CreateDbIfNotExists(app);
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-	app.UseExceptionHandler("/Home/Error");
-	app.UseHsts();
-}
-else
-{
 	app.UseExceptionHandler("/Error/Index");
 	app.UseStatusCodePagesWithReExecute("/Error/{0}");
+	app.UseHsts();
 }
 
 app.UseHttpsRedirection();

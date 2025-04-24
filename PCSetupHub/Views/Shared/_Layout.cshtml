@@ -1,4 +1,17 @@
-﻿<!DOCTYPE html>
+﻿@using PCSetupHub.Data.Models.Users
+
+@{
+	var claims = User.Claims;
+
+	int? userId = null;
+	int parsedUserId;
+	if (Int32.TryParse(claims.FirstOrDefault(c => c.Type == "userId")?.Value, out parsedUserId))
+		userId = parsedUserId;
+
+	string? userLogin = claims.FirstOrDefault(c => c.Type == "userLogin")?.Value;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8" />
@@ -24,7 +37,7 @@
 				</a>
 			</div>
 
-			<ul class="nav nav-pills flex-column">
+			<ul class="nav nav-pills flex-column h-100">
 				<li class="nav-item nav-menu-item">
 					<a class="d-flex align-items-center w-100 text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">
 						<i class="fa-solid fa-house nav-menu-icon"></i>
@@ -32,7 +45,8 @@
 					</a>
 				</li>
 				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none" asp-area="" asp-controller="Profile" asp-action="Index">
+					<a class="d-flex align-items-center w-100 text-decoration-none" asp-area=""
+					   asp-controller="Profile" asp-action="Index" asp-route-login="@userLogin" asp-route-id="@userId">
 						<i class="fa-solid fa-user nav-menu-icon"></i>
 						<span class="d-inline nav-link nav-menu-text">Profile</span>
 					</a>
@@ -55,22 +69,29 @@
 						<span class="d-inline nav-link nav-menu-text">Settings</span>
 					</a>
 				</li>
-
-				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none" asp-area="" asp-controller="Home" asp-action="Exit">
-						<i class="fa-solid fa-right-from-bracket nav-menu-icon"></i>
-						<span class="d-inline nav-link nav-menu-text">Exit</span>
-					</a>
-				</li>
-
-
-				<li class="nav-item nav-menu-item">
-					<a class="nav-link text-light" asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
-				</li>
-				<li class="nav-item nav-menu-item">
-					<a class="nav-link text-light" asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
-				</li>
 			</ul>
+
+			<ul class="nav nav-pills flex-column">
+				@if (User.Identity != null && User.Identity.IsAuthenticated)
+				{
+					<li class="nav-item nav-menu-item">
+						<a class="d-flex align-items-center w-100 text-decoration-none" asp-area="" asp-controller="Auth" asp-action="Logout">
+							<i class="fa-solid fa-right-from-bracket text-danger nav-menu-icon"></i>
+							<span class="d-inline nav-link nav-menu-text text-danger">Exit</span>
+						</a>
+					</li>
+				}
+				else
+				{
+					<li class="nav-item nav-menu-item login-menu-item">
+						<a class="d-flex align-items-center w-100 text-decoration-none" asp-area="" asp-controller="Auth" asp-action="Login">
+							<i class="fa-solid fa-sign-in-alt nav-menu-icon"></i>
+							<span class="d-inline nav-link nav-menu-text">Login</span>
+						</a>
+					</li>
+				}
+			</ul>
+
 		</nav>
 	</header>
 	<div class="container d-flex justify-content-center">

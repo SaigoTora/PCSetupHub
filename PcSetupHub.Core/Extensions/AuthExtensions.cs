@@ -40,7 +40,7 @@ namespace PCSetupHub.Core.Extensions
 			TokenSettings refreshTokenSettings, TokenSettings accessTokenSettings)
 		{
 			options.TokenValidationParameters
-				= JwtService.GetTokenValidationParameters(refreshTokenSettings.SecretKey);
+				= JwtService.GetTokenValidationParameters(accessTokenSettings.SecretKey);
 
 			options.Events = new JwtBearerEvents
 			{
@@ -56,7 +56,7 @@ namespace PCSetupHub.Core.Extensions
 					refreshTokenSettings, accessTokenSettings),
 				OnMessageReceived = context =>
 				{
-					context.Token = context.Request.Cookies[refreshTokenSettings.CookieName];
+					context.Token = context.Request.Cookies[accessTokenSettings.CookieName];
 					return Task.CompletedTask;
 				}
 			};
