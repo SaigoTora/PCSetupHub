@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace PCSetupHub.Controllers
+namespace PCSetupHub.Web.Controllers
 {
 	public class HomeController(ILogger<HomeController> logger) : Controller
 	{

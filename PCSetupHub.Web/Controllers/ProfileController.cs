@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace PCSetupHub.Controllers
+namespace PCSetupHub.Web.Controllers
 {
 	public class ProfileController : Controller
 	{

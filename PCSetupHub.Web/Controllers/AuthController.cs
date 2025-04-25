@@ -12,7 +12,7 @@ using PCSetupHub.Core.Exceptions;
 using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Core.Settings;
 
-namespace PCSetupHub.Controllers
+namespace PCSetupHub.Web.Controllers
 {
 	public class AuthController(IUserService userService, IOptions<AuthSettings> options)
 		: Controller
