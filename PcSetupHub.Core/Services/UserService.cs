@@ -20,7 +20,8 @@ namespace PCSetupHub.Core.Services
 			if (checkUniqueness && await _userRepository.ExistsByLoginAsync(login))
 				throw new UserAlreadyExistsException($"User with login '{login}' already exists.");
 			if (checkUniqueness && await _userRepository.ExistsByEmailAsync(email))
-				throw new EmailAlreadyExistsException($"User with email '{email}' already exists.");
+				throw new EmailAlreadyExistsException($"User with email " +
+					$"'{email}' already exists.");
 
 			User user = new(login, password, name, email, description, pcConfigurationId);
 			string passwordHash = new PasswordHasher<User>().HashPassword(user, password);

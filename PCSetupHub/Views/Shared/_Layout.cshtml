@@ -1,14 +1,7 @@
 ﻿@using PCSetupHub.Data.Models.Users
 
 @{
-	var claims = User.Claims;
-
-	int? userId = null;
-	int parsedUserId;
-	if (Int32.TryParse(claims.FirstOrDefault(c => c.Type == "userId")?.Value, out parsedUserId))
-		userId = parsedUserId;
-
-	string? userLogin = claims.FirstOrDefault(c => c.Type == "userLogin")?.Value;
+	string? userLogin = User.Claims.FirstOrDefault(c => c.Type == "userLogin")?.Value;
 }
 
 <!DOCTYPE html>
@@ -27,7 +20,7 @@
 	<header>
 		<nav class="d-flex flex-column vh-100 nav-menu">
 			<div class="brand-container">
-				<a class="text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">
+				<a class="text-decoration-none" asp-controller="Home" asp-action="Index">
 					<img class="d-none logo-icon"
 						 src="~/Images/logo.png"
 						 alt="Logo"
@@ -39,32 +32,39 @@
 
 			<ul class="nav nav-pills flex-column h-100">
 				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">
+					<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Home" asp-action="Index">
 						<i class="fa-solid fa-house nav-menu-icon"></i>
 						<span class="d-inline nav-link nav-menu-text">Home</span>
 					</a>
 				</li>
 				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none" asp-area=""
-					   asp-controller="Profile" asp-action="Index" asp-route-login="@userLogin" asp-route-id="@userId">
+					<a class="d-flex align-items-center w-100 text-decoration-none"
+					   asp-controller="Profile" asp-action="Index" asp-route-login="@userLogin">
 						<i class="fa-solid fa-user nav-menu-icon"></i>
 						<span class="d-inline nav-link nav-menu-text">Profile</span>
 					</a>
 				</li>
 				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none" asp-area="" asp-controller="Messages" asp-action="Index">
+					<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Messages" asp-action="Index">
 						<i class="fa-solid fa-message nav-menu-icon"></i>
 						<span class="d-inline nav-link nav-menu-text">Messages</span>
 					</a>
 				</li>
 				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none" asp-area="" asp-controller="Friends" asp-action="Index">
+					<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Friends" asp-action="Index">
 						<i class="fa-solid fa-user-group nav-menu-icon"></i>
 						<span class="d-inline nav-link nav-menu-text">Friends</span>
 					</a>
 				</li>
 				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none" asp-area="" asp-controller="Settings" asp-action="Index">
+					<a class="d-flex align-items-center w-100 text-decoration-none"
+					   asp-controller="Search" asp-action="Index">
+						<i class="fa-solid fa-search nav-menu-icon"></i>
+						<span class="d-inline nav-link nav-menu-text">Search</span>
+					</a>
+				</li>
+				<li class="nav-item nav-menu-item">
+					<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Settings" asp-action="Index">
 						<i class="fa-solid fa-gear nav-menu-icon"></i>
 						<span class="d-inline nav-link nav-menu-text">Settings</span>
 					</a>
@@ -75,7 +75,7 @@
 				@if (User.Identity != null && User.Identity.IsAuthenticated)
 				{
 					<li class="nav-item nav-menu-item">
-						<a class="d-flex align-items-center w-100 text-decoration-none" asp-area="" asp-controller="Auth" asp-action="Logout">
+						<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Auth" asp-action="Logout">
 							<i class="fa-solid fa-right-from-bracket text-danger nav-menu-icon"></i>
 							<span class="d-inline nav-link nav-menu-text text-danger">Exit</span>
 						</a>
@@ -84,7 +84,7 @@
 				else
 				{
 					<li class="nav-item nav-menu-item login-menu-item">
-						<a class="d-flex align-items-center w-100 text-decoration-none" asp-area="" asp-controller="Auth" asp-action="Login">
+						<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Auth" asp-action="Login">
 							<i class="fa-solid fa-sign-in-alt nav-menu-icon"></i>
 							<span class="d-inline nav-link nav-menu-text">Login</span>
 						</a>
@@ -100,7 +100,7 @@
 		</main>
 	</div>
 	<footer class="footer">
-		&copy; 2025 - PC Setup Hub - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+		&copy; 2025 - PC Setup Hub - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
 	</footer>
 
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>

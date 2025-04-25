@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using PCSetupHub.Core.DTOs;
 using PCSetupHub.Core.Services;
 using PCSetupHub.Core.Settings;
 
@@ -10,6 +13,23 @@ namespace PCSetupHub.Core.Extensions
 {
 	public static class AuthExtensions
 	{
+		public static IServiceCollection AddExternalAuthProviders(this IServiceCollection services,
+			IConfiguration configuration)
+		{
+			services.AddAuthentication(options =>
+			{
+				options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+			})
+			.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+			.AddGoogle(googleOptions =>
+			{
+				googleOptions.ClientId = configuration["Authentication:Google:ClientId"]!;
+				googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
+				googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+			});
+			return services;
+		}
 		public static IServiceCollection AddAuth(this IServiceCollection serviceCollection,
 			IConfiguration configuration)
 		{
@@ -61,12 +81,12 @@ namespace PCSetupHub.Core.Extensions
 				}
 			};
 		}
+
 		private static async Task HandleTokenValidatedAsync(TokenValidatedContext context,
 			TokenSettings refreshTokenSettings, TokenSettings accessTokenSettings,
 			JwtService jwtService)
 		{
-			if (string.IsNullOrWhiteSpace(refreshTokenSettings.CookieName) ||
-				string.IsNullOrWhiteSpace(accessTokenSettings.CookieName))
+			if (!AreTokenCookiesConfigured(refreshTokenSettings, accessTokenSettings))
 			{
 				context.Fail("Token cookie names are not configured.");
 				return;
@@ -87,15 +107,27 @@ namespace PCSetupHub.Core.Extensions
 			if (!isValidRefreshToken)
 				context.Fail("Invalid refresh token.");
 			else if (newTokens.AccessToken != null && newTokens.RefreshToken != null)
-			{
-				context.Response.Cookies.Append(refreshTokenSettings.CookieName,
-					newTokens.RefreshToken, new CookieOptions
-					{ Expires = DateTime.UtcNow.Add(refreshTokenSettings.Lifetime) });
-				context.Response.Cookies.Append(accessTokenSettings.CookieName,
-					newTokens.AccessToken, new CookieOptions
-					{ Expires = DateTime.UtcNow.Add(refreshTokenSettings.Lifetime) });
-			}
+				UpdateTokenCookies(context, refreshTokenSettings, accessTokenSettings, newTokens);
 		}
+		private static bool AreTokenCookiesConfigured(TokenSettings refreshTokenSettings,
+			TokenSettings accessTokenSettings)
+		{
+			return !string.IsNullOrWhiteSpace(refreshTokenSettings.CookieName) &&
+				!string.IsNullOrWhiteSpace(accessTokenSettings.CookieName);
+		}
+		private static void UpdateTokenCookies(TokenValidatedContext context,
+			TokenSettings refreshTokenSettings, TokenSettings accessTokenSettings,
+			AuthResponse newTokens)
+		{
+			context.Response.Cookies.Append(refreshTokenSettings.CookieName,
+				newTokens.RefreshToken!, new CookieOptions
+				{ Expires = DateTime.UtcNow.Add(refreshTokenSettings.Lifetime) });
+
+			context.Response.Cookies.Append(accessTokenSettings.CookieName,
+				newTokens.AccessToken!, new CookieOptions
+				{ Expires = DateTime.UtcNow.Add(refreshTokenSettings.Lifetime) });
+		}
+
 		private static async Task HandleChallengeAsync(JwtBearerChallengeContext context,
 			TokenSettings refreshTokenSettings, TokenSettings accessTokenSettings)
 		{

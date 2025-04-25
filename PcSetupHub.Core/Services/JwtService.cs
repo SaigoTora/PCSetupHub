@@ -16,8 +16,8 @@ namespace PCSetupHub.Core.Services
 		private readonly IOptions<AuthSettings> _options = options;
 		private readonly IUserRepository _userRepository = userRepository;
 
-		public async Task<(bool IsRefreshTokenValid, AuthResponse newTokens)> ValidateAndRefreshTokensAsync(
-			string accessToken, string refreshToken)
+		public async Task<(bool IsRefreshTokenValid, AuthResponse newTokens)>
+			ValidateAndRefreshTokensAsync(string accessToken, string refreshToken)
 		{
 			JwtSecurityTokenHandler tokenHandler = new();
 
@@ -44,8 +44,8 @@ namespace PCSetupHub.Core.Services
 
 				if (accessTokenValid)
 					return (true, new AuthResponse(null, null));
-				else
-					return (true, await RefreshTokens(tokenHandler, accessToken));
+
+				return (true, await RefreshTokens(tokenHandler, accessToken));
 			}
 			catch
 			{ return (false, new AuthResponse(null, null)); }

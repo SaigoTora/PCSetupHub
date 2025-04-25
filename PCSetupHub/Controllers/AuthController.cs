@@ -21,7 +21,7 @@ namespace PCSetupHub.Controllers
 		private readonly TokenSettings _accessTokenSettings = options.Value.AccessToken;
 		private readonly TokenSettings _refreshTokenSettings = options.Value.RefreshToken;
 
-		[HttpGet]
+		#region Registration
 		public async Task<IActionResult> Register()
 		{
 			if (await IsUserLoggedIn())
@@ -29,14 +29,11 @@ namespace PCSetupHub.Controllers
 
 			return View();
 		}
-
 		[HttpPost]
-		[ValidateAntiForgeryToken]
 		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> Register(RegisterRequest registerRequest)
 		{
-			TempData["Password"] = registerRequest.Password ?? string.Empty;
-			TempData["ConfirmPassword"] = registerRequest.ConfirmPassword ?? string.Empty;
+			SavePasswordsToTempData(registerRequest);
 
 			if (!ModelState.IsValid)
 			{
@@ -54,25 +51,45 @@ namespace PCSetupHub.Controllers
 
 				AddTokensToCookies(authResponse, false);
 			}
-			catch (UserAlreadyExistsException ex)
+			catch (Exception ex) when (HandleRegistrationExceptions(ex))
 			{
-				ModelState.AddModelError("Login", ex.Message);
-				SetFirstError();
-				return View();
-			}
-			catch (EmailAlreadyExistsException ex)
-			{
-				ModelState.AddModelError("Email", ex.Message);
-				SetFirstError();
 				return View();
 			}
 
-			TempData.Remove("Password");
-			TempData.Remove("ConfirmPassword");
+			ClearPasswordsFromTempData();
 			return RedirectToAction("Index", "Home");
 		}
 
-		[HttpGet]
+		private void SavePasswordsToTempData(RegisterRequest request)
+		{
+			TempData["Password"] = request.Password ?? string.Empty;
+			TempData["ConfirmPassword"] = request.ConfirmPassword ?? string.Empty;
+		}
+		private void ClearPasswordsFromTempData()
+		{
+			TempData.Remove("Password");
+			TempData.Remove("ConfirmPassword");
+		}
+		private bool HandleRegistrationExceptions(Exception ex)
+		{
+			switch (ex)
+			{
+				case UserAlreadyExistsException userEx:
+					ModelState.AddModelError("Login", userEx.Message);
+					break;
+				case EmailAlreadyExistsException emailEx:
+					ModelState.AddModelError("Email", emailEx.Message);
+					break;
+				default:
+					return false;
+			}
+
+			SetFirstError();
+			return true;
+		}
+		#endregion
+
+		#region Login
 		public async Task<IActionResult> Login(LoginRequest loginRequest)
 		{
 			if (await IsUserLoggedIn())
@@ -82,7 +99,6 @@ namespace PCSetupHub.Controllers
 		}
 
 		[HttpPost, ActionName("Login")]
-		[ValidateAntiForgeryToken]
 		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> LoginSubmit(LoginRequest loginRequest)
 		{
@@ -108,20 +124,22 @@ namespace PCSetupHub.Controllers
 
 			return RedirectToAction("Index", "Home");
 		}
+		#endregion
 
-		[HttpGet]
+		#region Google login
 		[EnableRateLimiting("LimitPerUser")]
 		public IActionResult GoogleLogin()
 		{
 			var redirectUrl = Url.Action("GoogleResponse", "Auth");
 			var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+
 			return Challenge(properties, GoogleDefaults.AuthenticationScheme);
 		}
-		[HttpGet]
 		public async Task<IActionResult> GoogleResponse()
 		{
 			const string DEFAULT_NAME = "User";
-			var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			var result = await HttpContext.AuthenticateAsync(
+				CookieAuthenticationDefaults.AuthenticationScheme);
 
 			if (result == null || !result.Succeeded)
 				return HandleGoogleAuthError();
@@ -147,7 +165,15 @@ namespace PCSetupHub.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
-		[HttpGet]
+		private ViewResult HandleGoogleAuthError()
+		{
+			ModelState.AddModelError("Login", "Google authentication failed.");
+			SetFirstError();
+
+			return View("Login");
+		}
+		#endregion
+
 		public async Task<IActionResult> Logout()
 		{
 			DeleteTokensCookies();
@@ -163,12 +189,6 @@ namespace PCSetupHub.Controllers
 				.SelectMany(v => v.Errors)
 				.Select(e => e.ErrorMessage)
 				.FirstOrDefault();
-		}
-		private ViewResult HandleGoogleAuthError()
-		{
-			ModelState.AddModelError("Login", "Google authentication failed.");
-			SetFirstError();
-			return View("Login");
 		}
 		private void AddTokensToCookies(AuthResponse authResponse, bool isSessionCookies)
 		{

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+
+using PCSetupHub.Core.Utilities;
 
 namespace PCSetupHub.Core.Attributes
 {
@@ -15,43 +16,33 @@ namespace PCSetupHub.Core.Attributes
 			"abcde123", "abcdef12"
 		];
 
-
 		public override bool IsValid(object? value)
 		{
 			if (value is not string password)
 				return false;
 
 			if (password.Length < 8 || password.Length > 64)
-			{
-				ErrorMessage = "Password must be between 8 and 50 characters long.";
-				return false;
-			}
+				return SetValidationErrorMessage("Password must be between 8 and 50 characters long.");
 
-			if (!Regex.IsMatch(password, @"[a-z]"))
-			{
-				ErrorMessage = "Password must contain at least one lowercase letter.";
-				return false;
-			}
+			if (!Regexes.LowercaseRegex().IsMatch(password))
+				return SetValidationErrorMessage("Password must contain at least one lowercase letter.");
 
-			if (!Regex.IsMatch(password, @"[A-Z]"))
-			{
-				ErrorMessage = "Password must contain at least one uppercase letter.";
-				return false;
-			}
+			if (!Regexes.UppercaseRegex().IsMatch(password))
+				return SetValidationErrorMessage("Password must contain at least one uppercase letter.");
 
-			if (Regex.Matches(password, @"\d").Count < 2)
-			{
-				ErrorMessage = "Password must contain at least two digits.";
-				return false;
-			}
+			if (Regexes.DigitRegex().Matches(password).Count < 2)
+				return SetValidationErrorMessage("Password must contain at least two digits.");
 
 			if (_weakPasswords.Contains(password.ToLower()))
-			{
-				ErrorMessage = "Password is too weak, please choose a stronger one.";
-				return false;
-			}
+				return SetValidationErrorMessage("Password is too weak, please choose a stronger one.");
 
 			return true;
+		}
+
+		private bool SetValidationErrorMessage(string message)
+		{
+			ErrorMessage = message;
+			return false;
 		}
 	}
 }

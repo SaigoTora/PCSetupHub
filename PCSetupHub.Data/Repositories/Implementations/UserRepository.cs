@@ -4,7 +4,7 @@ using PCSetupHub.Data.Repositories.Interfaces;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Base;
 
-namespace PCSetupHub.Data.Repositories
+namespace PCSetupHub.Data.Repositories.Implementations
 {
 	public class UserRepository(PcSetupContext context) : BaseRepo<User>(context), IUserRepository
 	{

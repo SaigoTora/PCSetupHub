@@ -7,9 +7,11 @@ namespace PCSetupHub.Data.Repositories.Base
 {
 	public class BaseRepo<T> : IDisposable, IRepository<T> where T : BaseEntity, new()
 	{
+		protected PcSetupContext Context => _context;
+
 		private readonly DbSet<T> _table;
 		private readonly PcSetupContext _context;
-		protected PcSetupContext Context => _context;
+		private bool _disposed = false;
 
 		public BaseRepo(PcSetupContext context)
 		{
@@ -27,7 +29,7 @@ namespace PCSetupHub.Data.Repositories.Base
 		{
 			await _table.AddRangeAsync(entities);
 			await _context.SaveChangesAsync();
-			return entities.ToList();
+			return [.. entities];
 		}
 
 		public async Task<bool> DeleteAsync(int id)
@@ -74,6 +76,20 @@ namespace PCSetupHub.Data.Repositories.Base
 			params object[] sqlParametersObjects)
 			=> await _table.FromSqlRaw(sql, sqlParametersObjects).ToListAsync();
 
-		public void Dispose() => _context?.Dispose();
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!_disposed)
+			{
+				if (disposing)
+					_context?.Dispose();
+
+				_disposed = true;
+			}
+		}
 	}
 }
