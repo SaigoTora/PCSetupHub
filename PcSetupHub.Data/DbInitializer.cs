@@ -63,6 +63,7 @@ namespace PCSetupHub.Data
 		private static void SeedStaticData()
 		{
 			SeedFriendshipStatuses();
+			SeedPcTypes();
 			SeedHdds();
 			SeedMotherboards();
 			SeedPowerSupplies();
@@ -99,6 +100,15 @@ namespace PCSetupHub.Data
 				new FriendshipStatus("Pending"),
 				new FriendshipStatus("Accepted"),
 				new FriendshipStatus("Cancelled")
+			);
+
+			_context?.SaveChanges();
+		}
+		private static void SeedPcTypes()
+		{
+			_context?.PcTypes.AddRange(
+				new PcType("Desktop"),
+				new PcType("Laptop")
 			);
 
 			_context?.SaveChanges();
@@ -246,11 +256,11 @@ namespace PCSetupHub.Data
 		private static void SeedPcConfigurations()
 		{
 			_context?.PcConfigurations.AddRange(
-				new PcConfiguration(null, null, null, null),
-				new PcConfiguration(null, null, null, null),
-				new PcConfiguration(54, 940, null, null),
-				new PcConfiguration(32, 276, 505, 280),
-				new PcConfiguration(41, 24, 725, 1651));
+				new PcConfiguration(null, null, null, null, null),
+				new PcConfiguration(null, null, null, null, null),
+				new PcConfiguration(null, 54, 940, null, null),
+				new PcConfiguration(1, 32, 276, 505, 280),
+				new PcConfiguration(1, 41, 24, 725, 1651));
 
 			_context?.SaveChanges();
 		}

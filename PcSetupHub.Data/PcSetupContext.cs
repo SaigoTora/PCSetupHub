@@ -17,6 +17,7 @@ namespace PCSetupHub.Data
 		public DbSet<User> Users { get; set; }
 		public DbSet<Hdd> Hdds { get; set; }
 		public DbSet<Motherboard> Motherboards { get; set; }
+		public DbSet<PcType> PcTypes { get; set; }
 		public DbSet<PcConfiguration> PcConfigurations { get; set; }
 		public DbSet<PowerSupply> PowerSupplies { get; set; }
 		public DbSet<Processor> Processors { get; set; }
@@ -59,6 +60,7 @@ namespace PCSetupHub.Data
 			_modelBuilder.Entity<User>().ToTable("User");
 			_modelBuilder.Entity<Hdd>().ToTable("Hdd");
 			_modelBuilder.Entity<Motherboard>().ToTable("Motherboard");
+			_modelBuilder.Entity<PcType>().ToTable("PcType");
 			_modelBuilder.Entity<PcConfiguration>().ToTable("PcConfiguration");
 			_modelBuilder.Entity<PowerSupply>().ToTable("PowerSupply");
 			_modelBuilder.Entity<Processor>().ToTable("Processor");
@@ -92,6 +94,10 @@ namespace PCSetupHub.Data
 				.IsUnique();
 			_modelBuilder.Entity<User>()
 				.HasIndex(u => u.PcConfigurationId)
+				.IsUnique();
+
+			_modelBuilder.Entity<PcType>()
+				.HasIndex(pcType => pcType.Name)
 				.IsUnique();
 		}
 
@@ -174,6 +180,12 @@ namespace PCSetupHub.Data
 
 		private void SetPcConfigurationRelationships()
 		{
+			_modelBuilder.Entity<PcConfiguration>()
+				.HasOne(pc => pc.Type)
+				.WithMany(t => t.PcConfigurations)
+				.HasForeignKey(pc => pc.TypeId)
+				.OnDelete(DeleteBehavior.Restrict);
+
 			_modelBuilder.Entity<PcConfiguration>()
 				.HasOne(pc => pc.Motherboard)
 				.WithMany(m => m.PcConfigurations)
