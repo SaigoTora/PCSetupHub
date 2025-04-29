@@ -18,6 +18,7 @@ CreateDbIfNotExists(app);
 ConfigureMiddleware(app);
 app.Run();
 
+
 static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {// Add services to the container.
 	services.AddControllersWithViews(options =>

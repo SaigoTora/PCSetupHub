@@ -28,6 +28,66 @@ namespace PCSetupHub.Data.Models.Users
 		public ICollection<Message>? SentMessages { get; private set; }
 		public ICollection<Message>? ReceivedMessages { get; private set; }
 
+		public ICollection<User>? Friends
+		{
+			get
+			{
+				ICollection<User> friends = [];
+
+				if (ReceivedFriendRequests != null)
+				{
+					foreach (Friendship friendship in ReceivedFriendRequests)
+						if (friendship.Initiator != null &&
+							friendship.FriendshipStatusId == (int)FriendshipStatusType.Accepted)
+							friends.Add(friendship.Initiator);
+				}
+				if (SentFriendRequests != null)
+				{
+					foreach (Friendship friendship in SentFriendRequests)
+						if (friendship.Friend != null &&
+							friendship.FriendshipStatusId == (int)FriendshipStatusType.Accepted)
+							friends.Add(friendship.Friend);
+				}
+
+				return friends;
+			}
+		}
+		public ICollection<User>? Followers
+		{
+			get
+			{
+				ICollection<User> followers = [];
+
+				if (ReceivedFriendRequests != null)
+				{
+					foreach (Friendship friendship in ReceivedFriendRequests)
+						if (friendship.Initiator != null &&
+							friendship.FriendshipStatusId == (int)FriendshipStatusType.Pending)
+							followers.Add(friendship.Initiator);
+				}
+
+				return followers;
+			}
+		}
+		public ICollection<User>? Followings
+		{
+			get
+			{
+				ICollection<User> followings = [];
+
+				if (SentFriendRequests != null)
+				{
+					foreach (Friendship friendship in SentFriendRequests)
+						if (friendship.Friend != null &&
+							friendship.FriendshipStatusId == (int)FriendshipStatusType.Pending)
+							followings.Add(friendship.Friend);
+				}
+
+				return followings;
+			}
+		}
+
+
 		public User() { }
 		public User(string login, string? passwordHash, string name,
 			string email, string? description, int? pcConfigurationId)

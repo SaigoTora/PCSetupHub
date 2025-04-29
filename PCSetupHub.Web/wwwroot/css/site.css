@@ -4,6 +4,7 @@
     --color-accent: rgb(78, 204, 163);
     --color-dark-background-hover: rgba(60, 65, 75,0.35);
     --color-nav-menu-border: rgb(60, 65, 75);
+    --color-text-muted: rgb(178, 178, 178);
     --border-radius: 8px;
     --nav-menu-width: 305px;
     --nav-menu-small-width: 80px;
@@ -74,7 +75,7 @@ header {
 }
 
 main {
-    padding: 25px 15px 3rem 15px;
+    padding: 1.5rem 1rem 3rem 1rem;
 }
 
 .nav-menu {
@@ -147,6 +148,39 @@ i {
     .nav-link:hover {
         color: var(--color-light-text);
     }
+
+.user-login {
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.user-name {
+    font-size: 1.15rem;
+}
+
+.user-action-btn {
+    background-color: rgb(57, 62, 70);
+    color: var(--color-light-text);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 5px 12px 5px 12px;
+}
+
+    .user-action-btn:hover {
+        background-color: var(--color-dark-background-hover);
+    }
+
+.text-light {
+    color: var(--color-light-text) !important;
+}
+
+.text-muted {
+    color: var(--color-text-muted) !important;
+}
+
+.user-description {
+    font-size: 0.95rem;
+}
 
 footer {
     margin-left: var(--nav-menu-width);

@@ -177,7 +177,7 @@ namespace PCSetupHub.Data
 			where T2 : class
 			where T3 : class
 		{
-			T2[] newModels = csvModels.Select(csvModel => csvModel.ConvertToModel()).ToArray();
+			T2[] newModels = [.. csvModels.Select(csvModel => csvModel.ConvertToModel())];
 			dbModelSet.AddRange(newModels);
 			_context?.SaveChanges();
 
@@ -312,7 +312,6 @@ namespace PCSetupHub.Data
 			string? secondDescription = "Welcome to my profile!";
 			string? thirdDescription = "Love building rigs, testing hardware, " +
 				"and chasing top-tier performance.";
-
 
 			_registerFunc!("max_power", "StrongPass567!", "Maxim",
 				"max_power@gmail.com", firstDescription, 1, false);

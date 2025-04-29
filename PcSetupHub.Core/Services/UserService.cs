@@ -31,7 +31,7 @@ namespace PCSetupHub.Core.Services
 		}
 		public async Task<AuthResponse> LoginAsync(string login, string password)
 		{
-			User? user = await _userRepository.GetByLoginAsync(login)
+			User? user = await _userRepository.GetByLoginAsync(login, false)
 				?? throw new AuthenticationException("User not found.");
 
 			PasswordVerificationResult result = new PasswordHasher<User>()
