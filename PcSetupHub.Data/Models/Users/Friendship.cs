@@ -20,9 +20,19 @@ namespace PCSetupHub.Data.Models.Users
 		public Friendship() { }
 		public Friendship(int initiatorId, int friendId, int friendshipStatusId)
 		{
-			FriendId = friendId;
 			InitiatorId = initiatorId;
+			FriendId = friendId;
 			FriendshipStatusId = friendshipStatusId;
+		}
+
+		public void ChangeStatus(FriendshipStatusType status)
+		{
+			FriendshipStatusId = (int)status;
+
+			if (status == FriendshipStatusType.Accepted)
+				SetAccepted();
+			else
+				AcceptedAt = null;
 		}
 		public void SetAccepted()
 			=> AcceptedAt = DateTime.UtcNow;

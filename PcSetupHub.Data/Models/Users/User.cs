@@ -62,7 +62,8 @@ namespace PCSetupHub.Data.Models.Users
 				{
 					foreach (Friendship friendship in ReceivedFriendRequests)
 						if (friendship.Initiator != null &&
-							friendship.FriendshipStatusId == (int)FriendshipStatusType.Pending)
+							(friendship.FriendshipStatusId == (int)FriendshipStatusType.Pending ||
+							friendship.FriendshipStatusId == (int)FriendshipStatusType.Cancelled))
 							followers.Add(friendship.Initiator);
 				}
 
@@ -79,14 +80,14 @@ namespace PCSetupHub.Data.Models.Users
 				{
 					foreach (Friendship friendship in SentFriendRequests)
 						if (friendship.Friend != null &&
-							friendship.FriendshipStatusId == (int)FriendshipStatusType.Pending)
+							(friendship.FriendshipStatusId == (int)FriendshipStatusType.Pending ||
+							friendship.FriendshipStatusId == (int)FriendshipStatusType.Cancelled))
 							followings.Add(friendship.Friend);
 				}
 
 				return followings;
 			}
 		}
-
 
 		public User() { }
 		public User(string login, string? passwordHash, string name,
@@ -108,5 +109,10 @@ namespace PCSetupHub.Data.Models.Users
 			=> PasswordHash = newPasswordHash;
 		public void ChangeGoogleId(string googleId)
 			=> GoogleId = googleId;
+
+		public Friendship? GetReceivedRequestFrom(int userId)
+			=> ReceivedFriendRequests?.FirstOrDefault(fr => fr.InitiatorId == userId);
+		public Friendship? GetSentRequestTo(int userId)
+			=> SentFriendRequests?.FirstOrDefault(fr => fr.FriendId == userId);
 	}
 }

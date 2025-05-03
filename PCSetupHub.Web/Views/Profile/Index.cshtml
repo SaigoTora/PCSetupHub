@@ -4,12 +4,80 @@
 
 @{
 	ViewData["Title"] = $"{Model.Login}";
+
+	string? userLogin = User.GetLogin();
+	int? userId = User.GetId();
 }
 
-<section class="mb-4">
-	<span class="user-login me-4 text-white">@Model.Login</span>
-	<button class="user-action-btn me-2">Friend Status</button>
-	<button class="user-action-btn">Message</button>
+<section class="mb-4 d-inline-flex justify-content-center">
+	<span class="user-login me-4 text-white" translate="no">@Model.Login</span>
+	@if (userLogin != null && userLogin == Model.Login)
+	{
+		<button class="user-action-btn me-2">Settings</button>
+	}
+	else if (userId.HasValue)
+	{
+		Friendship? friendship = Model.GetReceivedRequestFrom(userId.Value);
+		if (friendship != null)
+		{
+			switch ((FriendshipStatusType)friendship.FriendshipStatusId)
+			{
+				case FriendshipStatusType.Pending:
+					<button class="user-action-btn me-2">Requested</button>
+					break;
+				case FriendshipStatusType.Accepted:
+					<button class="user-action-btn me-2">Friend</button>
+					break;
+				case FriendshipStatusType.Cancelled:
+					<button class="user-action-btn me-2">Declined</button>
+					break;
+				default:
+					<button class="user-action-btn me-2">Unknown</button>
+					break;
+			}
+			<form class="d-inline-block me-3" asp-controller="Profile" asp-action="DeleteFriendship" asp-route-id="@friendship.Id" method="post">
+				<button class="user-action-btn"><i class="d-flex justify-content-center align-items-center fa fa-user-slash text-danger"></i></button>
+			</form>
+		}
+		else
+		{
+			friendship = Model.GetSentRequestTo(userId.Value);
+			if (friendship != null)
+			{
+				FriendshipStatusType status = (FriendshipStatusType)friendship.FriendshipStatusId;
+				string highlightClass = status == FriendshipStatusType.Pending ? "friend-status-select-highlighted" : string.Empty;
+
+				<form class="d-inline-block me-2" asp-controller="Profile" asp-action="UpdateFriendshipStatus" asp-route-id="@friendship.Id" method="post">
+					<select name="newStatusId" class="friend-status-select @highlightClass" onchange="this.form.submit()" title="Choose friendship status">
+						@if (status == FriendshipStatusType.Pending)
+						{
+							<option hidden>Respond</option>
+						}
+						else if (status == FriendshipStatusType.Accepted)
+						{
+							<option hidden>Friend</option>
+						}
+
+						@if (status != FriendshipStatusType.Accepted)
+						{
+							<option value=@((int)FriendshipStatusType.Accepted) selected="@(friendship.FriendshipStatusId == (int)FriendshipStatusType.Accepted)">Accept</option>
+						}
+						<option value=@((int)FriendshipStatusType.Cancelled) selected="@(friendship.FriendshipStatusId == (int)FriendshipStatusType.Cancelled)">Reject</option>
+					</select>
+				</form>
+			}
+			else
+			{
+				<form class="d-inline-block me-2" asp-controller="Profile" asp-action="SendFriendRequest" asp-route-id="@Model.Id" method="post">
+					<button class="user-action-btn friend-status-select-highlighted">Follow</button>
+				</form>
+			}
+		}
+	}
+	@if (User.GetId() != Model.Id)
+	{
+		<button class="user-action-btn">Message</button>
+	}
 </section>
 <section class="mb-4">
 	@if (Model.Friends != null)

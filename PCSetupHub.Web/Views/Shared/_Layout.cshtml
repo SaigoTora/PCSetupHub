@@ -1,7 +1,7 @@
 ﻿@using PCSetupHub.Data.Models.Users
 
 @{
-	string? userLogin = User.Claims.FirstOrDefault(c => c.Type == "userLogin")?.Value;
+	string? userLogin = User.GetLogin();
 }
 
 <!DOCTYPE html>
@@ -26,7 +26,7 @@
 						 alt="Logo"
 						 width="50px"
 						 height="50px" />
-					<span class="navbar-brand nav-link"><span class="navbar-brand-accent">PC</span> Setup Hub</span>
+					<span translate="no" class="navbar-brand nav-link"><span translate="no" class="navbar-brand-accent">PC</span> Setup Hub</span>
 				</a>
 			</div>
 

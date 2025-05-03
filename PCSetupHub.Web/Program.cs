@@ -6,7 +6,8 @@ using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Core.Services;
 using PCSetupHub.Data;
-using PCSetupHub.Data.Repositories.Implementations;
+using PCSetupHub.Data.Repositories.Base;
+using PCSetupHub.Data.Repositories.Implementations.Users;
 using PCSetupHub.Data.Repositories.Interfaces;
 
 
@@ -34,6 +35,7 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 			.AddExternalAuthProviders(configuration);
 	services.ConfigureRateLimiter();
 	services.AddScoped<IUserRepository, UserRepository>();
+	services.AddScoped(typeof(IRepository<>), typeof(BaseRepo<>));
 	services.AddScoped<IUserService, UserService>();
 }
 static void CreateDbIfNotExists(IHost host)
