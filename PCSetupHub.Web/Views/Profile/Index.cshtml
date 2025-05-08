@@ -1,4 +1,6 @@
-﻿@using PCSetupHub.Data.Models.Users
+﻿@using PCSetupHub.Data.Models.Hardware
+@using PCSetupHub.Data.Models.Users
+@using PCSetupHub.Web.Helpers
 
 @model User
 
@@ -7,6 +9,10 @@
 
 	string? userLogin = User.GetLogin();
 	int? userId = User.GetId();
+	PcConfiguration? pcConfig = Model.PcConfiguration;
+	var rams = pcConfig?.PcConfigurationRams?.Select(x => x.Ram).ToList();
+	var ssds = pcConfig?.PcConfigurationSsds?.Select(x => x.Ssd).ToList();
+	var hdds = pcConfig?.PcConfigurationHdds?.Select(x => x.Hdd).ToList();
 }
 
 <section class="mb-4 d-inline-flex justify-content-center">
@@ -121,13 +127,186 @@
 
 <hr />
 
-@if (Model.PcConfiguration != null)
+@if (pcConfig != null)
 {
-	if (Model.PcConfiguration.Processor != null)
-	{
-		<span class="d-block">Processor</span>
-		<section>
-			<span>@Model.PcConfiguration.Processor.Name</span>
-		</section>
-	}
+	<section class="mb-2 pc-config-section">
+		<table class="table-responsive table-sm w-100 pc-components-table">
+			@if (pcConfig.Type != null)
+			{
+				<caption class="mb-2">
+					@if (pcConfig.Type.Name == "Desktop")
+					{
+						<i class="fa fa-display fs-6 me-1"></i>
+					}
+					else if (pcConfig.Type.Name == "Laptop")
+					{
+						<i class="fa fa-laptop fs-6 me-1"></i>
+					}
+					<span>@pcConfig.Type.Name</span>
+				</caption>
+			}
+
+			@if (pcConfig.Processor != null || pcConfig.VideoCard != null
+					|| pcConfig.Motherboard != null || pcConfig.PowerSupply != null
+					|| pcConfig.PcConfigurationSsds?.Count != 0
+					|| pcConfig.PcConfigurationHdds?.Count != 0
+					|| pcConfig.PcConfigurationRams?.Count != 0)
+			{
+				<thead>
+					<tr>
+						<th>Type</th>
+						<th>Name</th>
+						<th>Price</th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (pcConfig.Processor != null)
+					{
+						<tr>
+							<td>Processor</td>
+							<td>
+								<span id=@($"openModal-{typeof(Processor).Name}-{pcConfig.Processor.Id}") class="pc-component-name" translate="no">
+									@pcConfig.Processor.Name
+								</span>
+								@await Html.PartialAsync("_ComponentModal", pcConfig.Processor)
+							</td>
+
+							@Html.RenderPriceInTable(pcConfig.Processor.Price)
+						</tr>
+					}
+					@if (pcConfig.VideoCard != null)
+					{
+						<tr>
+							<td>Video Сard</td>
+							<td>
+								<span id=@($"openModal-{typeof(VideoCard).Name}-{pcConfig.VideoCard.Id}") class="pc-component-name" translate="no">
+									@pcConfig.VideoCard.Chipset
+								</span>
+								@await Html.PartialAsync("_ComponentModal", pcConfig.VideoCard)
+							</td>
+							@Html.RenderPriceInTable(pcConfig.VideoCard.Price)
+						</tr>
+					}
+					@if (pcConfig.Motherboard != null)
+					{
+						<tr>
+							<td>Motherboard</td>
+							<td>
+								<span id=@($"openModal-{typeof(Motherboard).Name}-{pcConfig.Motherboard.Id}") class="pc-component-name" translate="no">
+									@pcConfig.Motherboard.Name
+								</span>
+								@await Html.PartialAsync("_ComponentModal", pcConfig.Motherboard)
+							</td>
+							@Html.RenderPriceInTable(pcConfig.Motherboard.Price)
+						</tr>
+					}
+					@if (pcConfig.PowerSupply != null)
+					{
+						<tr>
+							<td>Power Supply</td>
+							<td>
+								<span id=@($"openModal-{typeof(PowerSupply).Name}-{pcConfig.PowerSupply.Id}") class="pc-component-name" translate="no">
+									@pcConfig.PowerSupply.Name
+								</span>
+								@await Html.PartialAsync("_ComponentModal", pcConfig.PowerSupply)
+							</td>
+							@Html.RenderPriceInTable(pcConfig.PowerSupply.Price)
+						</tr>
+					}
+					@if (rams != null && rams.Count != 0)
+					{
+						for (int i = 0; i < rams.Count; i++)
+						{
+							<tr>
+								@if (rams.Count == 1)
+								{
+									<td>RAM</td>
+								}
+								else
+								{
+									<td>RAM <sup>@(i + 1)</sup></td>
+								}
+								<td>
+									<span id=@($"openModal-{typeof(Ram).Name}-{rams[i]?.Id}") class="pc-component-name" translate="no">
+										@rams[i]?.Name
+									</span>
+									@await Html.PartialAsync("_ComponentModal", rams[i])
+								</td>
+								@Html.RenderPriceInTable(rams[i]?.Price)
+							</tr>
+						}
+					}
+					@if (ssds != null && ssds.Count != 0)
+					{
+						for (int i = 0; i < ssds.Count; i++)
+						{
+							<tr>
+								@if (ssds.Count == 1)
+								{
+									<td>SSD</td>
+								}
+								else
+								{
+									<td>SSD <sup>@(i + 1)</sup></td>
+								}
+								<td>
+									<span id=@($"openModal-{typeof(Ssd).Name}-{ssds[i]?.Id}") class="pc-component-name" translate="no">
+										@ssds[i]?.Name
+									</span>
+									@await Html.PartialAsync("_ComponentModal", ssds[i])
+								</td>
+								@Html.RenderPriceInTable(ssds[i]?.Price)
+							</tr>
+						}
+					}
+					@if (hdds != null && hdds.Count != 0)
+					{
+						for (int i = 0; i < hdds.Count; i++)
+						{
+							<tr>
+								@if (hdds.Count == 1)
+								{
+									<td>HDD</td>
+								}
+								else
+								{
+									<td>HDD <sup>@(i + 1)</sup></td>
+								}
+								<td>
+									<span id=@($"openModal-{typeof(Hdd).Name}-{hdds[i]?.Id}") class="pc-component-name" translate="no">
+										@hdds[i]?.Name
+									</span>
+									@await Html.PartialAsync("_ComponentModal", hdds[i])
+								</td>
+								@Html.RenderPriceInTable(hdds[i]?.Price)
+							</tr>
+						}
+					}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="2">Total</td>
+						@Html.RenderPriceInTable(pcConfig.TotalPrice)
+					</tr>
+				</tfoot>
+			}
+			else
+			{
+				<tbody>
+					@if (Model.Id == userId)
+					{
+						<tr>
+							<td colspan="3" class="text-center text-muted">You haven't selected any components for your configuration yet. You can do this in the <b>settings</b>.</td>
+						</tr>
+					}
+					else
+					{
+						<tr>
+							<td colspan="3" class="text-center">This user hasn't selected any components for their configuration yet.</td>
+						</tr>
+					}
+				</tbody>
+			}
+		</table>
+	</section>
 }

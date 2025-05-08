@@ -1,0 +1,81 @@
+﻿:root {
+    --color-modal-background: rgb(35, 41, 49);
+    --color-table-background: rgb(57, 62, 70);
+}
+
+#openModal {
+    cursor: pointer;
+}
+
+.modal-body {
+    padding-inline: 30px;
+}
+
+.modal-content {
+    background-color: var(--color-modal-background);
+    border: 2px solid var(--color-text-muted);
+}
+
+.modal-title {
+    font-weight: bold;
+}
+
+.warning-icon {
+    animation: rotateWarning 1s ease-in-out forwards;
+}
+
+@keyframes rotateWarning {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(-45deg) scale(1.2);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.modal-header, .modal-footer {
+    border: none !important;
+}
+
+.model-name {
+    font-size: 1.2rem;
+    color: var(--color-secondary-accent);
+    font-weight: bold;
+}
+
+.characteristics-table td {
+    padding-block: 5px !important;
+}
+
+.characteristics-table tr:nth-child(even) {
+    background-color: var(--color-table-background);
+}
+
+.characteristics-table td:nth-child(1) {
+    padding-left: 10px;
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+}
+
+.characteristics-table td:nth-last-child(1) {
+    text-align: left;
+    padding-left: 15px;
+    padding-right: 10px;
+    width: 30%;
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}
+
+.button-ok {
+    color: var(--color-light-text);
+    background-color: var(--color-secondary-accent);
+}
+
+    .button-ok:hover {
+        background-color: var(--color-secondary-accent-hover);
+    }

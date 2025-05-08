@@ -1,0 +1,106 @@
+﻿.color-container {
+    display: inline-block;
+    width: 21px;
+    height: 21px;
+    margin-right: 5px;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+
+.color-container-black {
+    background-color: black;
+    border-color: white;
+}
+
+.color-container-orange {
+    background-color: orange;
+}
+
+.color-container-silver {
+    background-color: silver;
+}
+
+.color-container-white {
+    background-color: white;
+}
+
+.color-container-red {
+    background-color: red;
+}
+
+.color-container-yellow {
+    background-color: yellow;
+}
+
+.color-container-blue {
+    background-color: blue;
+}
+
+.color-container-beige {
+    background-color: beige;
+}
+
+.color-container-gray {
+    background-color: gray;
+}
+
+.color-container-gold {
+    background-color: gold;
+}
+
+.color-container-pink {
+    background-color: pink;
+}
+
+.color-container-brown {
+    background-color: rgb(150, 75, 0);
+}
+
+.color-container-copper {
+    background-color: rgb(184, 115, 51);
+}
+
+.color-container-green {
+    background-color: green;
+}
+
+.color-container-purple {
+    background-color: purple;
+}
+
+.color-container-multicolor {
+    background: linear-gradient(to right, purple, orange, yellow, green, blue);
+}
+
+.color-container-camo {
+    background-color: rgb(107, 142, 35);
+}
+
+.color-container-translucent-black {
+    background-color: rgb(39, 39, 39);
+    border-color: white;
+}
+
+.color-container-teal {
+    background-color: teal;
+}
+
+.color-container-platinum {
+    background-color: rgb(217, 217, 217);
+}
+
+.color-container-amber {
+    background-color: rgb(255, 191, 0);
+}
+
+.color-container-transparent {
+    background-color: transparent;
+}
+
+.color-container-clear {
+    background-color: rgba(255, 255, 255, 0.75);
+}
+
+.color-container-translucent-blue {
+    background-color: rgba(0, 0, 255, 0.3);
+}

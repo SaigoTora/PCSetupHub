@@ -20,6 +20,23 @@ namespace PCSetupHub.Data.Models.Hardware
 		public ICollection<PcConfigurationSsd>? PcConfigurationSsds { get; private set; }
 		public ICollection<PcConfigurationHdd>? PcConfigurationHdds { get; private set; }
 		public ICollection<PcConfigurationRam>? PcConfigurationRams { get; private set; }
+		public double? TotalPrice
+		{
+			get
+			{
+				double price = (Processor?.Price ?? 0) + (VideoCard?.Price ?? 0) + (Motherboard?.Price ?? 0)
+					+ (PowerSupply?.Price ?? 0);
+
+				if (PcConfigurationRams != null)
+					price += PcConfigurationRams.Sum(ram => ram.Ram?.Price ?? 0);
+				if (PcConfigurationSsds != null)
+					price += PcConfigurationSsds.Sum(ssd => ssd.Ssd?.Price ?? 0);
+				if (PcConfigurationHdds != null)
+					price += PcConfigurationHdds.Sum(hdd => hdd.Hdd?.Price ?? 0);
+
+				return price == 0 ? null : price;
+			}
+		}
 
 		public PcConfiguration() { }
 		public PcConfiguration(int? typeId, int? processorId, int? videoCardId,
