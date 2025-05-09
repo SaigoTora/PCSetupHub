@@ -57,8 +57,11 @@ namespace PCSetupHub.Core.Services
 			Claim? userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "userId")
 				?? throw new SecurityTokenException("User ID claim not found in access token.");
 			int userId = int.Parse(userIdClaim.Value);
+			bool userRememberMe = bool.Parse(jwtToken.Claims
+				.FirstOrDefault(c => c.Type == "userRememberMe")?.Value ?? "false");
 
-			string newAccessToken = GenerateAccessToken(await _userRepository.GetOneAsync(userId));
+			string newAccessToken = GenerateAccessToken(await _userRepository.GetOneAsync(userId),
+				userRememberMe);
 			string newRefreshToken = GenerateRefreshToken();
 			return new AuthResponse(newAccessToken, newRefreshToken);
 		}
@@ -74,11 +77,12 @@ namespace PCSetupHub.Core.Services
 			};
 		}
 
-		public string GenerateAccessToken(User? user)
-			=> GenerateToken(_options.Value.AccessToken, user);
+		public string GenerateAccessToken(User? user, bool userRememberMe)
+			=> GenerateToken(_options.Value.AccessToken, user, userRememberMe);
 		public string GenerateRefreshToken()
 			=> GenerateToken(_options.Value.RefreshToken);
-		private static string GenerateToken(TokenSettings tokenSettings, User? user = null)
+		private static string GenerateToken(TokenSettings tokenSettings, User? user = null,
+			bool userRememberMe = false)
 		{
 			List<Claim>? claims = null;
 			if (user != null)
@@ -86,7 +90,8 @@ namespace PCSetupHub.Core.Services
 				[
 					new Claim("userId", user.Id.ToString()),
 					new Claim("userLogin", user.Login),
-					new Claim("userName", user!.Name)
+					new Claim("userName", user!.Name),
+					new Claim("userRememberMe", userRememberMe.ToString())
 				];
 
 			JwtSecurityToken jwtToken = new(

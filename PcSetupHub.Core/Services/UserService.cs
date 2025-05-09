@@ -29,7 +29,8 @@ namespace PCSetupHub.Core.Services
 
 			await _userRepository.AddAsync(user);
 		}
-		public async Task<AuthResponse> LoginAsync(string login, string password)
+		public async Task<AuthResponse> LoginAsync(string login, string password,
+			bool userRememberMe)
 		{
 			User? user = await _userRepository.GetByLoginAsync(login, false)
 				?? throw new AuthenticationException("User not found.");
@@ -39,7 +40,7 @@ namespace PCSetupHub.Core.Services
 
 			if (result == PasswordVerificationResult.Success)
 			{
-				return new AuthResponse(_jwtService.GenerateAccessToken(user),
+				return new AuthResponse(_jwtService.GenerateAccessToken(user, userRememberMe),
 					_jwtService.GenerateRefreshToken());
 			}
 			else
@@ -56,7 +57,7 @@ namespace PCSetupHub.Core.Services
 				await _userRepository.AddAsync(user);
 			}
 
-			return new AuthResponse(_jwtService.GenerateAccessToken(user),
+			return new AuthResponse(_jwtService.GenerateAccessToken(user, true),
 				_jwtService.GenerateRefreshToken());
 		}
 		public async Task<bool> IsUserLoggedIn(string accessToken, string refreshToken)

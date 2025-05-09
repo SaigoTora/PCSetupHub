@@ -119,13 +119,19 @@ namespace PCSetupHub.Core.Extensions
 			TokenSettings refreshTokenSettings, TokenSettings accessTokenSettings,
 			AuthResponse newTokens)
 		{
+			var rememberMeClaim = context.Principal?.FindFirst("userRememberMe")?.Value;
+			bool rememberMe = rememberMeClaim?.ToLower() == "true";
+
+			DateTime? tokenExpires = !rememberMe ?
+				null : DateTime.UtcNow.Add(refreshTokenSettings.Lifetime);
+
 			context.Response.Cookies.Append(refreshTokenSettings.CookieName,
 				newTokens.RefreshToken!, new CookieOptions
-				{ Expires = DateTime.UtcNow.Add(refreshTokenSettings.Lifetime) });
+				{ Expires = tokenExpires });
 
 			context.Response.Cookies.Append(accessTokenSettings.CookieName,
 				newTokens.AccessToken!, new CookieOptions
-				{ Expires = DateTime.UtcNow.Add(refreshTokenSettings.Lifetime) });
+				{ Expires = tokenExpires });
 		}
 
 		private static async Task HandleChallengeAsync(JwtBearerChallengeContext context,

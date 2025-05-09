@@ -47,7 +47,7 @@ namespace PCSetupHub.Web.Controllers
 					registerRequest.Name, registerRequest.Email, null);
 
 				AuthResponse authResponse = await _userService.LoginAsync(registerRequest.Login,
-					registerRequest.Password!);
+					registerRequest.Password!, true);
 
 				AddTokensToCookies(authResponse, false);
 			}
@@ -111,7 +111,7 @@ namespace PCSetupHub.Web.Controllers
 			try
 			{
 				AuthResponse authResponse = await _userService.LoginAsync(loginRequest.Login,
-					loginRequest.Password);
+					loginRequest.Password, loginRequest.RememberMe);
 
 				AddTokensToCookies(authResponse, !loginRequest.RememberMe);
 			}
