@@ -264,7 +264,7 @@ caption {
     padding-right: 10px;
 }
 
-.pc-components-table td:nth-child(1) {
+.pc-components-table td:nth-child(1), th:nth-child(1) {
     padding-inline: 10px;
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);

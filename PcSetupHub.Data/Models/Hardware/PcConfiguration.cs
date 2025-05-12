@@ -37,6 +37,25 @@ namespace PCSetupHub.Data.Models.Hardware
 				return price == 0 ? null : price;
 			}
 		}
+		public bool AreAllComponentsDefault
+		{
+			get
+			{
+				static bool IsDefaultOrNull(HardwareComponent? component) =>
+					component == null || component.IsDefault;
+
+				if (!IsDefaultOrNull(Processor)) return false;
+				if (!IsDefaultOrNull(VideoCard)) return false;
+				if (!IsDefaultOrNull(Motherboard)) return false;
+				if (!IsDefaultOrNull(PowerSupply)) return false;
+
+				if (PcConfigurationRams?.Any(x => !IsDefaultOrNull(x?.Ram)) == true) return false;
+				if (PcConfigurationSsds?.Any(x => !IsDefaultOrNull(x?.Ssd)) == true) return false;
+				if (PcConfigurationHdds?.Any(x => !IsDefaultOrNull(x?.Hdd)) == true) return false;
+
+				return true;
+			}
+		}
 
 		public PcConfiguration() { }
 		public PcConfiguration(int? typeId, int? processorId, int? videoCardId,

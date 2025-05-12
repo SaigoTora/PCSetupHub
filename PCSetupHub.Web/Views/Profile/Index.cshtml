@@ -285,7 +285,13 @@
 				</tbody>
 				<tfoot>
 					<tr>
-						<td colspan="2">Total</td>
+						<td colspan="2">
+							Total
+							@if (!pcConfig.AreAllComponentsDefault)
+							{
+								<i class="ps-1 fs-5 fa fa-circle-exclamation text-warning" title="Some components were entered by a user and may be inaccurate."></i>
+							}
+						</td>
 						@Html.RenderPriceInTable(pcConfig.TotalPrice)
 					</tr>
 				</tfoot>
