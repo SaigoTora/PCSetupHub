@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Interfaces;
+using PCSetupHub.Core.Middlewares;
 using PCSetupHub.Core.Services;
 using PCSetupHub.Data;
 using PCSetupHub.Data.Repositories.Base;
@@ -27,6 +28,7 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 		options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 	});
 
+	services.AddHttpClient();
 	services.AddDbContext<PcSetupContext>(options =>
 		options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
@@ -65,6 +67,8 @@ static void ConfigureMiddleware(WebApplication app)
 
 	app.UseHttpsRedirection();
 	app.UseRouting();
+
+	app.UseMiddleware<TokenRefreshMiddleware>();
 
 	app.UseCookiePolicy(new CookiePolicyOptions
 	{
