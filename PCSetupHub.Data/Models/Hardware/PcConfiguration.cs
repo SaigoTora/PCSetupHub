@@ -56,6 +56,15 @@ namespace PCSetupHub.Data.Models.Hardware
 				return true;
 			}
 		}
+		public bool HasAnyComponents
+		{
+			get
+			{
+				return Processor != null || VideoCard != null || Motherboard != null
+					|| PowerSupply != null || PcConfigurationSsds?.Count != 0
+					|| PcConfigurationHdds?.Count != 0 || PcConfigurationRams?.Count != 0;
+			}
+		}
 
 		public PcConfiguration() { }
 		public PcConfiguration(int? typeId, int? processorId, int? videoCardId,

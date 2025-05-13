@@ -321,6 +321,20 @@ caption {
         transition-property: width, left;
     }
 
+.button-more {
+    background-color: var(--color-secondary-accent);
+    color: var(--color-light-text);
+    padding-inline: 30px;
+    padding-block: 5px;
+    font-size: 1.25rem;
+    border-radius: var(--border-radius);
+    border: none;
+}
+
+    .button-more:hover {
+        background-color: var(--color-secondary-accent-hover);
+    }
+
 footer {
     margin-left: var(--nav-menu-width);
     width: calc(100% - var(--nav-menu-width)) !important;

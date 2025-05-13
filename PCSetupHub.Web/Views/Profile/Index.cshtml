@@ -130,7 +130,7 @@
 @if (pcConfig != null)
 {
 	<section class="mb-2 pc-config-section">
-		<table class="table-responsive table-sm w-100 pc-components-table">
+		<table class="table-responsive table-sm w-100 pc-components-table mb-2">
 			@if (pcConfig.Type != null)
 			{
 				<caption class="mb-2">
@@ -146,11 +146,7 @@
 				</caption>
 			}
 
-			@if (pcConfig.Processor != null || pcConfig.VideoCard != null
-					|| pcConfig.Motherboard != null || pcConfig.PowerSupply != null
-					|| pcConfig.PcConfigurationSsds?.Count != 0
-					|| pcConfig.PcConfigurationHdds?.Count != 0
-					|| pcConfig.PcConfigurationRams?.Count != 0)
+			@if (pcConfig.HasAnyComponents)
 			{
 				<thead>
 					<tr>
@@ -302,7 +298,7 @@
 					@if (Model.Id == userId)
 					{
 						<tr>
-							<td colspan="3" class="text-center text-muted">You haven't selected any components for your configuration yet. You can do this in the <b>settings</b>.</td>
+							<td colspan="3" class="text-center text-muted">You haven't selected any components for your configuration yet. You can do this in the <b>settings</b> or by clicking the <b>button below</b>.</td>
 						</tr>
 					}
 					else
@@ -314,5 +310,21 @@
 				</tbody>
 			}
 		</table>
+		@if (pcConfig.HasAnyComponents)
+		{
+			<div class="d-flex justify-content-center">
+				<form asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id" method="get">
+					<button class="button-more" type="submit">More</button>
+				</form>
+			</div>
+		}
+		else if (Model.Id == userId)
+		{
+			<div class="d-flex justify-content-center">
+				<form asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id" method="get">
+					<button class="button-more" type="submit">Configure</button>
+				</form>
+			</div>
+		}
 	</section>
 }
