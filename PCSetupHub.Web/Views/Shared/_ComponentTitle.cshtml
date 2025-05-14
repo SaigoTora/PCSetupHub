@@ -4,27 +4,40 @@
 
 <div>
 	@Model.ComponentTypeName
+	@if (Model.ComponentNumber != null)
+	{
+		<sup>@Model.ComponentNumber</sup>
+	}
 	@if (Model.Component != null)
 	{
-		@:– @Model.Component.Name
+		@if (!string.IsNullOrWhiteSpace(Model.ComponentTypeName))
+		{
+			@:–
+		}
+		@Model.Component.Name
 	}
 </div>
 <div>
 	@if (Model.IsCurrentUserOwner)
 	{
-		if (Model.Component == null)
+		if (Model.ShowAddButton)
 		{
-			<p>[Select]</p>
+			<span>[Add]</span>
 		}
-		else
+
+		if (Model.Component == null && !Model.ShowAddButton)
+		{
+			<span>[Select]</span>
+		}
+		else if (Model.Component != null)
 		{
 			if (Model.Component.IsDefault)
 			{
-				<p>[Select] [Clear]</p>
+				<span>[Select] [Clear]</span>
 			}
 			else
 			{
-				<p>[Edit] [Delete]</p>
+				<span>[Edit] [Delete]</span>
 			}
 		}
 	}

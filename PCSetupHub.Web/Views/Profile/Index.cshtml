@@ -10,9 +10,9 @@
 	string? userLogin = User.GetLogin();
 	int? userId = User.GetId();
 	PcConfiguration? pcConfig = Model.PcConfiguration;
-	var rams = pcConfig?.PcConfigurationRams?.Select(x => x.Ram).ToList();
-	var ssds = pcConfig?.PcConfigurationSsds?.Select(x => x.Ssd).ToList();
-	var hdds = pcConfig?.PcConfigurationHdds?.Select(x => x.Hdd).ToList();
+	var rams = pcConfig?.GetRams();
+	var ssds = pcConfig?.GetSsds();
+	var hdds = pcConfig?.GetHdds();
 }
 
 <section class="mb-4 d-inline-flex justify-content-center">
@@ -209,12 +209,12 @@
 							@Html.RenderPriceInTable(pcConfig.PowerSupply.Price)
 						</tr>
 					}
-					@if (rams != null && rams.Count != 0)
+					@if (rams != null && rams.Length != 0)
 					{
-						for (int i = 0; i < rams.Count; i++)
+						for (int i = 0; i < rams.Length; i++)
 						{
 							<tr>
-								@if (rams.Count == 1)
+								@if (rams.Length == 1)
 								{
 									<td>RAM</td>
 								}
@@ -232,12 +232,12 @@
 							</tr>
 						}
 					}
-					@if (ssds != null && ssds.Count != 0)
+					@if (ssds != null && ssds.Length != 0)
 					{
-						for (int i = 0; i < ssds.Count; i++)
+						for (int i = 0; i < ssds.Length; i++)
 						{
 							<tr>
-								@if (ssds.Count == 1)
+								@if (ssds.Length == 1)
 								{
 									<td>SSD</td>
 								}
@@ -255,12 +255,12 @@
 							</tr>
 						}
 					}
-					@if (hdds != null && hdds.Count != 0)
+					@if (hdds != null && hdds.Length != 0)
 					{
-						for (int i = 0; i < hdds.Count; i++)
+						for (int i = 0; i < hdds.Length; i++)
 						{
 							<tr>
-								@if (hdds.Count == 1)
+								@if (hdds.Length == 1)
 								{
 									<td>HDD</td>
 								}
@@ -310,19 +310,19 @@
 				</tbody>
 			}
 		</table>
-		@if (pcConfig.HasAnyComponents)
-		{
-			<div class="d-flex justify-content-center">
-				<a class="btn button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
-					More
-				</a>
-			</div>
-		}
-		else if (Model.Id == userId)
+		@if (Model.Id == userId)
 		{
 			<div class="d-flex justify-content-center">
 				<a class="btn button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
 					Configure
+				</a>
+			</div>
+		}
+		else if (pcConfig.HasAnyComponents)
+		{
+			<div class="d-flex justify-content-center">
+				<a class="btn button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
+					More
 				</a>
 			</div>
 		}

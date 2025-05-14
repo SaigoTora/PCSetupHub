@@ -1,4 +1,5 @@
-﻿@using PCSetupHub.Data.Models.Hardware
+﻿@using PCSetupHub.Data.Models.Attributes
+@using PCSetupHub.Data.Models.Hardware
 @using PCSetupHub.Web.Helpers
 @using PCSetupHub.Web.ViewModels
 
@@ -8,6 +9,9 @@
 	<link rel="stylesheet" href="~/css/color-containers.css" />
 
 	bool isCurrentUserOwner = Model.User != null && Model.User.Id == User.GetId();
+	var rams = Model.GetRams();
+	var ssds = Model.GetSsds();
+	var hdds = Model.GetHdds();
 }
 
 <section class="mb-3">
@@ -35,8 +39,7 @@
 	}
 </section>
 
-
-<section>
+<section class="mb-5">
 	<div class="section-header d-flex justify-content-between align-items-center">
 		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Processor", "Processor", Model.Processor, isCurrentUserOwner))
 	</div>
@@ -52,6 +55,10 @@
 			</thead>
 
 			<tbody>
+				<tr>
+					<td>Price</td>
+					@Html.RenderPriceInTable(processor.Price)
+				</tr>
 				<tr>
 					<td>Number of cores</td>
 					<td>@processor.CoreCount</td>
@@ -82,5 +89,367 @@
 				</tr>
 			</tbody>
 		</table>
+	}
+</section>
+
+<section class="mb-5">
+	<div class="section-header d-flex justify-content-between align-items-center">
+		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Video Card", "VideoCard", Model.VideoCard, isCurrentUserOwner))
+	</div>
+	@if (Model.VideoCard != null)
+	{
+		VideoCard videoCard = Model.VideoCard;
+		<table>
+			<thead>
+				<tr>
+					<th>Property</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td>Price</td>
+					@Html.RenderPriceInTable(videoCard.Price)
+				</tr>
+				<tr>
+					<td>Chipset</td>
+					<td translate="no">@Html.RenderText(videoCard.Chipset)</td>
+				</tr>
+				<tr>
+					<td>Memory</td>
+					<td>@Html.RenderRoundedNumber(videoCard.Memory)</td>
+				</tr>
+				<tr>
+					<td>Core clock</td>
+					<td>@Html.RenderNumber(videoCard.CoreClock, "MHz")</td>
+				</tr>
+				<tr>
+					<td>Boost clock</td>
+					<td>@Html.RenderNumber(videoCard.BoostClock, "MHz")</td>
+				</tr>
+				<tr>
+					<td>Length</td>
+					<td>@Html.RenderNumber(videoCard.Length, "mm")</td>
+				</tr>
+
+				@{
+					var videoCardColors = videoCard?.ColorVideoCards?.Select(x => x.Color)
+					?? Enumerable.Empty<Color?>();
+				}
+				<tr>
+					<td>Color</td>
+					<td>@Html.RenderColorIndicator(videoCardColors)</td>
+				</tr>
+			</tbody>
+		</table>
+	}
+</section>
+
+<section class="mb-5">
+	<div class="section-header d-flex justify-content-between align-items-center">
+		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Motherboard", "Motherboard", Model.Motherboard, isCurrentUserOwner))
+	</div>
+	@if (Model.Motherboard != null)
+	{
+		Motherboard motherboard = Model.Motherboard;
+		<table>
+			<thead>
+				<tr>
+					<th>Property</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td>Price</td>
+					@Html.RenderPriceInTable(motherboard.Price)
+				</tr>
+				<tr>
+					<td>Socket</td>
+					<td>@Html.RenderText(motherboard.Socket)</td>
+				</tr>
+				<tr>
+					<td>Form factor</td>
+					<td>@Html.RenderText(motherboard.FormFactor)</td>
+				</tr>
+				<tr>
+					<td>Maximum memory</td>
+					<td>@motherboard.MaxMemory GB</td>
+				</tr>
+				<tr>
+					<td>Number of memory slots</td>
+					<td>@motherboard.MemorySlots</td>
+				</tr>
+
+				@{
+					var motherboardColors = motherboard?.ColorMotherboards?.Select(x => x.Color)
+					?? Enumerable.Empty<Color?>();
+				}
+				<tr>
+					<td>Color</td>
+					<td>@Html.RenderColorIndicator(motherboardColors)</td>
+				</tr>
+			</tbody>
+		</table>
+	}
+</section>
+
+<section class="mb-5">
+	<div class="section-header d-flex justify-content-between align-items-center">
+		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Power Supply", "PowerSupply", Model.PowerSupply, isCurrentUserOwner))
+	</div>
+	@if (Model.PowerSupply != null)
+	{
+		PowerSupply powerSupply = Model.PowerSupply;
+		<table>
+			<thead>
+				<tr>
+					<th>Property</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td>Price</td>
+					@Html.RenderPriceInTable(powerSupply.Price)
+				</tr>
+				<tr>
+					<td>Type</td>
+					<td>@Html.RenderText(powerSupply.Type)</td>
+				</tr>
+				<tr>
+					<td>Efficiency rating</td>
+					<td>@Html.RenderText(powerSupply.Efficiency)</td>
+				</tr>
+				<tr>
+					<td>Wattage</td>
+					<td>@powerSupply.Wattage W</td>
+				</tr>
+				<tr>
+					<td>Modularity</td>
+					<td>@Html.RenderText(powerSupply.Modular)</td>
+				</tr>
+				@{
+
+					var powerSupplyColors = powerSupply?.ColorPowerSupplies?.Select(x => x.Color)
+					?? Enumerable.Empty<Color?>();
+				}
+				<tr>
+					<td>Color</td>
+					<td>@Html.RenderColorIndicator(powerSupplyColors)</td>
+				</tr>
+			</tbody>
+		</table>
+	}
+</section>
+
+<section class="mb-5">
+	@if (rams != null && rams.Length != 0)
+	{
+		@for (int i = 0; i < rams.Length; i++)
+		{
+			<div class="section-header d-flex justify-content-between align-items-center">
+				@if (rams.Length == 1)
+				{
+					@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("RAM", "RAM", rams[i], isCurrentUserOwner, i == 0))
+				}
+				else
+				{
+					@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"RAM", "RAM", rams[i], isCurrentUserOwner, i == 0, i + 1))
+				}
+			</div>
+
+			@if (rams[i] != null)
+			{
+				Ram ram = rams[i];
+				<table>
+					<thead>
+						<tr>
+							<th>Property</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td>Price</td>
+							@Html.RenderPriceInTable(ram.Price)
+						</tr>
+						<tr>
+							<td>DDR version</td>
+							<td>@ram.MemoryType</td>
+						</tr>
+						<tr>
+							<td>Frequency</td>
+							<td>@ram.Frequency MHz</td>
+						</tr>
+						<tr>
+							<td>Number of modules</td>
+							<td>@ram.ModulesCount</td>
+						</tr>
+						<tr>
+							<td>Size of each module</td>
+							<td>@ram.ModuleCapacity GB</td>
+						</tr>
+						<tr>
+							<td>First Word Latency</td>
+							<td>@Html.RenderRoundedNumber(ram.FirstWordLatency) ns</td>
+						</tr>
+						<tr>
+							<td>CAS Latency</td>
+							<td>@Html.RenderRoundedNumber(ram.CASLatency)</td>
+						</tr>
+						@{
+							var ramColors = ram?.ColorRams?.Select(x => x.Color)
+							?? Enumerable.Empty<Color?>();
+						}
+						<tr>
+							<td>Color</td>
+							<td>@Html.RenderColorIndicator(ramColors)</td>
+						</tr>
+					</tbody>
+				</table>
+			}
+		}
+	}
+	else
+	{
+		<div class="section-header d-flex justify-content-between align-items-center">
+			@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("RAM", "RAM", null, isCurrentUserOwner, true))
+		</div>
+	}
+</section>
+
+<section class="mb-5">
+	@if (ssds != null && ssds.Length != 0)
+	{
+		@for (int i = 0; i < ssds.Length; i++)
+		{
+			<div class="section-header d-flex justify-content-between align-items-center">
+				@if (ssds.Length == 1)
+				{
+					@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("SSD", "SSD", ssds[i], isCurrentUserOwner, i == 0))
+				}
+				else
+				{
+					@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"SSD", "SSD", ssds[i], isCurrentUserOwner, i == 0, i + 1))
+				}
+			</div>
+
+			@if (ssds[i] != null)
+			{
+				Ssd ssd = ssds[i];
+				<table>
+					<thead>
+						<tr>
+							<th>Property</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td>Price</td>
+							@Html.RenderPriceInTable(ssd.Price)
+						</tr>
+						<tr>
+							<td>Capacity</td>
+							<td>@Html.RenderRoundedNumber(ssd.Capacity) GB</td>
+						</tr>
+						<tr>
+							<td>Type</td>
+							<td>@Html.RenderText(ssd.Type)</td>
+						</tr>
+						<tr>
+							<td>Cache</td>
+							<td>@Html.RenderNumber(ssd.Cache, "MB")</td>
+						</tr>
+						<tr>
+							<td>Form factor</td>
+							<td>@Html.RenderText(ssd.FormFactor)</td>
+						</tr>
+						<tr>
+							<td>Interface</td>
+							<td>@Html.RenderText(ssd.Interface)</td>
+						</tr>
+					</tbody>
+				</table>
+			}
+		}
+	}
+	else
+	{
+		<div class="section-header d-flex justify-content-between align-items-center">
+			@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("SSD", "SSD", null, isCurrentUserOwner, true))
+		</div>
+	}
+</section>
+
+<section class="mb-5">
+	@if (hdds != null && hdds.Length != 0)
+	{
+		@for (int i = 0; i < hdds.Length; i++)
+		{
+			<div class="section-header d-flex justify-content-between align-items-center">
+				@if (hdds.Length == 1)
+				{
+					@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("HDD", "HDD", hdds[i], isCurrentUserOwner, i == 0))
+				}
+				else
+				{
+					@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"HDD", "HDD", hdds[i], isCurrentUserOwner, i == 0, i + 1))
+				}
+			</div>
+
+			@if (hdds[i] != null)
+			{
+				Hdd hdd = hdds[i];
+				<table>
+					<thead>
+						<tr>
+							<th>Property</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td>Price</td>
+							@Html.RenderPriceInTable(hdd.Price)
+						</tr>
+						<tr>
+							<td>Type</td>
+							<td>@Html.RenderText(hdd.Type)</td>
+						</tr>
+						<tr>
+							<td>Interface</td>
+							<td>@Html.RenderText(hdd.Interface)</td>
+						</tr>
+						<tr>
+							<td>Capacity</td>
+							<td>@hdd.Capacity GB</td>
+						</tr>
+
+						@{
+							var hddColors = hdd?.ColorHdds?.Select(x => x.Color)
+							?? Enumerable.Empty<Color?>();
+						}
+						<tr>
+							<td>Color</td>
+							<td>@Html.RenderColorIndicator(hddColors)</td>
+						</tr>
+					</tbody>
+				</table>
+			}
+		}
+	}
+	else
+	{
+		<div class="section-header d-flex justify-content-between align-items-center">
+			@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("HDD", "HDD", null, isCurrentUserOwner, true))
+		</div>
 	}
 </section>

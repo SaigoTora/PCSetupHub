@@ -241,9 +241,7 @@
 								</tr>
 
 								var hddColors = hdd?.ColorHdds?.Select(x => x.Color)
-								?? Enumerable.Empty
-								<Color?>
-								();
+								?? Enumerable.Empty<Color?>();
 								<tr>
 									<td>Color</td>
 									<td>@Html.RenderColorIndicator(hddColors)</td>

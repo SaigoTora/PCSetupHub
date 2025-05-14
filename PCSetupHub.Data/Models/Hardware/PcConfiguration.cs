@@ -17,9 +17,10 @@ namespace PCSetupHub.Data.Models.Hardware
 		public int? MotherboardId { get; private set; }
 		public int? PowerSupplyId { get; private set; }
 		public User? User { get; private set; }
+		public ICollection<PcConfigurationRam>? PcConfigurationRams { get; private set; }
 		public ICollection<PcConfigurationSsd>? PcConfigurationSsds { get; private set; }
 		public ICollection<PcConfigurationHdd>? PcConfigurationHdds { get; private set; }
-		public ICollection<PcConfigurationRam>? PcConfigurationRams { get; private set; }
+
 		public double? TotalPrice
 		{
 			get
@@ -76,5 +77,12 @@ namespace PCSetupHub.Data.Models.Hardware
 			MotherboardId = motherboardId;
 			PowerSupplyId = powerSupplyId;
 		}
+
+		public Ram[] GetRams()
+			=> PcConfigurationRams?.Select(x => x.Ram).Where(ram => ram != null).ToArray()!;
+		public Ssd[] GetSsds()
+			=> PcConfigurationSsds?.Select(x => x.Ssd).Where(ssd => ssd != null).ToArray()!;
+		public Hdd[] GetHdds()
+			=> PcConfigurationHdds?.Select(x => x.Hdd).Where(hdd => hdd != null).ToArray()!;
 	}
 }
