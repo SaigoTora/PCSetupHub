@@ -1,0 +1,86 @@
+﻿@using PCSetupHub.Data.Models.Hardware
+@using PCSetupHub.Web.Helpers
+@using PCSetupHub.Web.ViewModels
+
+@model PcConfiguration
+
+@{
+	<link rel="stylesheet" href="~/css/color-containers.css" />
+
+	bool isCurrentUserOwner = Model.User != null && Model.User.Id == User.GetId();
+}
+
+<section class="mb-3">
+	@if (isCurrentUserOwner)
+	{
+		<select>
+			<option hidden>Computer Type</option>
+			<option>Desktop</option>
+			<option>Laptop</option>
+		</select>
+	}
+	else if (Model.Type != null)
+	{
+		<div>
+			@if (Model.Type.Name == "Desktop")
+			{
+				<i class="fa fa-display fs-5 me-2"></i>
+			}
+			else if (Model.Type.Name == "Laptop")
+			{
+				<i class="fa fa-laptop fs-5 me-2"></i>
+			}
+			<span class="fs-4">@Model.Type.Name</span>
+		</div>
+	}
+</section>
+
+
+<section>
+	<div class="section-header d-flex justify-content-between align-items-center">
+		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Processor", "Processor", Model.Processor, isCurrentUserOwner))
+	</div>
+	@if (Model.Processor != null)
+	{
+		Processor processor = Model.Processor;
+		<table>
+			<thead>
+				<tr>
+					<th>Property</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td>Number of cores</td>
+					<td>@processor.CoreCount</td>
+				</tr>
+				<tr>
+					<td>Core clock</td>
+					<td>@Html.RenderRoundedNumber(processor.CoreClock) GHz</td>
+				</tr>
+				<tr>
+					<td>Boost clock</td>
+					<td>
+						@Html.RenderRoundedNumber(processor.BoostClock, "GHz")
+					</td>
+				</tr>
+				<tr>
+					<td>TDP</td>
+					<td>@processor.TDP W</td>
+				</tr>
+				<tr>
+					<td>Integrated graphics</td>
+					<td>
+						@Html.RenderText(processor.Graphics)
+					</td>
+				</tr>
+				<tr>
+					<td>SMT support</td>
+					<td>@Html.RenderBoolIndicator(processor.SMT)</td>
+				</tr>
+			</tbody>
+		</table>
+	}
+</section>

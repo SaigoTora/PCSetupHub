@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Base;
-using PCSetupHub.Data.Repositories.Interfaces;
+using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 namespace PCSetupHub.Web.Controllers
 {
@@ -13,7 +14,7 @@ namespace PCSetupHub.Web.Controllers
 		IRepository<Friendship> _friendshipRepository, IRepository<User> _genericUserRepository)
 		: Controller
 	{
-		[HttpGet("Profile/{login?}")]
+		[HttpGet("Profile/{login}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Index(string login)
 		{

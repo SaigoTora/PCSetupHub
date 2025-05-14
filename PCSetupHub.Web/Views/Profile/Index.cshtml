@@ -313,17 +313,17 @@
 		@if (pcConfig.HasAnyComponents)
 		{
 			<div class="d-flex justify-content-center">
-				<form asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id" method="get">
-					<button class="button-more" type="submit">More</button>
-				</form>
+				<a class="btn button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
+					More
+				</a>
 			</div>
 		}
 		else if (Model.Id == userId)
 		{
 			<div class="d-flex justify-content-center">
-				<form asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id" method="get">
-					<button class="button-more" type="submit">Configure</button>
-				</form>
+				<a class="btn button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
+					Configure
+				</a>
 			</div>
 		}
 	</section>

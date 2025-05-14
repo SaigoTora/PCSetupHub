@@ -1,0 +1,31 @@
+﻿@using PCSetupHub.Web.ViewModels
+
+@model ComponentTitleViewModel
+
+<div>
+	@Model.ComponentTypeName
+	@if (Model.Component != null)
+	{
+		@:– @Model.Component.Name
+	}
+</div>
+<div>
+	@if (Model.IsCurrentUserOwner)
+	{
+		if (Model.Component == null)
+		{
+			<p>[Select]</p>
+		}
+		else
+		{
+			if (Model.Component.IsDefault)
+			{
+				<p>[Select] [Clear]</p>
+			}
+			else
+			{
+				<p>[Edit] [Delete]</p>
+			}
+		}
+	}
+</div>

@@ -5,7 +5,7 @@ using PCSetupHub.Core.DTOs;
 using PCSetupHub.Core.Exceptions;
 using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Data.Models.Users;
-using PCSetupHub.Data.Repositories.Interfaces;
+using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 namespace PCSetupHub.Core.Services
 {

@@ -8,8 +8,10 @@ using PCSetupHub.Core.Middlewares;
 using PCSetupHub.Core.Services;
 using PCSetupHub.Data;
 using PCSetupHub.Data.Repositories.Base;
+using PCSetupHub.Data.Repositories.Implementations.PcConfigurations;
 using PCSetupHub.Data.Repositories.Implementations.Users;
-using PCSetupHub.Data.Repositories.Interfaces;
+using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
+using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +39,7 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 			.AddExternalAuthProviders(configuration);
 	services.ConfigureRateLimiter();
 	services.AddScoped<IUserRepository, UserRepository>();
+	services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
 	services.AddScoped(typeof(IRepository<>), typeof(BaseRepo<>));
 	services.AddScoped<IUserService, UserService>();
 }

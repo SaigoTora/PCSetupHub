@@ -7,7 +7,7 @@ using System.Text;
 using PCSetupHub.Core.DTOs;
 using PCSetupHub.Core.Settings;
 using PCSetupHub.Data.Models.Users;
-using PCSetupHub.Data.Repositories.Interfaces;
+using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 namespace PCSetupHub.Core.Services
 {
