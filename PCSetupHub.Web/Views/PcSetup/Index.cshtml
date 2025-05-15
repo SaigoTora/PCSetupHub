@@ -17,11 +17,13 @@
 <section class="mb-3">
 	@if (isCurrentUserOwner)
 	{
-		<select>
-			<option hidden>Computer Type</option>
-			<option>Desktop</option>
-			<option>Laptop</option>
-		</select>
+		<form asp-controller="PcSetup" asp-action="UpdateType" method="post" asp-route-id="@Model.Id">
+			<select name="typeName" onchange="this.form.submit()" title="Choose computer type">
+				<option hidden>Computer Type</option>
+				<option value="Desktop" selected="@(Model.Type?.Name == "Desktop")">Desktop</option>
+				<option value="Laptop" selected="@(Model.Type?.Name == "Laptop")">Laptop</option>
+			</select>
+		</form>
 	}
 	else if (Model.Type != null)
 	{

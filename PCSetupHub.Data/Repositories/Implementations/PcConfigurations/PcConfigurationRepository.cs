@@ -9,24 +9,34 @@ namespace PCSetupHub.Data.Repositories.Implementations.PcConfigurations
 	public class PcConfigurationRepository(PcSetupContext context)
 		: BaseRepo<PcConfiguration>(context), IPcConfigurationRepository
 	{
-		public async Task<PcConfiguration?> GetByIdAsync(int id)
+		public async Task<PcConfiguration?> GetByIdAsync(int id, bool includeComponents)
 		{
-			return await Context.PcConfigurations.AsQueryable()
+			var query = Context.PcConfigurations.AsQueryable()
 				.Include(pcConfig => pcConfig.Type)
-				.Include(pcConfig => pcConfig.Processor)
-				.Include(pcConfig => pcConfig.VideoCard)
-					.ThenInclude(vc => vc!.ColorVideoCards!).ThenInclude(x => x.Color)
-				.Include(pcConfig => pcConfig.Motherboard)
-					.ThenInclude(m => m!.ColorMotherboards!).ThenInclude(x => x.Color)
-				.Include(pcConfig => pcConfig.PowerSupply)
-					.ThenInclude(ps => ps!.ColorPowerSupplies!).ThenInclude(x => x.Color)
-				.Include(pcConfig => pcConfig!.PcConfigurationSsds!).ThenInclude(pcSsd => pcSsd.Ssd)
-				.Include(pcConfig => pcConfig!.PcConfigurationRams!).ThenInclude(pcRam => pcRam.Ram)
-					.ThenInclude(ram => ram!.ColorRams!).ThenInclude(x => x.Color)
-				.Include(pcConfig => pcConfig!.PcConfigurationHdds!).ThenInclude(pcHdd => pcHdd.Hdd)
-					.ThenInclude(hdd => hdd!.ColorHdds!).ThenInclude(x => x.Color)
-				.Include(pcConfig => pcConfig.User)
-				.FirstOrDefaultAsync(pcConfig => pcConfig.Id == id);
+				.Include(pcConfig => pcConfig.User);
+
+			if (includeComponents)
+			{
+				return await query
+					.Include(pcConfig => pcConfig.Processor)
+					.Include(pcConfig => pcConfig.VideoCard)
+						.ThenInclude(vc => vc!.ColorVideoCards!).ThenInclude(x => x.Color)
+					.Include(pcConfig => pcConfig.Motherboard)
+						.ThenInclude(m => m!.ColorMotherboards!).ThenInclude(x => x.Color)
+					.Include(pcConfig => pcConfig.PowerSupply)
+						.ThenInclude(ps => ps!.ColorPowerSupplies!).ThenInclude(x => x.Color)
+					.Include(pcConfig => pcConfig!.PcConfigurationSsds!)
+						.ThenInclude(pcSsd => pcSsd.Ssd)
+					.Include(pcConfig => pcConfig!.PcConfigurationRams!)
+						.ThenInclude(pcRam => pcRam.Ram).ThenInclude(ram => ram!.ColorRams!)
+							.ThenInclude(x => x.Color)
+					.Include(pcConfig => pcConfig!.PcConfigurationHdds!)
+						.ThenInclude(pcHdd => pcHdd.Hdd).ThenInclude(hdd => hdd!.ColorHdds!)
+							.ThenInclude(x => x.Color)
+					.FirstOrDefaultAsync(pcConfig => pcConfig.Id == id);
+			}
+
+			return await query.FirstOrDefaultAsync(pcConfig => pcConfig.Id == id);
 		}
 	}
 }

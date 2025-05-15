@@ -84,5 +84,7 @@ namespace PCSetupHub.Data.Models.Hardware
 			=> PcConfigurationSsds?.Select(x => x.Ssd).Where(ssd => ssd != null).ToArray()!;
 		public Hdd[] GetHdds()
 			=> PcConfigurationHdds?.Select(x => x.Hdd).Where(hdd => hdd != null).ToArray()!;
+
+		public void ChangeType(PcType type) => Type = type;
 	}
 }

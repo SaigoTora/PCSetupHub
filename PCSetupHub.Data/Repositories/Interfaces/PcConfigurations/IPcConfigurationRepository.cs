@@ -4,6 +4,6 @@ namespace PCSetupHub.Data.Repositories.Interfaces.PcConfigurations
 {
 	public interface IPcConfigurationRepository
 	{
-		public Task<PcConfiguration?> GetByIdAsync(int id);
+		public Task<PcConfiguration?> GetByIdAsync(int id, bool includeComponents);
 	}
 }

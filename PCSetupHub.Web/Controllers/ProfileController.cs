@@ -28,7 +28,7 @@ namespace PCSetupHub.Web.Controllers
 			return View(user);
 		}
 
-		[HttpPost("update-status/{id}")]
+		[HttpPost("UpdateStatus/{id}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> UpdateFriendshipStatus(int id, int newStatusId)
@@ -49,7 +49,7 @@ namespace PCSetupHub.Web.Controllers
 			return RedirectToAction("Index", new { login = user.Login });
 		}
 
-		[HttpPost("send-friend-request/{id}")]
+		[HttpPost("SendFriendRequest/{id}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> SendFriendRequest(int id)
@@ -70,7 +70,7 @@ namespace PCSetupHub.Web.Controllers
 			return RedirectToAction("Index", new { login = user.Login });
 		}
 
-		[HttpPost("delete-friendship/{id}")]
+		[HttpPost("DeleteFriendship/{id}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> DeleteFriendship(int id)
