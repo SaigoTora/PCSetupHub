@@ -232,7 +232,6 @@ table {
 
 caption {
     caption-side: top;
-    color: var(--color-light-text);
     text-align: right;
 }
 
@@ -243,7 +242,7 @@ caption {
 }
 
 .pc-components-table td {
-    padding-block: 0.7rem;
+    padding-block: 1rem;
 }
 
 .pc-components-table tr:nth-child(even) {
@@ -263,6 +262,19 @@ caption {
     text-align: center;
     padding-right: 10px;
 }
+
+.pc-components-table tbody td:nth-child(1) {
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+    .pc-components-table tbody td:nth-child(1) span {
+        padding: 6px 10px;
+        border-radius: 5px;
+        background-color: rgb(75, 119, 190, 0.15);
+    }
+
 
 .pc-components-table td:nth-child(1), th:nth-child(1) {
     padding-inline: 10px;
@@ -315,6 +327,7 @@ caption {
         position: absolute;
         width: 0%;
         height: 2px;
+        border-radius: var(--border-radius);
         background-color: var(--color-secondary-accent-hover);
         transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
         transition-duration: 0.5s;

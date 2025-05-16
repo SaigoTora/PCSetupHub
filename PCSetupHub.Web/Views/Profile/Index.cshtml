@@ -130,24 +130,23 @@
 @if (pcConfig != null)
 {
 	<section class="mb-2 pc-config-section">
-		<table class="table-responsive table-sm w-100 pc-components-table mb-2">
-			@if (pcConfig.Type != null)
-			{
-				<caption class="mb-2">
-					@if (pcConfig.Type.Name == "Desktop")
-					{
-						<i class="fa fa-display fs-6 me-1"></i>
-					}
-					else if (pcConfig.Type.Name == "Laptop")
-					{
-						<i class="fa fa-laptop fs-6 me-1"></i>
-					}
-					<span>@pcConfig.Type.Name</span>
-				</caption>
-			}
-
-			@if (pcConfig.HasAnyComponents)
-			{
+		@if (pcConfig.Type != null)
+		{
+			<div class="mb-2 text-end">
+				@if (pcConfig.Type.Name == "Desktop")
+				{
+					<i class="fa fa-display fs-6 me-1"></i>
+				}
+				else if (pcConfig.Type.Name == "Laptop")
+				{
+					<i class="fa fa-laptop fs-6 me-1"></i>
+				}
+				<span>@pcConfig.Type.Name</span>
+			</div>
+		}
+		@if (pcConfig.HasAnyComponents)
+		{
+			<table class="table-responsive table-sm w-100 pc-components-table mb-2">
 				<thead>
 					<tr>
 						<th>Type</th>
@@ -159,7 +158,7 @@
 					@if (pcConfig.Processor != null)
 					{
 						<tr>
-							<td>Processor</td>
+							<td><span>Processor</span></td>
 							<td>
 								<span id=@($"openModal-{typeof(Processor).Name}-{pcConfig.Processor.Id}") class="pc-component-name" translate="no">
 									@pcConfig.Processor.Name @pcConfig.Processor.CoreCount-Core
@@ -173,7 +172,7 @@
 					@if (pcConfig.VideoCard != null)
 					{
 						<tr>
-							<td>Video Сard</td>
+							<td><span>Video Сard</span></td>
 							<td>
 								<span id=@($"openModal-{typeof(VideoCard).Name}-{pcConfig.VideoCard.Id}") class="pc-component-name" translate="no">
 									@pcConfig.VideoCard.Chipset @Html.RenderRoundedNumber(pcConfig.VideoCard.Memory)GB
@@ -186,7 +185,7 @@
 					@if (pcConfig.Motherboard != null)
 					{
 						<tr>
-							<td>Motherboard</td>
+							<td><span>Motherboard</span></td>
 							<td>
 								<span id=@($"openModal-{typeof(Motherboard).Name}-{pcConfig.Motherboard.Id}") class="pc-component-name" translate="no">
 									@pcConfig.Motherboard.Name @Html.RenderText(pcConfig.Motherboard.Socket)
@@ -199,7 +198,7 @@
 					@if (pcConfig.PowerSupply != null)
 					{
 						<tr>
-							<td>Power Supply</td>
+							<td><span>Power Supply</span></td>
 							<td>
 								<span id=@($"openModal-{typeof(PowerSupply).Name}-{pcConfig.PowerSupply.Id}") class="pc-component-name" translate="no">
 									@pcConfig.PowerSupply.Name @(pcConfig.PowerSupply.Wattage)W
@@ -216,11 +215,11 @@
 							<tr>
 								@if (rams.Length == 1)
 								{
-									<td>RAM</td>
+									<td><span>RAM</span></td>
 								}
 								else
 								{
-									<td>RAM <sup>@(i + 1)</sup></td>
+									<td><span>RAM <sup>@(i + 1)</sup></span></td>
 								}
 								<td>
 									<span id=@($"openModal-{typeof(Ram).Name}-{rams[i]?.Id}") class="pc-component-name" translate="no">
@@ -239,11 +238,11 @@
 							<tr>
 								@if (ssds.Length == 1)
 								{
-									<td>SSD</td>
+									<td><span>SSD</span></td>
 								}
 								else
 								{
-									<td>SSD <sup>@(i + 1)</sup></td>
+									<td><span>SSD <sup>@(i + 1)</sup></span></td>
 								}
 								<td>
 									<span id=@($"openModal-{typeof(Ssd).Name}-{ssds[i]?.Id}") class="pc-component-name" translate="no">
@@ -262,11 +261,11 @@
 							<tr>
 								@if (hdds.Length == 1)
 								{
-									<td>HDD</td>
+									<td><span>HDD</span></td>
 								}
 								else
 								{
-									<td>HDD <sup>@(i + 1)</sup></td>
+									<td><span>HDD <sup>@(i + 1)</sup></span></td>
 								}
 								<td>
 									<span id=@($"openModal-{typeof(Hdd).Name}-{hdds[i]?.Id}") class="pc-component-name" translate="no">
@@ -291,25 +290,23 @@
 						@Html.RenderPriceInTable(pcConfig.TotalPrice)
 					</tr>
 				</tfoot>
+			</table>
+		}
+		else
+		{
+			@if (Model.Id == userId)
+			{
+				<div class="text-center text-muted mb-3">
+					You haven't selected any components for your configuration yet. You can do this in the <b>settings</b> or by clicking the <b>button below</b>.
+				</div>
 			}
 			else
 			{
-				<tbody>
-					@if (Model.Id == userId)
-					{
-						<tr>
-							<td colspan="3" class="text-center text-muted">You haven't selected any components for your configuration yet. You can do this in the <b>settings</b> or by clicking the <b>button below</b>.</td>
-						</tr>
-					}
-					else
-					{
-						<tr>
-							<td colspan="3" class="text-center">This user hasn't selected any components for their configuration yet.</td>
-						</tr>
-					}
-				</tbody>
+				<div class="text-center text-muted mb-3">
+					This user hasn't selected any components for their configuration yet.
+				</div>
 			}
-		</table>
+		}
 		@if (Model.Id == userId)
 		{
 			<div class="d-flex justify-content-center">
