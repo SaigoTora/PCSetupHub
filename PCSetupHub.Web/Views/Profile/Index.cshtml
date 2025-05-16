@@ -162,7 +162,7 @@
 							<td>Processor</td>
 							<td>
 								<span id=@($"openModal-{typeof(Processor).Name}-{pcConfig.Processor.Id}") class="pc-component-name" translate="no">
-									@pcConfig.Processor.Name
+									@pcConfig.Processor.Name @pcConfig.Processor.CoreCount-Core
 								</span>
 								@await Html.PartialAsync("_ComponentModal", pcConfig.Processor)
 							</td>
@@ -176,7 +176,7 @@
 							<td>Video Сard</td>
 							<td>
 								<span id=@($"openModal-{typeof(VideoCard).Name}-{pcConfig.VideoCard.Id}") class="pc-component-name" translate="no">
-									@pcConfig.VideoCard.Chipset
+									@pcConfig.VideoCard.Chipset @Html.RenderRoundedNumber(pcConfig.VideoCard.Memory)GB
 								</span>
 								@await Html.PartialAsync("_ComponentModal", pcConfig.VideoCard)
 							</td>
@@ -189,7 +189,7 @@
 							<td>Motherboard</td>
 							<td>
 								<span id=@($"openModal-{typeof(Motherboard).Name}-{pcConfig.Motherboard.Id}") class="pc-component-name" translate="no">
-									@pcConfig.Motherboard.Name
+									@pcConfig.Motherboard.Name @Html.RenderText(pcConfig.Motherboard.Socket)
 								</span>
 								@await Html.PartialAsync("_ComponentModal", pcConfig.Motherboard)
 							</td>
@@ -202,7 +202,7 @@
 							<td>Power Supply</td>
 							<td>
 								<span id=@($"openModal-{typeof(PowerSupply).Name}-{pcConfig.PowerSupply.Id}") class="pc-component-name" translate="no">
-									@pcConfig.PowerSupply.Name
+									@pcConfig.PowerSupply.Name @(pcConfig.PowerSupply.Wattage)W
 								</span>
 								@await Html.PartialAsync("_ComponentModal", pcConfig.PowerSupply)
 							</td>
@@ -224,7 +224,7 @@
 								}
 								<td>
 									<span id=@($"openModal-{typeof(Ram).Name}-{rams[i]?.Id}") class="pc-component-name" translate="no">
-										@rams[i]?.Name
+										@rams[i]?.Name DDR@(rams[i].MemoryType)
 									</span>
 									@await Html.PartialAsync("_ComponentModal", rams[i])
 								</td>
@@ -247,7 +247,7 @@
 								}
 								<td>
 									<span id=@($"openModal-{typeof(Ssd).Name}-{ssds[i]?.Id}") class="pc-component-name" translate="no">
-										@ssds[i]?.Name
+										@ssds[i]?.Name @Html.RenderRoundedNumber(ssds[i].Capacity)GB
 									</span>
 									@await Html.PartialAsync("_ComponentModal", ssds[i])
 								</td>
@@ -270,7 +270,7 @@
 								}
 								<td>
 									<span id=@($"openModal-{typeof(Hdd).Name}-{hdds[i]?.Id}") class="pc-component-name" translate="no">
-										@hdds[i]?.Name
+										@hdds[i]?.Name @(hdds[i].Capacity)GB
 									</span>
 									@await Html.PartialAsync("_ComponentModal", hdds[i])
 								</td>
