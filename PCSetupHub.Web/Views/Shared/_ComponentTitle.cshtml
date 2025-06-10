@@ -18,31 +18,43 @@
 			</div>
 		}
 	</div>
-	<form>
+	<div>
 		@if (Model.IsCurrentUserOwner)
 		{
 			if (Model.ShowAddButton)
 			{
-				<button class="add-button" type="submit">Add</button>
+				<form asp-controller="@Model.ControllerName" asp-action="Add" class="d-inline">
+					<button class="add-button" type="submit">Add</button>
+				</form>
 			}
 
 			if (Model.Component == null && !Model.ShowAddButton)
 			{
-				<button class="select-button" type="submit">Select</button>
+				<form asp-controller="@Model.ControllerName" asp-action="Select" class="d-inline">
+					<button class="select-button" type="submit">Select</button>
+				</form>
 			}
 			else if (Model.Component != null)
 			{
 				if (Model.Component.IsDefault)
 				{
-					<button class="select-button" type="submit">Select</button>
-					<button class="clear-button" type="submit">Clear</button>
+					<form asp-controller="@Model.ControllerName" asp-action="Select" class="d-inline">
+						<button class="select-button" type="submit">Select</button>
+					</form>
+					<form asp-controller="@Model.ControllerName" asp-action="Clear" class="d-inline">
+						<button class="clear-button" type="submit">Clear</button>
+					</form>
 				}
 				else
 				{
-					<button class="edit-button" type="submit">Edit</button>
-					<button class="delete-button" type="submit">Delete</button>
+					<form asp-controller="@Model.ControllerName" asp-action="Edit" class="d-inline">
+						<button class="edit-button" type="submit">Edit</button>
+					</form>
+					<form asp-controller="@Model.ControllerName" asp-action="Delete" class="d-inline">
+						<button class="delete-button" type="submit">Delete</button>
+					</form>
 				}
 			}
 		}
-	</form>
+	</div>
 </div>

@@ -1,7 +1,7 @@
 ﻿:root {
     --color-select: rgb(236, 124, 38);
-    --color-add: rgb(40, 167, 69);
-    --color-edit: rgb(255, 193, 7);
+    --color-add: rgb(40, 185, 69);
+    --color-edit: rgb(200, 193, 7);
     --color-clear: rgb(255, 0, 51);
     --color-delete: rgb(248, 0, 0);
 }

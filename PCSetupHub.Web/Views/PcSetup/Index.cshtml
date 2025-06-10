@@ -249,11 +249,11 @@
 		{
 			@if (rams.Length == 1)
 			{
-				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("RAM", "RAM", rams[i], isCurrentUserOwner, i == 0))
+				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("RAM", "Ram", rams[i], isCurrentUserOwner, i == 0))
 			}
 			else
 			{
-				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"RAM", "RAM", rams[i], isCurrentUserOwner, i == 0, i + 1))
+				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"RAM", "Ram", rams[i], isCurrentUserOwner, i == 0, i + 1))
 			}
 
 			@if (rams[i] != null)
@@ -311,7 +311,7 @@
 	}
 	else
 	{
-		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("RAM", "RAM", null, isCurrentUserOwner, true))
+		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("RAM", "Ram", null, isCurrentUserOwner, true))
 	}
 </section>
 
@@ -322,11 +322,11 @@
 		{
 			@if (ssds.Length == 1)
 			{
-				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("SSD", "SSD", ssds[i], isCurrentUserOwner, i == 0))
+				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("SSD", "Ssd", ssds[i], isCurrentUserOwner, i == 0))
 			}
 			else
 			{
-				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"SSD", "SSD", ssds[i], isCurrentUserOwner, i == 0, i + 1))
+				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"SSD", "Ssd", ssds[i], isCurrentUserOwner, i == 0, i + 1))
 			}
 
 			@if (ssds[i] != null)
@@ -372,7 +372,7 @@
 	}
 	else
 	{
-		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("SSD", "SSD", null, isCurrentUserOwner, true))
+		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("SSD", "Ssd", null, isCurrentUserOwner, true))
 	}
 </section>
 
@@ -383,11 +383,11 @@
 		{
 			@if (hdds.Length == 1)
 			{
-				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("HDD", "HDD", hdds[i], isCurrentUserOwner, i == 0))
+				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("HDD", "Hdd", hdds[i], isCurrentUserOwner, i == 0))
 			}
 			else
 			{
-				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"HDD", "HDD", hdds[i], isCurrentUserOwner, i == 0, i + 1))
+				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"HDD", "Hdd", hdds[i], isCurrentUserOwner, i == 0, i + 1))
 			}
 
 			@if (hdds[i] != null)
@@ -434,6 +434,6 @@
 	}
 	else
 	{
-		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("HDD", "HDD", null, isCurrentUserOwner, true))
+		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("HDD", "Hdd", null, isCurrentUserOwner, true))
 	}
 </section>
