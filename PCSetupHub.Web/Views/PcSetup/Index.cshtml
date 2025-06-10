@@ -6,7 +6,9 @@
 @model PcConfiguration
 
 @{
+	ViewData["Title"] = $"PC Configuration";
 	<link rel="stylesheet" href="~/css/color-containers.css" />
+	<link rel="stylesheet" href="~/css/pc-setup.css" />
 
 	bool isCurrentUserOwner = Model.User != null && Model.User.Id == User.GetId();
 	var rams = Model.GetRams();
@@ -18,7 +20,7 @@
 	@if (isCurrentUserOwner)
 	{
 		<form asp-controller="PcSetup" asp-action="UpdateType" method="post" asp-route-id="@Model.Id">
-			<select name="typeName" onchange="this.form.submit()" title="Choose computer type">
+			<select class="pc-type-select" name="typeName" onchange="this.form.submit()" title="Choose computer type">
 				<option hidden>Computer Type</option>
 				<option value="Desktop" selected="@(Model.Type?.Name == "Desktop")">Desktop</option>
 				<option value="Laptop" selected="@(Model.Type?.Name == "Laptop")">Laptop</option>
@@ -41,14 +43,12 @@
 	}
 </section>
 
-<section class="mb-5">
-	<div class="section-header d-flex justify-content-between align-items-center">
-		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Processor", "Processor", Model.Processor, isCurrentUserOwner))
-	</div>
+<section class="component-card">
+	@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Processor", "Processor", Model.Processor, isCurrentUserOwner))
 	@if (Model.Processor != null)
 	{
 		Processor processor = Model.Processor;
-		<table>
+		<table class="component-table table-responsive">
 			<thead>
 				<tr>
 					<th>Property</th>
@@ -94,14 +94,12 @@
 	}
 </section>
 
-<section class="mb-5">
-	<div class="section-header d-flex justify-content-between align-items-center">
-		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Video Card", "VideoCard", Model.VideoCard, isCurrentUserOwner))
-	</div>
+<section class="component-card">
+	@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Video Card", "VideoCard", Model.VideoCard, isCurrentUserOwner))
 	@if (Model.VideoCard != null)
 	{
 		VideoCard videoCard = Model.VideoCard;
-		<table>
+		<table class="component-table table-responsive">
 			<thead>
 				<tr>
 					<th>Property</th>
@@ -120,7 +118,7 @@
 				</tr>
 				<tr>
 					<td>Memory</td>
-					<td>@Html.RenderRoundedNumber(videoCard.Memory)</td>
+					<td>@Html.RenderRoundedNumber(videoCard.Memory) GB</td>
 				</tr>
 				<tr>
 					<td>Core clock</td>
@@ -148,14 +146,12 @@
 	}
 </section>
 
-<section class="mb-5">
-	<div class="section-header d-flex justify-content-between align-items-center">
-		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Motherboard", "Motherboard", Model.Motherboard, isCurrentUserOwner))
-	</div>
+<section class="component-card">
+	@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Motherboard", "Motherboard", Model.Motherboard, isCurrentUserOwner))
 	@if (Model.Motherboard != null)
 	{
 		Motherboard motherboard = Model.Motherboard;
-		<table>
+		<table class="component-table table-responsive">
 			<thead>
 				<tr>
 					<th>Property</th>
@@ -198,14 +194,12 @@
 	}
 </section>
 
-<section class="mb-5">
-	<div class="section-header d-flex justify-content-between align-items-center">
-		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Power Supply", "PowerSupply", Model.PowerSupply, isCurrentUserOwner))
-	</div>
+<section class="component-card">
+	@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("Power Supply", "PowerSupply", Model.PowerSupply, isCurrentUserOwner))
 	@if (Model.PowerSupply != null)
 	{
 		PowerSupply powerSupply = Model.PowerSupply;
-		<table>
+		<table class="component-table table-responsive">
 			<thead>
 				<tr>
 					<th>Property</th>
@@ -248,26 +242,24 @@
 	}
 </section>
 
-<section class="mb-5">
+<section class="component-card">
 	@if (rams != null && rams.Length != 0)
 	{
 		@for (int i = 0; i < rams.Length; i++)
 		{
-			<div class="section-header d-flex justify-content-between align-items-center">
-				@if (rams.Length == 1)
-				{
-					@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("RAM", "RAM", rams[i], isCurrentUserOwner, i == 0))
-				}
-				else
-				{
-					@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"RAM", "RAM", rams[i], isCurrentUserOwner, i == 0, i + 1))
-				}
-			</div>
+			@if (rams.Length == 1)
+			{
+				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("RAM", "RAM", rams[i], isCurrentUserOwner, i == 0))
+			}
+			else
+			{
+				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"RAM", "RAM", rams[i], isCurrentUserOwner, i == 0, i + 1))
+			}
 
 			@if (rams[i] != null)
 			{
 				Ram ram = rams[i];
-				<table>
+				<table class="component-table table-responsive">
 					<thead>
 						<tr>
 							<th>Property</th>
@@ -319,32 +311,28 @@
 	}
 	else
 	{
-		<div class="section-header d-flex justify-content-between align-items-center">
-			@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("RAM", "RAM", null, isCurrentUserOwner, true))
-		</div>
+		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("RAM", "RAM", null, isCurrentUserOwner, true))
 	}
 </section>
 
-<section class="mb-5">
+<section class="component-card">
 	@if (ssds != null && ssds.Length != 0)
 	{
 		@for (int i = 0; i < ssds.Length; i++)
 		{
-			<div class="section-header d-flex justify-content-between align-items-center">
-				@if (ssds.Length == 1)
-				{
-					@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("SSD", "SSD", ssds[i], isCurrentUserOwner, i == 0))
-				}
-				else
-				{
-					@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"SSD", "SSD", ssds[i], isCurrentUserOwner, i == 0, i + 1))
-				}
-			</div>
+			@if (ssds.Length == 1)
+			{
+				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("SSD", "SSD", ssds[i], isCurrentUserOwner, i == 0))
+			}
+			else
+			{
+				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"SSD", "SSD", ssds[i], isCurrentUserOwner, i == 0, i + 1))
+			}
 
 			@if (ssds[i] != null)
 			{
 				Ssd ssd = ssds[i];
-				<table>
+				<table class="component-table table-responsive">
 					<thead>
 						<tr>
 							<th>Property</th>
@@ -384,32 +372,28 @@
 	}
 	else
 	{
-		<div class="section-header d-flex justify-content-between align-items-center">
-			@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("SSD", "SSD", null, isCurrentUserOwner, true))
-		</div>
+		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("SSD", "SSD", null, isCurrentUserOwner, true))
 	}
 </section>
 
-<section class="mb-5">
+<section class="component-card">
 	@if (hdds != null && hdds.Length != 0)
 	{
 		@for (int i = 0; i < hdds.Length; i++)
 		{
-			<div class="section-header d-flex justify-content-between align-items-center">
-				@if (hdds.Length == 1)
-				{
-					@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("HDD", "HDD", hdds[i], isCurrentUserOwner, i == 0))
-				}
-				else
-				{
-					@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"HDD", "HDD", hdds[i], isCurrentUserOwner, i == 0, i + 1))
-				}
-			</div>
+			@if (hdds.Length == 1)
+			{
+				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("HDD", "HDD", hdds[i], isCurrentUserOwner, i == 0))
+			}
+			else
+			{
+				@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel($"HDD", "HDD", hdds[i], isCurrentUserOwner, i == 0, i + 1))
+			}
 
 			@if (hdds[i] != null)
 			{
 				Hdd hdd = hdds[i];
-				<table>
+				<table class="component-table table-responsive">
 					<thead>
 						<tr>
 							<th>Property</th>
@@ -450,8 +434,6 @@
 	}
 	else
 	{
-		<div class="section-header d-flex justify-content-between align-items-center">
-			@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("HDD", "HDD", null, isCurrentUserOwner, true))
-		</div>
+		@await Html.PartialAsync("_ComponentTitle", new ComponentTitleViewModel("HDD", "HDD", null, isCurrentUserOwner, true))
 	}
 </section>

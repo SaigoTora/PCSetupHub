@@ -2,43 +2,47 @@
 
 @model ComponentTitleViewModel
 
-<div>
+<h3 class="component-title text-muted">
 	@Model.ComponentTypeName
 	@if (Model.ComponentNumber != null)
 	{
 		<sup>@Model.ComponentNumber</sup>
 	}
-	@if (Model.Component != null)
-	{
-		@if (!string.IsNullOrWhiteSpace(Model.ComponentTypeName))
+</h3>
+<div class="section-header d-flex justify-content-between align-items-center mb-3">
+	<div>
+		@if (Model.Component != null)
 		{
-			@:–
+			<div class="component-name">
+				@Model.Component.Name
+			</div>
 		}
-		@Model.Component.Name
-	}
-</div>
-<div>
-	@if (Model.IsCurrentUserOwner)
-	{
-		if (Model.ShowAddButton)
+	</div>
+	<form>
+		@if (Model.IsCurrentUserOwner)
 		{
-			<span>[Add]</span>
-		}
+			if (Model.ShowAddButton)
+			{
+				<button class="add-button" type="submit">Add</button>
+			}
 
-		if (Model.Component == null && !Model.ShowAddButton)
-		{
-			<span>[Select]</span>
-		}
-		else if (Model.Component != null)
-		{
-			if (Model.Component.IsDefault)
+			if (Model.Component == null && !Model.ShowAddButton)
 			{
-				<span>[Select] [Clear]</span>
+				<button class="select-button" type="submit">Select</button>
 			}
-			else
+			else if (Model.Component != null)
 			{
-				<span>[Edit] [Delete]</span>
+				if (Model.Component.IsDefault)
+				{
+					<button class="select-button" type="submit">Select</button>
+					<button class="clear-button" type="submit">Clear</button>
+				}
+				else
+				{
+					<button class="edit-button" type="submit">Edit</button>
+					<button class="delete-button" type="submit">Delete</button>
+				}
 			}
 		}
-	}
+	</form>
 </div>

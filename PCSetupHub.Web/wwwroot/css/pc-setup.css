@@ -1,0 +1,178 @@
+﻿:root {
+    --color-select: rgb(236, 124, 38);
+    --color-add: rgb(40, 167, 69);
+    --color-edit: rgb(255, 193, 7);
+    --color-clear: rgb(255, 0, 51);
+    --color-delete: rgb(248, 0, 0);
+}
+
+.pc-type-select {
+    background-color: var(--color-secondary-accent);
+    color: var(--color-light-text);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 5px 12px;
+    text-align: justify;
+    height: 35px;
+    cursor: pointer;
+}
+
+    .pc-type-select option {
+        background-color: rgb(57, 62, 70);
+    }
+
+    .pc-type-select:hover {
+        background-color: var(--color-secondary-accent-hover);
+    }
+
+.component-card {
+    padding: 1rem;
+    padding-bottom: 0px;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--color-nav-menu-border);
+}
+
+.component-title {
+    font-size: 0.95rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.component-name {
+    font-weight: 600;
+    font-size: 1.5rem;
+    padding-right: 0.5rem;
+    color: var(--color-secondary-accent);
+}
+
+.component-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+    .component-table td {
+        padding: 8px;
+        vertical-align: top;
+    }
+
+    .component-table th {
+        color: rgba(85, 85, 85, 0.4);
+        font-weight: bold;
+    }
+
+    .component-table td:first-child {
+        width: 35%;
+    }
+
+    .component-table td:first-child,
+    .component-table th:first-child,
+    .component-table td:nth-child(2),
+    .component-table th:nth-child(2) {
+        padding-left: 2rem;
+        padding-right: 0rem;
+    }
+
+@media (max-width: 1264px) {
+    .component-table td:first-child,
+    .component-table th:first-child,
+    .component-table td:nth-child(2),
+    .component-table th:nth-child(2) {
+        padding-left: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .component-table td:first-child,
+    .component-table th:first-child {
+        padding-left: 0rem;
+    }
+
+    .component-table td:nth-child(2),
+    .component-table th:nth-child(2) {
+        padding-left: 0.4rem;
+    }
+}
+
+.add-button,
+.select-button,
+.clear-button,
+.edit-button,
+.delete-button {
+    margin-left: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--border-radius);
+    border-width: 2px;
+    border-style: solid;
+    width: 6rem;
+    height: 2.5rem;
+    padding: 2px 12px;
+    background-color: transparent;
+    color: var(--color-light-text);
+    border-color: transparent;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    text-transform: uppercase;
+    user-select: none;
+}
+
+    .add-button:hover,
+    .select-button:hover,
+    .clear-button:hover,
+    .edit-button:hover,
+    .delete-button:hover {
+        transform: scale(1.08);
+        font-weight: bold;
+    }
+
+.add-button {
+    border-color: var(--color-add);
+    color: var(--color-add);
+}
+
+    .add-button:hover {
+        background-color: var(--color-add);
+        color: var(--color-dark-background);
+    }
+
+.select-button {
+    border-color: var(--color-select);
+    color: var(--color-select);
+}
+
+    .select-button:hover {
+        background-color: var(--color-select);
+        color: var(--color-dark-background);
+    }
+
+.clear-button {
+    border-color: var(--color-clear);
+    color: var(--color-clear);
+}
+
+    .clear-button:hover {
+        background-color: var(--color-clear);
+        color: var(--color-dark-background);
+    }
+
+.edit-button {
+    border-color: var(--color-edit);
+    color: var(--color-edit);
+}
+
+    .edit-button:hover {
+        background-color: var(--color-edit);
+        color: var(--color-dark-background);
+    }
+
+.delete-button {
+    border-color: var(--color-delete);
+    color: var(--color-delete);
+}
+
+    .delete-button:hover {
+        background-color: var(--color-delete);
+        color: var(--color-dark-background);
+    }

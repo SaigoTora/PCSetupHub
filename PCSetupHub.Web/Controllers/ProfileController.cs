@@ -14,7 +14,7 @@ namespace PCSetupHub.Web.Controllers
 		IRepository<Friendship> _friendshipRepository, IRepository<User> _genericUserRepository)
 		: Controller
 	{
-		[HttpGet("Profile/{login}")]
+		[HttpGet("Profile/{login?}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Index(string login)
 		{
