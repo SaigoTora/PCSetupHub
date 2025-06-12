@@ -9,6 +9,7 @@ namespace PCSetupHub.Data.Models.Hardware
 		public int Capacity { get; set; }
 		public ICollection<PcConfigurationHdd>? PcConfigurationHdds { get; private set; }
 		public ICollection<ColorHdd>? ColorHdds { get; private set; }
+		public override string DisplayName => $"{Name} {Capacity} GB";
 
 		public Hdd() { }
 		public Hdd(string name, double? price, bool isDefault,

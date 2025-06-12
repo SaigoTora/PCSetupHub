@@ -10,6 +10,7 @@ namespace PCSetupHub.Data.Models.Hardware
 		public string FormFactor { get; set; } = string.Empty;
 		public string Interface { get; set; } = string.Empty;
 		public ICollection<PcConfigurationSsd>? PcConfigurationSsds { get; private set; }
+		public override string DisplayName => $"{Name} {Math.Round(Capacity, 2):0.##} GB";
 
 		public Ssd() { }
 		public Ssd(string name, double? price, bool isDefault, float capacity, string type,

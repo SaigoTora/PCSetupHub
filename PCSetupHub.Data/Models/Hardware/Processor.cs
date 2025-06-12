@@ -9,6 +9,7 @@
 		public string? Graphics { get; set; }
 		public bool SMT { get; set; }
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
+		public override string DisplayName => $"{Name} {CoreCount}-Core";
 
 		public Processor() { }
 		public Processor(string name, double? price, bool isDefault, byte coreCount,

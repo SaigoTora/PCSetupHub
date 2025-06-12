@@ -4,6 +4,7 @@ namespace PCSetupHub.Web.ViewModels
 {
 	public class ComponentTitleViewModel
 	{
+		public int PcConfigurationId { get; private set; }
 		public string ComponentTypeName { get; private set; }
 		public string ControllerName { get; private set; }
 		public HardwareComponent? Component { get; private set; }
@@ -11,19 +12,21 @@ namespace PCSetupHub.Web.ViewModels
 		public bool ShowAddButton { get; private set; }
 		public int? ComponentNumber { get; private set; }
 
-		public ComponentTitleViewModel(string componentTypeName, string controllerName,
-			HardwareComponent? component, bool isCurrentUserOwner)
+		public ComponentTitleViewModel(int pcConfigurationId, string componentTypeName,
+			string controllerName, HardwareComponent? component, bool isCurrentUserOwner)
 		{
+			PcConfigurationId = pcConfigurationId;
 			ComponentTypeName = componentTypeName;
 			ControllerName = controllerName;
 			Component = component;
 			IsCurrentUserOwner = isCurrentUserOwner;
 		}
 
-		public ComponentTitleViewModel(string componentTypeName, string controllerName,
-			HardwareComponent? component, bool isCurrentUserOwner, bool showAddButton,
-			int? componentNumber = null)
-			: this(componentTypeName, controllerName, component, isCurrentUserOwner)
+		public ComponentTitleViewModel(int pcConfigurationId, string componentTypeName,
+			string controllerName, HardwareComponent? component, bool isCurrentUserOwner,
+			bool showAddButton, int? componentNumber = null)
+			: this(pcConfigurationId, componentTypeName, controllerName, component,
+				  isCurrentUserOwner)
 		{
 			ShowAddButton = showAddButton;
 			ComponentNumber = componentNumber;

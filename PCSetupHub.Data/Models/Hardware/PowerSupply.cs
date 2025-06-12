@@ -10,6 +10,7 @@ namespace PCSetupHub.Data.Models.Hardware
 		public string Modular { get; set; } = string.Empty;
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 		public ICollection<ColorPowerSupply>? ColorPowerSupplies { get; private set; }
+		public override string DisplayName => $"{Name} {Wattage} W";
 
 		public PowerSupply() { }
 		public PowerSupply(string name, double? price, bool isDefault,

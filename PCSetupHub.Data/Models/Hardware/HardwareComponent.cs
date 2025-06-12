@@ -10,6 +10,7 @@ namespace PCSetupHub.Data.Models.Hardware
 		[Column(TypeName = "money")]
 		public double? Price { get; set; }
 		public bool IsDefault { get; set; }
+		public virtual string DisplayName => Name;
 
 		public HardwareComponent() { }
 		public HardwareComponent(string name, double? price, bool isDefault)

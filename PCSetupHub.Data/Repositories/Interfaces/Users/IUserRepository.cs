@@ -7,7 +7,9 @@ namespace PCSetupHub.Data.Repositories.Interfaces.Users
 	{
 		public Task<User?> GetByLoginAsync(string login, bool includeConfiguration);
 		public Task<User?> GetByGoogleIdAsync(string googleId);
+
 		public Task<bool> ExistsByLoginAsync(string login);
 		public Task<bool> ExistsByEmailAsync(string email);
+		public Task<bool> UserHasPcConfigurationAsync(int userId, int pcConfigurationId);
 	}
 }

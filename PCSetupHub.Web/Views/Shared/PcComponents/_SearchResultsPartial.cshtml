@@ -1,0 +1,23 @@
+﻿@using PCSetupHub.Web.ViewModels
+
+@model SearchResultsViewModel
+@{
+	<link rel="stylesheet" href="~/css/modal.css" />
+}
+
+<p class="text-end">Count: @Model.Components.Count</p>
+
+<table class="table-responsive">
+	@for (int i = 0; i < Model.Components.Count; i++)
+	{
+		<tr>
+			<td class="text-muted p-2">@(i + 1)</td>
+			<td class="p-2">
+				<span id=@($"openModal-{Model.Components[i].GetType().Name}-{Model.Components[i].Id}") class="pc-component-name" translate="no">
+					@Model.Components[i].DisplayName
+				</span>
+				@await Html.PartialAsync("PcComponents/_ComponentModalPartial", Model.Components[i])
+			</td>
+		</tr>
+	}
+</table>

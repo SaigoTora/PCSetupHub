@@ -1,0 +1,37 @@
+﻿@using PCSetupHub.Data.Models.Hardware
+@using PCSetupHub.Web.ViewModels
+
+@model SearchComponentViewModel<Processor>
+
+@{
+	ViewData["Title"] = $"Processors";
+}
+
+<p>SearchQuery: @Model.SearchQuery</p>
+<p>PcConfigurationId: @Model.PcConfigurationId</p>
+@if (Model.CurrentComponentId.HasValue)
+{
+	<p>CurrentComponentId: @Model.CurrentComponentId.Value</p>
+}
+else
+{
+	<p>CurrentComponentId: None</p>
+}
+
+<form asp-controller="Processor" asp-action="Search" method="get">
+	<div class="searchbar-container">
+		<div class="search-bar">
+			<div class="input-container">
+				<input class="search-input"
+					   id="search-input"
+					   placeholder="Search..."
+					   type="text"
+					   asp-for="SearchQuery"
+					   value="@Model.SearchQuery" />
+			</div>
+		</div>
+		<button type="submit" class="search-button"><i class="fa fa-search"></i></button>
+	</div>
+</form>
+
+@await Html.PartialAsync("PcComponents/_SearchResultsPartial", new SearchResultsViewModel(Model.Components.Cast<HardwareComponent>().ToList(), Model.CurrentComponentId))

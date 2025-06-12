@@ -12,6 +12,7 @@ namespace PCSetupHub.Data.Models.Hardware
 		public double CASLatency { get; set; }
 		public ICollection<PcConfigurationRam>? PcConfigurationRams { get; private set; }
 		public ICollection<ColorRam>? ColorRams { get; private set; }
+		public override string DisplayName => $"{Name} DDR{MemoryType}";
 
 		public Ram() { }
 		public Ram(string name, double? price, bool isDefault, byte memoryType, int frequency,

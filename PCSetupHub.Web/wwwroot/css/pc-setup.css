@@ -54,8 +54,12 @@
 }
 
     .component-table td {
-        padding: 8px;
+        padding-block: 0.5rem;
         vertical-align: top;
+    }
+
+    .component-table th {
+        padding-bottom: 0.75rem;
     }
 
     .component-table th {

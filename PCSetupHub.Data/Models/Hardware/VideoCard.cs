@@ -11,6 +11,7 @@ namespace PCSetupHub.Data.Models.Hardware
 		public short? Length { get; set; }
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 		public ICollection<ColorVideoCard>? ColorVideoCards { get; private set; }
+		public override string DisplayName => $"{Chipset} {Math.Round(Memory, 2):0.##} GB";
 
 		public VideoCard() { }
 		public VideoCard(string name, double? price, bool isDefault, string chipset, float memory,

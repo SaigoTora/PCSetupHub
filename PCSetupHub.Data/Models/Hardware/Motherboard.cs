@@ -10,6 +10,7 @@ namespace PCSetupHub.Data.Models.Hardware
 		public byte MemorySlots { get; set; }
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 		public ICollection<ColorMotherboard>? ColorMotherboards { get; private set; }
+		public override string DisplayName => $"{Name} {Socket}";
 
 		public Motherboard() { }
 		public Motherboard(string name, double? price, bool isDefault, string socket,

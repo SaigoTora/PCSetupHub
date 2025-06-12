@@ -37,9 +37,15 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 		}
 		public async Task<User?> GetByGoogleIdAsync(string googleId)
 			=> await Context.Users.FirstOrDefaultAsync(u => u.GoogleId == googleId);
+
 		public async Task<bool> ExistsByLoginAsync(string login)
 			=> await Context.Users.AnyAsync(u => u.Login == login);
 		public async Task<bool> ExistsByEmailAsync(string email)
 			=> await Context.Users.AnyAsync(u => u.Email == email);
+		public async Task<bool> UserHasPcConfigurationAsync(int userId, int pcConfigurationId)
+		{
+			return await Context.Users.AnyAsync(u => u.Id == userId
+				&& u.PcConfigurationId == pcConfigurationId);
+		}
 	}
 }

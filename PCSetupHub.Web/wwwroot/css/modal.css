@@ -50,6 +50,7 @@
 
 .characteristics-table td {
     padding-block: 8px !important;
+    font-size: 1rem;
 }
 
 .characteristics-table tr:nth-child(even) {
@@ -57,7 +58,9 @@
 }
 
 .characteristics-table td:nth-child(1) {
-    font-size: 0.85rem !important;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: bold;
     padding-left: 10px;
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);

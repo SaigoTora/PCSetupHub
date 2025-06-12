@@ -13,8 +13,8 @@
 	<div>
 		@if (Model.Component != null)
 		{
-			<div class="component-name">
-				@Model.Component.Name
+			<div class="component-name" translate="no">
+				@Model.Component.DisplayName
 			</div>
 		}
 	</div>
@@ -24,34 +24,34 @@
 			if (Model.ShowAddButton)
 			{
 				<form asp-controller="@Model.ControllerName" asp-action="Add" class="d-inline">
-					<button class="add-button" type="submit">Add</button>
+					<button class="add-button" type="submit" translate="no">Add</button>
 				</form>
 			}
 
 			if (Model.Component == null && !Model.ShowAddButton)
 			{
-				<form asp-controller="@Model.ControllerName" asp-action="Select" class="d-inline">
-					<button class="select-button" type="submit">Select</button>
+				<form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-id="@Model.PcConfigurationId" method="get" class="d-inline">
+					<button class="select-button" type="submit" translate="no">Select</button>
 				</form>
 			}
 			else if (Model.Component != null)
 			{
 				if (Model.Component.IsDefault)
 				{
-					<form asp-controller="@Model.ControllerName" asp-action="Select" class="d-inline">
-						<button class="select-button" type="submit">Select</button>
+					<form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-id="@Model.PcConfigurationId" method="get" class="d-inline">
+						<button class="select-button" type="submit" translate="no">Select</button>
 					</form>
 					<form asp-controller="@Model.ControllerName" asp-action="Clear" class="d-inline">
-						<button class="clear-button" type="submit">Clear</button>
+						<button class="clear-button" type="submit" translate="no">Clear</button>
 					</form>
 				}
 				else
 				{
 					<form asp-controller="@Model.ControllerName" asp-action="Edit" class="d-inline">
-						<button class="edit-button" type="submit">Edit</button>
+						<button class="edit-button" type="submit" translate="no">Edit</button>
 					</form>
 					<form asp-controller="@Model.ControllerName" asp-action="Delete" class="d-inline">
-						<button class="delete-button" type="submit">Delete</button>
+						<button class="delete-button" type="submit" translate="no">Delete</button>
 					</form>
 				}
 			}
