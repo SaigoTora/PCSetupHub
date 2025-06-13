@@ -58,6 +58,9 @@
 }
 
 .characteristics-table td:nth-child(1) {
+    font-size: 1rem;
+    text-align: left;
+    color: var( --color-light-text);
     font-size: 0.85rem;
     text-transform: uppercase;
     font-weight: bold;

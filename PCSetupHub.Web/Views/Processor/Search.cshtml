@@ -7,17 +7,6 @@
 	ViewData["Title"] = $"Processors";
 }
 
-<p>SearchQuery: @Model.SearchQuery</p>
-<p>PcConfigurationId: @Model.PcConfigurationId</p>
-@if (Model.CurrentComponentId.HasValue)
-{
-	<p>CurrentComponentId: @Model.CurrentComponentId.Value</p>
-}
-else
-{
-	<p>CurrentComponentId: None</p>
-}
-
 <form asp-controller="Processor" asp-action="Search" method="get">
 	<div class="searchbar-container">
 		<div class="search-bar">
@@ -34,4 +23,4 @@ else
 	</div>
 </form>
 
-@await Html.PartialAsync("PcComponents/_SearchResultsPartial", new SearchResultsViewModel(Model.Components.Cast<HardwareComponent>().ToList(), Model.CurrentComponentId))
+@await Html.PartialAsync("PcComponents/_SearchResultsPartial", new SearchResultsViewModel(Model.PcConfigurationId, Model.Components.Cast<HardwareComponent>().ToList(), Model.CurrentComponentId, "Processor"))

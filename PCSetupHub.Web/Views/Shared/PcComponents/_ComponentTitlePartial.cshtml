@@ -41,7 +41,7 @@
 					<form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-id="@Model.PcConfigurationId" method="get" class="d-inline">
 						<button class="select-button" type="submit" translate="no">Select</button>
 					</form>
-					<form asp-controller="@Model.ControllerName" asp-action="Clear" class="d-inline">
+					<form asp-controller="@Model.ControllerName" asp-action="Clear" asp-route-id="@Model.PcConfigurationId" class="d-inline">
 						<button class="clear-button" type="submit" translate="no">Clear</button>
 					</form>
 				}

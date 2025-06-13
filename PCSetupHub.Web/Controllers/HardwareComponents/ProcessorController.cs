@@ -10,7 +10,8 @@ using PCSetupHub.Web.ViewModels;
 namespace PCSetupHub.Web.Controllers.HardwareComponents
 {
 	public class ProcessorController(IPcConfigurationRepository _pcConfigRepository,
-		IRepository<Processor> _processorRepository, IUserRepository _userRepository)
+		IRepository<Processor> _processorRepository, IUserRepository _userRepository,
+		IRepository<PcConfiguration> _genericPcConfigRepository)
 		: Controller
 	{
 		[HttpGet("Processor/Search/{pcConfigurationId}")]
@@ -41,9 +42,51 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			return View("Search", model);
 		}
-		public IActionResult Clear()
+
+		[HttpPost("Processor/Select/{pcConfigurationId}/{componentId}")]
+		public async Task<IActionResult> SelectAsync(int pcConfigurationId, int componentId)
 		{
-			return Ok($"Clear from {GetType().Name}");
+			int? userId = User.GetId();
+			if (!userId.HasValue || !await _userRepository.UserHasPcConfigurationAsync(userId.Value,
+				pcConfigurationId))
+				return StatusCode(403);
+
+			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
+				true);
+			if (pcConfig == null)
+				return NotFound();
+
+			Processor? processor = await _processorRepository.GetOneAsync(componentId);
+			if (processor == null)
+				return NotFound();
+			if (!processor.IsDefault)
+				return StatusCode(403);
+
+			pcConfig.ChangeProcessor(processor);
+			await _genericPcConfigRepository.UpdateAsync(pcConfig);
+
+			return RedirectToAction("Index", "PcSetup", new { id = pcConfigurationId });
+		}
+		[HttpPost("Processor/Clear/{pcConfigurationId}")]
+		public async Task<IActionResult> ClearAsync(int pcConfigurationId)
+		{
+			int? userId = User.GetId();
+			if (!userId.HasValue || !await _userRepository.UserHasPcConfigurationAsync(userId.Value,
+				pcConfigurationId))
+				return StatusCode(403);
+
+			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
+				true);
+			if (pcConfig == null)
+				return NotFound();
+
+			if (pcConfig.Processor != null && !pcConfig.Processor.IsDefault)
+				return StatusCode(403);
+
+			pcConfig.ClearProcessor();
+			await _genericPcConfigRepository.UpdateAsync(pcConfig);
+
+			return RedirectToAction("Index", "PcSetup", new { id = pcConfigurationId });
 		}
 		public IActionResult Edit()
 		{

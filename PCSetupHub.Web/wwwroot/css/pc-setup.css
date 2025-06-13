@@ -1,9 +1,14 @@
 ﻿:root {
     --color-select: rgb(236, 124, 38);
+    --color-select-active: rgb(200, 105, 32);
     --color-add: rgb(40, 185, 69);
+    --color-add-active: rgb(30, 140, 52);
     --color-edit: rgb(200, 193, 7);
+    --color-edit-active: rgb(160, 154, 5);
     --color-clear: rgb(255, 0, 51);
+    --color-clear-active: rgb(200, 0, 40);
     --color-delete: rgb(248, 0, 0);
+    --color-delete-active: rgb(200, 0, 0);
 }
 
 .pc-type-select {
@@ -131,6 +136,16 @@
         font-weight: bold;
     }
 
+    .add-button:active,
+    .select-button:active,
+    .clear-button:active,
+    .edit-button:active,
+    .delete-button:active {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+        color: var(--color-dark-background);
+        font-weight: bold;
+    }
+
 .add-button {
     border-color: var(--color-add);
     color: var(--color-add);
@@ -139,6 +154,11 @@
     .add-button:hover {
         background-color: var(--color-add);
         color: var(--color-dark-background);
+    }
+
+    .add-button:active {
+        background-color: var(--color-add-active);
+        border-color: var(--color-add-active);
     }
 
 .select-button {
@@ -151,6 +171,11 @@
         color: var(--color-dark-background);
     }
 
+    .select-button:active {
+        background-color: var(--color-select-active);
+        border-color: var(--color-select-active);
+    }
+
 .clear-button {
     border-color: var(--color-clear);
     color: var(--color-clear);
@@ -159,6 +184,11 @@
     .clear-button:hover {
         background-color: var(--color-clear);
         color: var(--color-dark-background);
+    }
+
+    .clear-button:active {
+        background-color: var(--color-clear-active);
+        border-color: var(--color-clear-active);
     }
 
 .edit-button {
@@ -171,6 +201,11 @@
         color: var(--color-dark-background);
     }
 
+    .edit-button:active {
+        background-color: var(--color-edit-active);
+        border-color: var(--color-edit-active);
+    }
+
 .delete-button {
     border-color: var(--color-delete);
     color: var(--color-delete);
@@ -179,4 +214,9 @@
     .delete-button:hover {
         background-color: var(--color-delete);
         color: var(--color-dark-background);
+    }
+
+    .delete-button:active {
+        background-color: var(--color-delete-active);
+        border-color: var(--color-delete-active);
     }

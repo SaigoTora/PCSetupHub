@@ -86,5 +86,7 @@ namespace PCSetupHub.Data.Models.Hardware
 			=> PcConfigurationHdds?.Select(x => x.Hdd).Where(hdd => hdd != null).ToArray()!;
 
 		public void ChangeType(PcType type) => Type = type;
+		public void ChangeProcessor(Processor processor) => Processor = processor;
+		public void ClearProcessor() => Processor = null;
 	}
 }
