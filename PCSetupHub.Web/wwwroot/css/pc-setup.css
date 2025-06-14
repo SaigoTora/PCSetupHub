@@ -65,6 +65,7 @@
 
     .component-table th {
         padding-bottom: 0.75rem;
+        user-select: none;
     }
 
     .component-table th {

@@ -24,6 +24,11 @@
     animation: rotateWarning 1s ease-in-out forwards;
 }
 
+.btn-close.btn-close-white:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 @keyframes rotateWarning {
     0% {
         transform: rotate(0deg);
@@ -81,8 +86,16 @@
 .button-ok {
     color: var(--color-light-text);
     background-color: var(--color-secondary-accent);
+    border-radius: var(--border-radius);
+    border: none;
+    padding: 0.35rem 3rem;
 }
 
     .button-ok:hover {
         background-color: var(--color-secondary-accent-hover);
+    }
+
+    .button-ok:active {
+        background-color: rgb(35, 114, 165);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
     }

@@ -337,15 +337,21 @@ caption {
 .button-more {
     background-color: var(--color-secondary-accent);
     color: var(--color-light-text);
-    padding-inline: 30px;
-    padding-block: 5px;
+    padding-inline: 2.75rem;
+    padding-block: 0.35rem;
     font-size: 1.25rem;
     border-radius: var(--border-radius);
     border: none;
+    text-decoration: none;
 }
 
     .button-more:hover {
         background-color: var(--color-secondary-accent-hover);
+    }
+
+    .button-more:active {
+        background-color: rgb(35, 114, 165);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
     }
 
 .searchbar-container {
@@ -490,6 +496,7 @@ caption {
     font-size: 0.95rem;
     color: var(--color-dark-background);
     transition: transform 0.2s ease;
+    user-select: none;
 }
 
     .select-component-button:hover {

@@ -310,7 +310,7 @@
 		@if (Model.Id == userId)
 		{
 			<div class="d-flex justify-content-center">
-				<a class="btn button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
+				<a class="button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
 					Configure
 				</a>
 			</div>
@@ -318,7 +318,7 @@
 		else if (pcConfig.HasAnyComponents)
 		{
 			<div class="d-flex justify-content-center">
-				<a class="btn button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
+				<a class="button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
 					More
 				</a>
 			</div>
