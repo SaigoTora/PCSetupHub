@@ -12,6 +12,8 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 	{
 		private readonly IPcConfigurationRepository _pcConfigRepository;
 		private readonly IRepository<Processor> _processorRepository;
+		private readonly PcConfigurationIncludes _pcConfigurationIncludes =
+			PcConfigurationIncludes.Processor;
 
 		public ProcessorController(IPcConfigurationRepository pcConfigRepository,
 			IRepository<Processor> processorRepository, IUserRepository userRepository)
@@ -29,7 +31,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				return StatusCode(403);
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				true);
+				_pcConfigurationIncludes);
 			if (pcConfig == null)
 				return NotFound();
 
@@ -51,7 +53,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				return StatusCode(403);
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				true);
+				_pcConfigurationIncludes);
 			if (pcConfig == null)
 				return NotFound();
 
@@ -74,7 +76,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				return StatusCode(403);
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				true);
+				_pcConfigurationIncludes);
 			if (pcConfig == null)
 				return NotFound();
 
