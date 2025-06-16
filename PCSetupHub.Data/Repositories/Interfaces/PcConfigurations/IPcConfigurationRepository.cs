@@ -1,8 +1,9 @@
 ﻿using PCSetupHub.Data.Models.Hardware;
+using PCSetupHub.Data.Repositories.Base;
 
 namespace PCSetupHub.Data.Repositories.Interfaces.PcConfigurations
 {
-	public interface IPcConfigurationRepository
+	public interface IPcConfigurationRepository : IRepository<PcConfiguration>
 	{
 		public Task<PcConfiguration?> GetByIdAsync(int id, bool includeComponents);
 	}

@@ -17,6 +17,11 @@ namespace PCSetupHub.Data.Repositories.Base
 		Task<List<T>> GetSomeAsync(Expression<Func<T, bool>> where);
 		Task<List<T>> GetAllAsync<TSortField>(Expression<Func<T, TSortField>> orderBy,
 			bool ascending);
+		Task<List<T>> GetPageAsync(int pageNumber, int pageSize);
+		Task<List<T>> GetPageAsync(Expression<Func<T, bool>> where, int pageNumber, int pageSize);
+
+		Task<int> CountAsync();
+		Task<int> CountAsync(Expression<Func<T, bool>> where);
 
 		Task<int> UpdateAsync(T entity);
 		Task<int> UpdateAsync(IList<T> entities);

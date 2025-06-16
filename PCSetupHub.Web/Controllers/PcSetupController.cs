@@ -10,8 +10,7 @@ using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
 namespace PCSetupHub.Web.Controllers
 {
 	public class PcSetupController(IPcConfigurationRepository _pcConfigRepository,
-		IRepository<PcType> _pcTypeRepository,
-		IRepository<PcConfiguration> _genericPcConfigRepository)
+		IRepository<PcType> _pcTypeRepository)
 		: Controller
 	{
 		[HttpGet("PcSetup/{id}")]
@@ -44,7 +43,7 @@ namespace PCSetupHub.Web.Controllers
 				return NotFound();
 
 			pcConfiguration.ChangeType(pcType[0]);
-			await _genericPcConfigRepository.UpdateAsync(pcConfiguration);
+			await _pcConfigRepository.UpdateAsync(pcConfiguration);
 
 			return RedirectToAction("Index", new { id });
 		}

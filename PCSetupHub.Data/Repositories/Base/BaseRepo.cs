@@ -58,6 +58,31 @@ namespace PCSetupHub.Data.Repositories.Base
 		}
 		public async Task<List<T>> GetSomeAsync(Expression<Func<T, bool>> where)
 			=> await _table.Where(where).ToListAsync();
+		public async Task<List<T>> GetPageAsync(int pageNumber, int pageSize)
+		{
+			return await _table
+				   .Skip((pageNumber - 1) * pageSize)
+				   .Take(pageSize)
+				   .ToListAsync();
+		}
+		public async Task<List<T>> GetPageAsync(Expression<Func<T, bool>> where, int pageNumber,
+			int pageSize)
+		{
+			return await _table
+				.Where(where)
+				.Skip((pageNumber - 1) * pageSize)
+				.Take(pageSize)
+				.ToListAsync();
+		}
+
+		public async Task<int> CountAsync() => await _table.CountAsync();
+		public async Task<int> CountAsync(Expression<Func<T, bool>> where)
+		{
+			if (where == null)
+				return await _table.CountAsync();
+
+			return await _table.CountAsync(where);
+		}
 
 		public async Task<int> UpdateAsync(T entity)
 		{

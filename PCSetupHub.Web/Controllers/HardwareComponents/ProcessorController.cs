@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using PCSetupHub.Core.Extensions;
 using PCSetupHub.Data.Models.Hardware;
 using PCSetupHub.Data.Repositories.Base;
 using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
@@ -9,18 +8,24 @@ using PCSetupHub.Web.ViewModels;
 
 namespace PCSetupHub.Web.Controllers.HardwareComponents
 {
-	public class ProcessorController(IPcConfigurationRepository _pcConfigRepository,
-		IRepository<Processor> _processorRepository, IUserRepository _userRepository,
-		IRepository<PcConfiguration> _genericPcConfigRepository)
-		: Controller
+	public class ProcessorController : HardwareBaseController<Processor>
 	{
-		[HttpGet("Processor/Search/{pcConfigurationId}")]
-		public async Task<IActionResult> SearchAsync(int pcConfigurationId,
-			SearchComponentViewModel<Processor> model)
+		private readonly IPcConfigurationRepository _pcConfigRepository;
+		private readonly IRepository<Processor> _processorRepository;
+
+		public ProcessorController(IPcConfigurationRepository pcConfigRepository,
+			IRepository<Processor> processorRepository, IUserRepository userRepository)
+			: base(processorRepository, userRepository)
 		{
-			int? userId = User.GetId();
-			if (!userId.HasValue || !await _userRepository.UserHasPcConfigurationAsync(userId.Value,
-				pcConfigurationId))
+			_pcConfigRepository = pcConfigRepository;
+			_processorRepository = processorRepository;
+		}
+
+		[HttpGet("Processor/Search/{pcConfigurationId}")]
+		public async Task<IActionResult> SearchAsync(int pcConfigurationId, int page = 1,
+			string? searchQuery = null)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
@@ -28,17 +33,13 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (pcConfig == null)
 				return NotFound();
 
-			model.CurrentComponentId = pcConfig.ProcessorId;
+			var filteredComponents = await GetFilteredComponentsAsync(searchQuery);
+			int totalItems = filteredComponents.Count;
 
-			var processors = await _processorRepository
-				.GetSomeAsync(p => p.IsDefault);
+			SearchComponentViewModel model = new(pcConfigurationId, searchQuery,
+				pcConfig.Processor?.Id, "Processor", page, totalItems);
 
-			processors = [.. processors
-				.Where(p => string.IsNullOrEmpty(model.SearchQuery)
-					|| p.DisplayName.Contains(model.SearchQuery,
-						StringComparison.CurrentCultureIgnoreCase))];
-
-			model.Components = processors;
+			model.Components = GetPagedItems(filteredComponents, model.Page, model.PageSize);
 
 			return View("Search", model);
 		}
@@ -46,9 +47,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		[HttpPost("Processor/Select/{pcConfigurationId}/{componentId}")]
 		public async Task<IActionResult> SelectAsync(int pcConfigurationId, int componentId)
 		{
-			int? userId = User.GetId();
-			if (!userId.HasValue || !await _userRepository.UserHasPcConfigurationAsync(userId.Value,
-				pcConfigurationId))
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
@@ -63,16 +62,15 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				return StatusCode(403);
 
 			pcConfig.ChangeProcessor(processor);
-			await _genericPcConfigRepository.UpdateAsync(pcConfig);
+			await _pcConfigRepository.UpdateAsync(pcConfig);
 
-			return RedirectToAction("Index", "PcSetup", new { id = pcConfigurationId });
+			return RedirectToPcSetup(pcConfigurationId);
 		}
+
 		[HttpPost("Processor/Clear/{pcConfigurationId}")]
 		public async Task<IActionResult> ClearAsync(int pcConfigurationId)
 		{
-			int? userId = User.GetId();
-			if (!userId.HasValue || !await _userRepository.UserHasPcConfigurationAsync(userId.Value,
-				pcConfigurationId))
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
@@ -84,14 +82,16 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				return StatusCode(403);
 
 			pcConfig.ClearProcessor();
-			await _genericPcConfigRepository.UpdateAsync(pcConfig);
+			await _pcConfigRepository.UpdateAsync(pcConfig);
 
-			return RedirectToAction("Index", "PcSetup", new { id = pcConfigurationId });
+			return RedirectToPcSetup(pcConfigurationId);
 		}
+
 		public IActionResult Edit()
 		{
 			return Ok($"Edit from {GetType().Name}");
 		}
+
 		public IActionResult Delete()
 		{
 			return Ok($"Delete from {GetType().Name}");

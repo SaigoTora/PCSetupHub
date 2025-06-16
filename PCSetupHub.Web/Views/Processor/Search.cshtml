@@ -1,7 +1,7 @@
 ﻿@using PCSetupHub.Data.Models.Hardware
 @using PCSetupHub.Web.ViewModels
 
-@model SearchComponentViewModel<Processor>
+@model SearchComponentViewModel
 
 @{
 	ViewData["Title"] = $"Processors";
@@ -12,10 +12,9 @@
 		<div class="search-bar">
 			<div class="input-container">
 				<input class="search-input"
-					   id="search-input"
 					   placeholder="Search..."
 					   type="text"
-					   asp-for="SearchQuery"
+					   name="searchQuery"
 					   value="@Model.SearchQuery" />
 			</div>
 		</div>
@@ -23,4 +22,4 @@
 	</div>
 </form>
 
-@await Html.PartialAsync("PcComponents/_SearchResultsPartial", new SearchResultsViewModel(Model.PcConfigurationId, Model.Components.Cast<HardwareComponent>().ToList(), Model.CurrentComponentId, "Processor"))
+@await Html.PartialAsync("PcComponents/_SearchResultsPartial", Model)

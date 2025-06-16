@@ -11,7 +11,7 @@ using PCSetupHub.Data.Repositories.Interfaces.Users;
 namespace PCSetupHub.Web.Controllers
 {
 	public class ProfileController(IUserRepository _userRepository,
-		IRepository<Friendship> _friendshipRepository, IRepository<User> _genericUserRepository)
+		IRepository<Friendship> _friendshipRepository)
 		: Controller
 	{
 		[HttpGet("Profile/{login?}")]
@@ -42,7 +42,7 @@ namespace PCSetupHub.Web.Controllers
 			friendship.ChangeStatus((FriendshipStatusType)newStatusId);
 			await _friendshipRepository.UpdateAsync(friendship);
 
-			User? user = await _genericUserRepository.GetOneAsync(friendship.InitiatorId);
+			User? user = await _userRepository.GetOneAsync(friendship.InitiatorId);
 			if (user == null)
 				return NotFound();
 
@@ -83,7 +83,7 @@ namespace PCSetupHub.Web.Controllers
 
 			await _friendshipRepository.DeleteAsync(id);
 
-			User? user = await _genericUserRepository.GetOneAsync(friendship.FriendId);
+			User? user = await _userRepository.GetOneAsync(friendship.FriendId);
 			if (user == null)
 				return NotFound();
 
