@@ -3,23 +3,103 @@
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Data.Models.Hardware;
 using PCSetupHub.Data.Repositories.Base;
+using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
+using PCSetupHub.Web.ViewModels;
 
 namespace PCSetupHub.Web.Controllers.HardwareComponents
 {
 	public abstract class HardwareBaseController<TComponent> : Controller
 		where TComponent : HardwareComponent, new()
 	{
+		protected abstract string ComponentName { get; }
+		protected abstract PcConfigurationIncludes PcConfigurationIncludes { get; }
+
+		private readonly IPcConfigurationRepository _pcConfigRepository;
 		private readonly IRepository<TComponent> _componentRepository;
 		private readonly IUserRepository _userRepository;
 
-		protected HardwareBaseController(IRepository<TComponent> componentRepository,
-			IUserRepository userRepository)
+		protected HardwareBaseController(IPcConfigurationRepository pcConfigRepository,
+			IRepository<TComponent> componentRepository, IUserRepository userRepository)
 		{
+			_pcConfigRepository = pcConfigRepository;
 			_componentRepository = componentRepository;
 			_userRepository = userRepository;
 		}
 
+		#region Abstract methods
+		protected abstract TComponent? GetComponent(PcConfiguration pcConfiguration);
+		protected abstract void ChangeComponent(PcConfiguration pcConfiguration,
+			TComponent component);
+		protected abstract void ClearComponent(PcConfiguration pcConfiguration);
+		#endregion
+
+		#region Action methods
+		[HttpGet("Search/{pcConfigurationId}")]
+		public async Task<IActionResult> SearchAsync(int pcConfigurationId, int page = 1,
+			string? searchQuery = null)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
+				PcConfigurationIncludes);
+			if (pcConfig == null)
+				return NotFound();
+			var filteredComponents = await GetFilteredComponentsAsync(searchQuery);
+			int totalItems = filteredComponents.Count;
+
+			SearchComponentViewModel model = new(pcConfigurationId, searchQuery,
+				GetComponent(pcConfig)?.Id, ComponentName, page, totalItems);
+
+			model.Components = GetPagedItems(filteredComponents, model.Page, model.PageSize);
+			return View("Search", model);
+		}
+
+		[HttpPost("Select/{pcConfigurationId}/{componentId}")]
+		public async Task<IActionResult> SelectAsync(int pcConfigurationId, int componentId)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
+				PcConfigurationIncludes);
+			if (pcConfig == null)
+				return NotFound();
+
+			TComponent? component = await _componentRepository.GetOneAsync(componentId);
+
+			if (component == null)
+				return NotFound();
+			if (!component.IsDefault)
+				return StatusCode(403);
+
+			ChangeComponent(pcConfig, component);
+
+			await _pcConfigRepository.UpdateAsync(pcConfig);
+			return RedirectToPcSetup(pcConfigurationId);
+		}
+
+		[HttpPost("Clear/{pcConfigurationId}")]
+		public async Task<IActionResult> ClearAsync(int pcConfigurationId)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
+				PcConfigurationIncludes);
+			if (pcConfig == null)
+				return NotFound();
+
+			TComponent? component = GetComponent(pcConfig);
+			if (component != null && !component.IsDefault)
+				return StatusCode(403);
+			ClearComponent(pcConfig);
+
+			await _pcConfigRepository.UpdateAsync(pcConfig);
+			return RedirectToPcSetup(pcConfigurationId);
+		}
+		#endregion
+
+		#region Authorization and helpers
 		protected async Task<bool> HasAccessToPcConfigurationAsync(int pcConfigurationId)
 		{
 			int? userId = User.GetId();
@@ -50,5 +130,6 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				.Skip((page - 1) * pageSize)
 				.Take(pageSize)];
 		}
+		#endregion
 	}
 }

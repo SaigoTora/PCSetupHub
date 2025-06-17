@@ -19,7 +19,10 @@
 			PageSize = pageSize;
 			SearchQuery = searchQuery;
 
-			Page = Math.Clamp(page, 1, TotalPages);
+			if (TotalPages <= 0)
+				Page = 1;
+			else
+				Page = Math.Clamp(page, 1, TotalPages);
 		}
 	}
 }

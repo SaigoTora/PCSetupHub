@@ -1,0 +1,25 @@
+﻿@using PCSetupHub.Data.Models.Hardware
+@using PCSetupHub.Web.ViewModels
+
+@model SearchComponentViewModel
+
+@{
+	ViewData["Title"] = $"Video Cards";
+}
+
+<form asp-controller="VideoCard" asp-action="Search" method="get">
+	<div class="searchbar-container">
+		<div class="search-bar">
+			<div class="input-container">
+				<input class="search-input"
+					   placeholder="Search..."
+					   type="text"
+					   name="searchQuery"
+					   value="@Model.SearchQuery" />
+			</div>
+		</div>
+		<button type="submit" class="search-button"><i class="fa fa-search"></i></button>
+	</div>
+</form>
+
+@await Html.PartialAsync("PcComponents/_SearchResultsPartial", Model)

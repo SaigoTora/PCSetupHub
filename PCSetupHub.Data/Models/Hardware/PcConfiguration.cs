@@ -87,6 +87,8 @@ namespace PCSetupHub.Data.Models.Hardware
 
 		public void ChangeType(PcType type) => Type = type;
 		public void ChangeProcessor(Processor processor) => Processor = processor;
+		public void ChangeVideoCard(VideoCard videoCard) => VideoCard = videoCard;
 		public void ClearProcessor() => Processor = null;
+		public void ClearVideoCard() => VideoCard = null;
 	}
 }

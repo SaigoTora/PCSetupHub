@@ -1,21 +1,39 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using PCSetupHub.Data.Models.Hardware;
+using PCSetupHub.Data.Repositories.Base;
+using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
+using PCSetupHub.Data.Repositories.Interfaces.Users;
+
 namespace PCSetupHub.Web.Controllers.HardwareComponents
 {
-	public class VideoCardController : Controller
+	[Route("[Controller]")]
+	public class VideoCardController : HardwareBaseController<VideoCard>
 	{
-		public IActionResult Select()
+		protected override string ComponentName => "VideoCard";
+		protected override PcConfigurationIncludes PcConfigurationIncludes =>
+			PcConfigurationIncludes.VideoCard;
+
+		public VideoCardController(IPcConfigurationRepository pcConfigRepository,
+			IRepository<VideoCard> videoCardRepository, IUserRepository userRepository)
+			: base(pcConfigRepository, videoCardRepository, userRepository)
+		{ }
+
+		protected override VideoCard? GetComponent(PcConfiguration pcConfiguration)
+			=> pcConfiguration.VideoCard;
+		protected override void ChangeComponent(PcConfiguration pcConfiguration,
+			VideoCard component)
 		{
-			return Ok($"Select from {GetType().Name}");
+			pcConfiguration.ChangeVideoCard(component);
 		}
-		public IActionResult Clear()
-		{
-			return Ok($"Clear from {GetType().Name}");
-		}
+		protected override void ClearComponent(PcConfiguration pcConfiguration)
+			=> pcConfiguration.ClearVideoCard();
+
 		public IActionResult Edit()
 		{
 			return Ok($"Edit from {GetType().Name}");
 		}
+
 		public IActionResult Delete()
 		{
 			return Ok($"Delete from {GetType().Name}");
