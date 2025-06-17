@@ -1,6 +1,7 @@
 ﻿@using PCSetupHub.Web.ViewModels
 
 @model SearchComponentViewModel
+
 @{
 	<link rel="stylesheet" href="~/css/modal.css" />
 
@@ -27,9 +28,7 @@ else
 }
 
 
-@await Html.PartialAsync("_PageNavigator", Model)
-
-<table class="table-responsive w-100 search-components-table">
+<table class="mb-5 table-responsive w-100 search-components-table">
 	@for (int i = 0; i < Model.Components.Count; i++)
 	{
 		<tr>
@@ -55,3 +54,7 @@ else
 		</tr>
 	}
 </table>
+
+<div class="d-flex justify-content-center">
+	@await Html.PartialAsync("_PageNavigator", Model)
+</div>
