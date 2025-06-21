@@ -32,6 +32,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected abstract void ChangeComponent(PcConfiguration pcConfiguration,
 			TComponent component);
 		protected abstract void ClearComponent(PcConfiguration pcConfiguration);
+		protected abstract bool IsComponentInPcConfig(PcConfiguration pcConfig, int componentId);
 		#endregion
 
 		#region Action methods
@@ -112,10 +113,13 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			return View(new TComponent());
 		}
-		
+
 		[HttpPost("Create/{pcConfigurationId}")]
 		public async Task<IActionResult> CreateAsync(int pcConfigurationId, TComponent component)
 		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
 			if (component == null)
 				return NotFound();
 			component.IsDefault = false;
@@ -125,9 +129,6 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				SetFirstError();
 				return View(component);
 			}
-
-			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
-				return StatusCode(403);
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
 				PcConfigurationIncludes);
@@ -139,6 +140,73 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			await _componentRepository.AddAsync(component);
 			ChangeComponent(pcConfig, component);
 			await _pcConfigRepository.UpdateAsync(pcConfig);
+
+			return RedirectToPcSetup(pcConfigurationId);
+		}
+
+		[HttpPost("Delete/{pcConfigurationId}")]
+		public async Task<IActionResult> DeleteAsync(int pcConfigurationId)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
+				PcConfigurationIncludes);
+			if (pcConfig == null)
+				return NotFound();
+
+			await TryDeleteCurrentAsync(pcConfig);
+
+			return RedirectToPcSetup(pcConfigurationId);
+		}
+
+		[HttpGet("Edit/{pcConfigurationId}")]
+		public async Task<IActionResult> EditAsync(int pcConfigurationId)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
+				PcConfigurationIncludes);
+			if (pcConfig == null)
+				return NotFound();
+
+			TComponent? component = GetComponent(pcConfig);
+			if (component == null)
+				return NotFound();
+			if (component.IsDefault)
+				return StatusCode(403);
+
+			return View(component);
+		}
+
+		[HttpPost("Edit/{pcConfigurationId}/{componentId}")]
+		public async Task<IActionResult> EditAsync(int pcConfigurationId, int componentId,
+			TComponent component)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
+				PcConfigurationIncludes, true);
+			if (pcConfig == null)
+				return NotFound();
+			if (!IsComponentInPcConfig(pcConfig, componentId))
+				return StatusCode(403);
+
+			if (component == null)
+				return NotFound();
+			if (component.IsDefault)
+				return StatusCode(403);
+
+			if (!ModelState.IsValid)
+			{
+				SetFirstError();
+				return View(component);
+			}
+
+			component.SetId(componentId);
+			await _componentRepository.UpdateAsync(component);
 
 			return RedirectToPcSetup(pcConfigurationId);
 		}

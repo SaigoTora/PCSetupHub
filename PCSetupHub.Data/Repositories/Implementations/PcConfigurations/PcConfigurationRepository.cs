@@ -26,7 +26,8 @@ namespace PCSetupHub.Data.Repositories.Implementations.PcConfigurations
 			return await GetByIdAsync(id, PcConfigurationIncludes.None);
 		}
 
-		public async Task<PcConfiguration?> GetByIdAsync(int id, PcConfigurationIncludes includes)
+		public async Task<PcConfiguration?> GetByIdAsync(int id, PcConfigurationIncludes includes,
+			bool asNoTracking = false)
 		{
 			var query = Context.PcConfigurations
 				.Include(pc => pc.Type)
@@ -40,6 +41,9 @@ namespace PCSetupHub.Data.Repositories.Implementations.PcConfigurations
 			ApplySsdInclude(ref query, includes);
 			ApplyRamInclude(ref query, includes);
 			ApplyHddInclude(ref query, includes);
+
+			if (asNoTracking)
+				query = query.AsNoTracking();
 
 			return await query.FirstOrDefaultAsync(pc => pc.Id == id);
 		}

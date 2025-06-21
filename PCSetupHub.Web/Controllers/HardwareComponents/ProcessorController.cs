@@ -28,15 +28,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 		protected override void ClearComponent(PcConfiguration pcConfiguration)
 			=> pcConfiguration.ClearProcessor();
-
-		public IActionResult Edit()
-		{
-			return Ok($"Edit from {GetType().Name}");
-		}
-
-		public IActionResult Delete()
-		{
-			return Ok($"Delete from {GetType().Name}");
-		}
+		protected override bool IsComponentInPcConfig(PcConfiguration pcConfig, int componentId)
+			=> pcConfig.Processor?.Id == componentId;
 	}
 }
