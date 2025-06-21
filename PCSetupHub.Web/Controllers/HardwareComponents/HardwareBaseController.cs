@@ -46,6 +46,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				PcConfigurationIncludes);
 			if (pcConfig == null)
 				return NotFound();
+
 			var filteredComponents = await GetFilteredComponentsAsync(searchQuery);
 			int totalItems = filteredComponents.Count;
 
@@ -53,7 +54,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				GetComponent(pcConfig)?.Id, ComponentName, page, totalItems);
 
 			model.Components = GetPagedItems(filteredComponents, model.Page, model.PageSize);
-			return View("Search", model);
+			return View(model);
 		}
 
 		[HttpPost("Select/{pcConfigurationId}/{componentId}")]
@@ -61,6 +62,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
+
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
 				PcConfigurationIncludes);
 			if (pcConfig == null)
@@ -73,9 +75,11 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (!component.IsDefault)
 				return StatusCode(403);
 
-			ChangeComponent(pcConfig, component);
+			await TryDeleteCurrentAsync(pcConfig);
 
+			ChangeComponent(pcConfig, component);
 			await _pcConfigRepository.UpdateAsync(pcConfig);
+
 			return RedirectToPcSetup(pcConfigurationId);
 		}
 
@@ -84,6 +88,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
+
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
 				PcConfigurationIncludes);
 			if (pcConfig == null)
@@ -92,9 +97,49 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			TComponent? component = GetComponent(pcConfig);
 			if (component != null && !component.IsDefault)
 				return StatusCode(403);
-			ClearComponent(pcConfig);
 
+			ClearComponent(pcConfig);
 			await _pcConfigRepository.UpdateAsync(pcConfig);
+
+			return RedirectToPcSetup(pcConfigurationId);
+		}
+
+		[HttpGet("Create/{pcConfigurationId}")]
+		public async Task<IActionResult> CreateAsync(int pcConfigurationId)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			return View(new TComponent());
+		}
+		
+		[HttpPost("Create/{pcConfigurationId}")]
+		public async Task<IActionResult> CreateAsync(int pcConfigurationId, TComponent component)
+		{
+			if (component == null)
+				return NotFound();
+			component.IsDefault = false;
+
+			if (!ModelState.IsValid)
+			{
+				SetFirstError();
+				return View(component);
+			}
+
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
+				PcConfigurationIncludes);
+			if (pcConfig == null)
+				return NotFound();
+
+			await TryDeleteCurrentAsync(pcConfig);
+
+			await _componentRepository.AddAsync(component);
+			ChangeComponent(pcConfig, component);
+			await _pcConfigRepository.UpdateAsync(pcConfig);
+
 			return RedirectToPcSetup(pcConfigurationId);
 		}
 		#endregion
@@ -129,6 +174,26 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			return [.. components
 				.Skip((page - 1) * pageSize)
 				.Take(pageSize)];
+		}
+		protected async Task<bool> TryDeleteCurrentAsync(PcConfiguration pcConfig)
+		{
+			// Delete the current component if it is not default.
+			TComponent? currentComponent = GetComponent(pcConfig);
+			if (currentComponent != null && !currentComponent.IsDefault)
+			{
+				await _componentRepository.DeleteAsync(currentComponent.Id);
+				return true;
+			}
+
+			return false;
+		}
+
+		private void SetFirstError()
+		{
+			ViewData["FirstError"] = ModelState.Values
+				.SelectMany(v => v.Errors)
+				.Select(e => e.ErrorMessage)
+				.FirstOrDefault();
 		}
 		#endregion
 	}

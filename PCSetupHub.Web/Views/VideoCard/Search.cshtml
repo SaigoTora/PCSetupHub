@@ -13,7 +13,7 @@
 			<div class="input-container">
 				<input class="search-input"
 					   placeholder="Search..."
-					   type="text"
+					   type="search"
 					   name="searchQuery"
 					   value="@Model.SearchQuery" />
 			</div>
@@ -22,4 +22,6 @@
 	</div>
 </form>
 
-@await Html.PartialAsync("PcComponents/_SearchResultsPartial", Model)
+<div class="mb-2">
+	@await Html.PartialAsync("PcComponents/_SearchResultsPartial", Model)
+</div>
