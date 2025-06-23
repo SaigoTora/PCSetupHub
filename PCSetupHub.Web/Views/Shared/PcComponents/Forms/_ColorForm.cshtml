@@ -14,13 +14,29 @@
 		@for (int i = 0; i < colors.Count(); i++)
 		{
 			var color = colors.ElementAt(i);
-			<div class="col-4 mb-2 d-flex align-items-center">
-				<input type="checkbox" name="SelectedColorsId" value="@color.Id" id="color-@color.Id" class="me-2" @(Model != null && Model.Any(item => item == color.Id) ? "checked" : "") />
-				<label for="color-@color.Id" class="d-flex align-items-center">
-					<span class="me-2 color-container color-container-@(color.Name.Replace(' ', '-').ToLower())"></span>
-					@color.Name
+			<div class="col-4 mb-2-5 d-flex align-items-center">
+				<label class="checkbox-container me-2" for="color-@color.Id">
+					<input type="checkbox" name="SelectedColorsId" value="@color.Id" id="color-@color.Id" @(Model != null && Model.Any(item => item == color.Id) ? "checked" : "")>
+					<div class="checkmark color-container-@(color.Name.Replace(' ', '-').ToLower())" title="@color.Name"></div>
+				</label>
+
+				<label for="color-@color.Id" class="d-flex align-items-center user-select-none color-checkbox-label">
+					<span>@color.Name</span>
 				</label>
 			</div>
 		}
 	</div>
 }
+
+<script>
+	const checkboxes = document.querySelectorAll('input[name="SelectedColorsId"]');
+
+	checkboxes.forEach(cb => {
+		cb.addEventListener('change', () => {
+			const checked = Array.from(checkboxes).filter(c => c.checked);
+			if (checked.length > 5) {
+				cb.checked = false;
+			}
+		});
+	});
+</script>
