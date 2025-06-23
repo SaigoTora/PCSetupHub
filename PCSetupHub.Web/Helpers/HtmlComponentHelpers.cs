@@ -57,7 +57,8 @@ namespace PCSetupHub.Web.Helpers
 			else
 				return new HtmlString("<i class='fa fa-xmark text-danger'></i>");
 		}
-		public static IHtmlContent RenderColorIndicator(this IHtmlHelper html, IEnumerable<Color?> colors)
+		public static IHtmlContent RenderColorIndicator(this IHtmlHelper html,
+			IEnumerable<Color?> colors)
 		{
 			StringBuilder contentBuilder = new();
 			if (colors == null || colors.Count() == 0)

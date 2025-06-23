@@ -7,14 +7,15 @@ namespace PCSetupHub.Data.Models.Hardware
 		[Range(1, byte.MaxValue, ErrorMessage = "Number of cores must be greater than 0.")]
 		public byte CoreCount { get; set; }
 
-		[Range(0.1, float.MaxValue, ErrorMessage = "Core clock must be greater than 0.")]
+		[Range(1, float.MaxValue, ErrorMessage = "Core clock must be at least 1 GHz.")]
 		public float CoreClock { get; set; }
 
-		[Range(0.1, float.MaxValue, ErrorMessage = "Boost clock must be greater than 0.")]
+		[Range(2, float.MaxValue, ErrorMessage = "Boost clock must be at least 2 GHz.")]
 		public float? BoostClock { get; set; }
 
-		[Range(1, int.MaxValue, ErrorMessage = "TDP must be greater than 0.")]
+		[Range(20, int.MaxValue, ErrorMessage = "TDP must be at least 20 W.")]
 		public int TDP { get; set; }
+
 		[StringLength(255, MinimumLength = 3,
 			ErrorMessage = "Integrated graphics must be between 3 and 255 characters long.")]
 		[RegularExpression(@"^[a-zA-Z0-9\-_/:\.\+\(\)\[\],\s]+$",

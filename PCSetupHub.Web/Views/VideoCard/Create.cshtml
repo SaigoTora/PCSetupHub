@@ -1,0 +1,12 @@
+﻿@using PCSetupHub.Data.Models.Hardware
+@using PCSetupHub.Web.ViewModels
+
+@model VideoCard
+
+@{
+	ViewData["Title"] = "Video Card";
+}
+
+<h1 class="mt-2 mb-5">Create Video Card</h1>
+
+@await Html.PartialAsync("PcComponents/Forms/_VideoCardForm", new PcComponentFormViewModel<VideoCard>(Model, FormMode.Create))

@@ -1,0 +1,26 @@
+﻿@using PCSetupHub.Data.Models.Attributes
+
+@model List<int>
+
+@{
+	<link rel="stylesheet" href="~/css/color-containers.css" />
+
+	var colors = ViewData["Colors"] as IEnumerable<Color>;
+}
+
+@if (colors != null)
+{
+	<div class="row form__group mb-0">
+		@for (int i = 0; i < colors.Count(); i++)
+		{
+			var color = colors.ElementAt(i);
+			<div class="col-4 mb-2 d-flex align-items-center">
+				<input type="checkbox" name="SelectedColorsId" value="@color.Id" id="color-@color.Id" class="me-2" @(Model != null && Model.Any(item => item == color.Id) ? "checked" : "") />
+				<label for="color-@color.Id" class="d-flex align-items-center">
+					<span class="me-2 color-container color-container-@(color.Name.Replace(' ', '-').ToLower())"></span>
+					@color.Name
+				</label>
+			</div>
+		}
+	</div>
+}

@@ -25,3 +25,7 @@
 <div class="mb-2">
 	@await Html.PartialAsync("PcComponents/_SearchResultsPartial", Model)
 </div>
+
+<div class="create-component-prompt mb-3">
+	<span>Didn't find the right video card? <a asp-action="Create" asp-route-id="@Model.PcConfigurationId">Add yours</a>.</span>
+</div>

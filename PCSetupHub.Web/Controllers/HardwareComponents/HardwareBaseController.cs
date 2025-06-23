@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using PCSetupHub.Core.Extensions;
+using PCSetupHub.Data.Models.Attributes;
 using PCSetupHub.Data.Models.Hardware;
 using PCSetupHub.Data.Repositories.Base;
 using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
@@ -17,13 +18,16 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 		private readonly IPcConfigurationRepository _pcConfigRepository;
 		private readonly IRepository<TComponent> _componentRepository;
+		private readonly IRepository<Color> _colorRepository;
 		private readonly IUserRepository _userRepository;
 
 		protected HardwareBaseController(IPcConfigurationRepository pcConfigRepository,
-			IRepository<TComponent> componentRepository, IUserRepository userRepository)
+			IRepository<TComponent> componentRepository, IRepository<Color> colorRepository,
+			IUserRepository userRepository)
 		{
 			_pcConfigRepository = pcConfigRepository;
 			_componentRepository = componentRepository;
+			_colorRepository = colorRepository;
 			_userRepository = userRepository;
 		}
 
@@ -33,6 +37,12 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			TComponent component);
 		protected abstract void ClearComponent(PcConfiguration pcConfiguration);
 		protected abstract bool IsComponentInPcConfig(PcConfiguration pcConfig, int componentId);
+		#endregion
+
+		#region Virtual methods
+		protected virtual Task<TComponent> AddColorRelationshipsAsync(TComponent component,
+			List<int> colorIds)
+			=> Task.FromResult(component);
 		#endregion
 
 		#region Action methods
@@ -111,23 +121,26 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
 
+			ViewData["Colors"] = await _colorRepository.GetAllAsync(c => c.Id, true);
 			return View(new TComponent());
 		}
 
 		[HttpPost("Create/{pcConfigurationId}")]
-		public async Task<IActionResult> CreateAsync(int pcConfigurationId, TComponent component)
+		public async Task<IActionResult> CreateAsync(int pcConfigurationId,
+			PcComponentFormViewModel<TComponent> model)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
 
-			if (component == null)
+			if (model == null)
 				return NotFound();
-			component.IsDefault = false;
+
+			model.Component.IsDefault = false;
 
 			if (!ModelState.IsValid)
 			{
 				SetFirstError();
-				return View(component);
+				return View(model);
 			}
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
@@ -137,9 +150,13 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			await TryDeleteCurrentAsync(pcConfig);
 
-			await _componentRepository.AddAsync(component);
-			ChangeComponent(pcConfig, component);
+			await _componentRepository.AddAsync(model.Component);
+			ChangeComponent(pcConfig, model.Component);
 			await _pcConfigRepository.UpdateAsync(pcConfig);
+
+			await RemoveInvalidColorIdsAsync(model.SelectedColorsId);
+			model.Component = await AddColorRelationshipsAsync(model.Component,
+				model.SelectedColorsId);
 
 			return RedirectToPcSetup(pcConfigurationId);
 		}
@@ -177,12 +194,13 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (component.IsDefault)
 				return StatusCode(403);
 
+			ViewData["Colors"] = await _colorRepository.GetAllAsync(c => c.Id, true);
 			return View(component);
 		}
 
 		[HttpPost("Edit/{pcConfigurationId}/{componentId}")]
 		public async Task<IActionResult> EditAsync(int pcConfigurationId, int componentId,
-			TComponent component)
+			PcComponentFormViewModel<TComponent> model)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
@@ -194,19 +212,24 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (!IsComponentInPcConfig(pcConfig, componentId))
 				return StatusCode(403);
 
-			if (component == null)
+			if (model.Component == null)
 				return NotFound();
-			if (component.IsDefault)
+			if (model.Component.IsDefault)
 				return StatusCode(403);
+
+			model.Component.SetId(componentId);
 
 			if (!ModelState.IsValid)
 			{
 				SetFirstError();
-				return View(component);
+				return View(model.Component);
 			}
 
-			component.SetId(componentId);
-			await _componentRepository.UpdateAsync(component);
+			await _componentRepository.UpdateAsync(model.Component);
+
+			await RemoveInvalidColorIdsAsync(model.SelectedColorsId);
+			model.Component = await AddColorRelationshipsAsync(model.Component,
+				model.SelectedColorsId);
 
 			return RedirectToPcSetup(pcConfigurationId);
 		}
@@ -254,6 +277,17 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			}
 
 			return false;
+		}
+		protected async Task RemoveInvalidColorIdsAsync(List<int> colorIds)
+		{
+			if (colorIds == null || colorIds.Count == 0)
+				return;
+
+			var existingColorIds = (await _colorRepository.GetAllAsync(c => c.Id, true))
+				.Select(c => c.Id)
+				.ToHashSet();
+
+			colorIds.RemoveAll(id => !existingColorIds.Contains(id));
 		}
 
 		private void SetFirstError()

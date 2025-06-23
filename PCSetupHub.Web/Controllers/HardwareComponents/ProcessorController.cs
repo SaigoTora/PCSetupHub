@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using PCSetupHub.Data.Models.Attributes;
 using PCSetupHub.Data.Models.Hardware;
 using PCSetupHub.Data.Repositories.Base;
 using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
@@ -15,8 +16,9 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			PcConfigurationIncludes.Processor;
 
 		public ProcessorController(IPcConfigurationRepository pcConfigRepository,
-			IRepository<Processor> processorRepository, IUserRepository userRepository)
-			: base(pcConfigRepository, processorRepository, userRepository)
+			IRepository<Processor> processorRepository, IRepository<Color> colorRepository,
+			IUserRepository userRepository)
+			: base(pcConfigRepository, processorRepository, colorRepository, userRepository)
 		{ }
 
 		protected override Processor? GetComponent(PcConfiguration pcConfiguration)

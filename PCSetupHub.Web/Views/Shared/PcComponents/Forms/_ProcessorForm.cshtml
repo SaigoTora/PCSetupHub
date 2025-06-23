@@ -22,13 +22,13 @@
 {
 	<form asp-action="@actionName" asp-route-componentId="@componentId" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
 		<div class="form__group field">
-			<input type="text" class="form__field" placeholder="Name" asp-for="Component.Name">
+			<input type="text" class="form__field" placeholder="Name" asp-for="Component.Name" required>
 			<label for="Name" class="form__label">Name</label>
 		</div>
 
 		<div class="form__group field">
 			<input type="number" class="form__field" placeholder="Price" asp-for="Component.Price" min="0.01" step="0.01">
-			<label for="Price" class="form__label">Price</label>
+			<label for="Price" class="form__label">Price ($)</label>
 		</div>
 
 		<div class="form__group field">
@@ -37,17 +37,17 @@
 		</div>
 
 		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="CoreClock" asp-for="Component.CoreClock" min="0.1" step="0.1" required value="@(Model.Component.CoreClock == default ? "" : Model.Component.CoreClock.ToString(System.Globalization.CultureInfo.InvariantCulture))" />
+			<input type="number" class="form__field" placeholder="CoreClock" asp-for="Component.CoreClock" min="1" step="0.1" required value="@(Model.Component.CoreClock == default ? "" : Model.Component.CoreClock.ToString(System.Globalization.CultureInfo.InvariantCulture))" />
 			<label for="CoreClock" class="form__label">Core clock (GHz)</label>
 		</div>
 
 		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="BoostClock" asp-for="Component.BoostClock" min="0.1" step="0.1" />
+			<input type="number" class="form__field" placeholder="BoostClock" asp-for="Component.BoostClock" min="2" step="0.1" />
 			<label for="BoostClock" class="form__label">Boost clock (GHz)</label>
 		</div>
 
 		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="TDP" asp-for="Component.TDP" min="1" required value="@(Model.Component.TDP == default ? "" : Model.Component.TDP.ToString())" />
+			<input type="number" class="form__field" placeholder="TDP" asp-for="Component.TDP" min="20" required value="@(Model.Component.TDP == default ? "" : Model.Component.TDP.ToString())" />
 			<label for="TDP" class="form__label">TDP (W)</label>
 		</div>
 
@@ -78,29 +78,6 @@
 			</div>
 		</div>
 
-		@if (Model.Mode == FormMode.Create)
-		{
-			if (ViewData["FirstError"] != null)
-			{
-				<span class="text-danger mt-4">@ViewData["FirstError"]</span>
-				<button type="submit" class="create-component-button mt-4 mb-4">Create</button>
-			}
-			else
-			{
-				<button type="submit" class="create-component-button mt-5 mb-4">Create</button>
-			}
-		}
-		else if (Model.Mode == FormMode.Edit)
-		{
-			if (ViewData["FirstError"] != null)
-			{
-				<span class="text-danger mt-4">@ViewData["FirstError"]</span>
-				<button type="submit" class="edit-component-button mt-4 mb-4">Edit</button>
-			}
-			else
-			{
-				<button type="submit" class="edit-component-button mt-5 mb-4">Edit</button>
-			}
-		}
+		@await Html.PartialAsync("PcComponents/Forms/_FormSubmitSection", Model.Mode)
 	</form>
 }
