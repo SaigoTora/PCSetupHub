@@ -40,7 +40,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		#endregion
 
 		#region Virtual methods
-		protected virtual Task<TComponent> AddColorRelationshipsAsync(TComponent component,
+		protected virtual Task<TComponent> UpdateColorRelationshipsAsync(TComponent component,
 			List<int> colorIds)
 			=> Task.FromResult(component);
 		#endregion
@@ -155,7 +155,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			await _pcConfigRepository.UpdateAsync(pcConfig);
 
 			await RemoveInvalidColorIdsAsync(model.SelectedColorsId);
-			model.Component = await AddColorRelationshipsAsync(model.Component,
+			model.Component = await UpdateColorRelationshipsAsync(model.Component,
 				model.SelectedColorsId);
 
 			return RedirectToPcSetup(pcConfigurationId);
@@ -228,7 +228,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			await _componentRepository.UpdateAsync(model.Component);
 
 			await RemoveInvalidColorIdsAsync(model.SelectedColorsId);
-			model.Component = await AddColorRelationshipsAsync(model.Component,
+			model.Component = await UpdateColorRelationshipsAsync(model.Component,
 				model.SelectedColorsId);
 
 			return RedirectToPcSetup(pcConfigurationId);

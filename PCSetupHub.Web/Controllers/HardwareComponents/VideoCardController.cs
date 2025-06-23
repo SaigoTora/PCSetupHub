@@ -38,24 +38,39 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override bool IsComponentInPcConfig(PcConfiguration pcConfig, int componentId)
 			=> pcConfig.VideoCard?.Id == componentId;
 
-		protected override async Task<VideoCard> AddColorRelationshipsAsync(VideoCard videoCard,
+		protected override async Task<VideoCard> UpdateColorRelationshipsAsync(VideoCard videoCard,
 			List<int> colorIds)
 		{
-			// Deleting old relationships
-			var oldColorVideoCards = await ColorVideoCardRepository
+			// Getting existing relationships
+			var existingRelations = await ColorVideoCardRepository
 				.GetSomeAsync(cvc => cvc.VideoCardId == videoCard.Id);
 
-			foreach (var oldItem in oldColorVideoCards)
-				await ColorVideoCardRepository.DeleteAsync(oldItem);
+			var existingColorIds = existingRelations.Select(r => r.ColorId).ToHashSet();
+			var newColorIds = colorIds.ToHashSet();
 
-			// Creating new relationships
-			List<ColorVideoCard> newColorVideoCards = [];
+			// Removing relationships that no longer exist
+			var relationsToRemove = existingRelations
+				.Where(r => !newColorIds.Contains(r.ColorId))
+				.ToList();
 
-			foreach (var colorId in colorIds)
-				newColorVideoCards.Add(new(colorId, videoCard.Id));
+			foreach (var relation in relationsToRemove)
+				await ColorVideoCardRepository.DeleteAsync(relation);
 
-			await ColorVideoCardRepository.AddAsync(newColorVideoCards);
-			videoCard.SetColorVideoCards(newColorVideoCards);
+			// Adding new relationships
+			var relationsToAdd = newColorIds
+				.Except(existingColorIds)
+				.Select(colorId => new ColorVideoCard(colorId, videoCard.Id))
+				.ToList();
+
+			await ColorVideoCardRepository.AddAsync(relationsToAdd);
+
+			// Updating the collection in entity
+			var updatedRelations = existingRelations
+				.Where(r => newColorIds.Contains(r.ColorId))
+				.Concat(relationsToAdd)
+				.ToList();
+
+			videoCard.SetColorVideoCards(updatedRelations);
 
 			return videoCard;
 		}
