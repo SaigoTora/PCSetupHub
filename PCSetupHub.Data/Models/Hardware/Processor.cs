@@ -19,7 +19,7 @@ namespace PCSetupHub.Data.Models.Hardware
 		[StringLength(255, MinimumLength = 3,
 			ErrorMessage = "Integrated graphics must be between 3 and 255 characters long.")]
 		[RegularExpression(@"^[a-zA-Z0-9\-_/:\.\+\(\)\[\],\s]+$",
-			ErrorMessage = "Integrated graphics can contain Latin letters, numbers, and common symbols like " +
+			ErrorMessage = "Integrated graphics can contain Latin letters, numbers and common symbols like " +
 			"- / : . + ( )")]
 		public string? Graphics { get; set; }
 		public bool SMT { get; set; }

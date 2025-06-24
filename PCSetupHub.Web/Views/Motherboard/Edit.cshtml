@@ -1,0 +1,12 @@
+﻿@using PCSetupHub.Data.Models.Hardware
+@using PCSetupHub.Web.ViewModels
+
+@model Motherboard
+
+@{
+	ViewData["Title"] = "Motherboard";
+}
+
+<h1 class="mt-2 mb-5">Edit Motherboard</h1>
+
+@await Html.PartialAsync("PcComponents/Forms/_MotherboardForm", new PcComponentFormViewModel<Motherboard>(Model, FormMode.Edit))

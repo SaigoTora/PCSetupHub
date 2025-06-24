@@ -15,6 +15,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		private readonly IRepository<ColorVideoCard> ColorVideoCardRepository;
 
 		protected override string ComponentName => "VideoCard";
+		protected override bool IsComponentColorful => true;
 		protected override PcConfigurationIncludes PcConfigurationIncludes =>
 			PcConfigurationIncludes.VideoCard;
 

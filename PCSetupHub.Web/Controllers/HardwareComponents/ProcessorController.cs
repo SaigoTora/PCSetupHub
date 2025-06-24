@@ -12,6 +12,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 	public class ProcessorController : HardwareBaseController<Processor>
 	{
 		protected override string ComponentName => "Processor";
+		protected override bool IsComponentColorful => false;
 		protected override PcConfigurationIncludes PcConfigurationIncludes =>
 			PcConfigurationIncludes.Processor;
 

@@ -12,7 +12,7 @@ namespace PCSetupHub.Data.Models.Hardware
 			ErrorMessage = "Name must be between 3 and 255 characters long.")]
 
 		[RegularExpression(@"^[a-zA-Z0-9\-_/:\.\+\(\)\[\],\s]+$",
-			ErrorMessage = "Name can contain Latin letters, numbers, and common symbols like " +
+			ErrorMessage = "Name can contain Latin letters, numbers and common symbols like " +
 			"- / : . + ( )")]
 		public string Name { get; set; } = string.Empty;
 

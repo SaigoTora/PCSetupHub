@@ -10,7 +10,7 @@ namespace PCSetupHub.Data.Models.Hardware
 		[StringLength(255, MinimumLength = 3,
 			ErrorMessage = "Chipset must be between 3 and 255 characters long.")]
 		[RegularExpression(@"^[a-zA-Z0-9\-_/:\.\+\(\)\[\],\s]+$",
-			ErrorMessage = "Chipset can contain Latin letters, numbers, and common symbols like " +
+			ErrorMessage = "Chipset can contain Latin letters, numbers and common symbols like " +
 			"- / : . + ( )")]
 		public string Chipset { get; set; } = string.Empty;
 

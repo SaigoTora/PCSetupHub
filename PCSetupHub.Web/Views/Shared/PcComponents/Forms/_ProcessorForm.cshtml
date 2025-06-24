@@ -13,16 +13,14 @@
 
 	int? componentId = null;
 	if (Model.Mode == FormMode.Edit)
-	{
 		componentId = Model.Component?.Id;
-	}
 }
 
 @if (Model.Component != null)
 {
 	<form asp-action="@actionName" asp-route-componentId="@componentId" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
 		<div class="form__group field">
-			<input type="text" class="form__field" placeholder="Name" asp-for="Component.Name" required>
+			<input type="text" class="form__field" placeholder="Name" asp-for="Component.Name" required autocomplete="off">
 			<label for="Name" class="form__label">Name</label>
 		</div>
 

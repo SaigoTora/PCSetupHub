@@ -14,6 +14,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		where TComponent : HardwareComponent, new()
 	{
 		protected abstract string ComponentName { get; }
+		protected abstract bool IsComponentColorful { get; }
 		protected abstract PcConfigurationIncludes PcConfigurationIncludes { get; }
 
 		private readonly IPcConfigurationRepository _pcConfigRepository;
@@ -121,7 +122,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
 
-			ViewData["Colors"] = await _colorRepository.GetAllAsync(c => c.Id, true);
+			await SetColorsAsync();
 			return View(new TComponent());
 		}
 
@@ -140,7 +141,8 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (!ModelState.IsValid)
 			{
 				SetFirstError();
-				return View(model);
+				await SetColorsAsync(model.SelectedColorsId);
+				return View(model.Component);
 			}
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
@@ -194,7 +196,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (component.IsDefault)
 				return StatusCode(403);
 
-			ViewData["Colors"] = await _colorRepository.GetAllAsync(c => c.Id, true);
+			await SetColorsAsync();
 			return View(component);
 		}
 
@@ -222,6 +224,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (!ModelState.IsValid)
 			{
 				SetFirstError();
+				await SetColorsAsync(model.SelectedColorsId);
 				return View(model.Component);
 			}
 
@@ -296,6 +299,15 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				.SelectMany(v => v.Errors)
 				.Select(e => e.ErrorMessage)
 				.FirstOrDefault();
+		}
+		private async Task SetColorsAsync(List<int>? selectedColorsId = null)
+		{
+			if (IsComponentColorful)
+			{
+				ViewData["Colors"] = await _colorRepository.GetAllAsync(c => c.Id, true);
+				if (selectedColorsId != null)
+					ViewData["SelectedColorsId"] = selectedColorsId;
+			}
 		}
 		#endregion
 	}

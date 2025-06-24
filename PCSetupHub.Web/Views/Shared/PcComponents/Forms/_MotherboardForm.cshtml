@@ -1,7 +1,7 @@
 ﻿@using PCSetupHub.Data.Models.Hardware
 @using PCSetupHub.Web.ViewModels
 
-@model PcComponentFormViewModel<VideoCard>
+@model PcComponentFormViewModel<Motherboard>
 
 @{
 	string actionName = Model.Mode switch
@@ -15,8 +15,8 @@
 	if (Model.Mode == FormMode.Edit)
 		componentId = Model.Component?.Id;
 
-	var selectedColorIds = Model.Component?.ColorVideoCards?
-		.Select(cvc => cvc.ColorId)
+	var selectedColorIds = Model.Component?.ColorMotherboards?
+		.Select(cm => cm.ColorId)
 		.ToList() ?? new List<int>();
 
 	if (ViewData["SelectedColorsId"] is IEnumerable<int> additionalIds)
@@ -37,28 +37,23 @@
 		</div>
 
 		<div class="form__group field">
-			<input type="text" class="form__field" placeholder="Chipset" asp-for="Component.Chipset" required>
-			<label for="Chipset" class="form__label">Chipset</label>
+			<input type="text" class="form__field" placeholder="Socket" asp-for="Component.Socket" required>
+			<label for="Socket" class="form__label">Socket</label>
 		</div>
 
 		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="Memory" asp-for="Component.Memory" min="0.1" step="0.1" required value="@(Model.Component.Memory == default ? "" : Model.Component.Memory.ToString(System.Globalization.CultureInfo.InvariantCulture))" />
-			<label for="Memory" class="form__label">Memory (GB)</label>
+			<input type="text" class="form__field" placeholder="FormFactor" asp-for="Component.FormFactor" required>
+			<label for="FormFactor" class="form__label">Form factor</label>
 		</div>
 
 		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="CoreClock" asp-for="Component.CoreClock" min="100" value="@(Model.Component.CoreClock == default ? "" : Model.Component.CoreClock.ToString())" />
-			<label for="CoreClock" class="form__label">Core clock (MHz)</label>
+			<input type="number" class="form__field" placeholder="MaxMemory" asp-for="Component.MaxMemory" min="2" required value="@(Model.Component.MaxMemory == default ? "" : Model.Component.MaxMemory.ToString())" />
+			<label for="MaxMemory" class="form__label">Max memory (GB)</label>
 		</div>
 
 		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="BoostClock" asp-for="Component.BoostClock" min="700" value="@(Model.Component.BoostClock == default ? "" : Model.Component.BoostClock.ToString())" />
-			<label for="BoostClock" class="form__label">Boost clock (MHz)</label>
-		</div>
-
-		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="Length" asp-for="Component.Length" min="60" value="@(Model.Component.Length == default ? "" : Model.Component.Length.ToString())" />
-			<label for="Length" class="form__label">Length (mm)</label>
+			<input type="number" class="form__field" placeholder="MemorySlots" asp-for="Component.MemorySlots" min="1" required value="@(Model.Component.MemorySlots == default ? "" : Model.Component.MemorySlots.ToString())" />
+			<label for="MemorySlots" class="form__label">Memory slots</label>
 		</div>
 
 		@await Html.PartialAsync("PcComponents/Forms/_ColorForm", selectedColorIds)
