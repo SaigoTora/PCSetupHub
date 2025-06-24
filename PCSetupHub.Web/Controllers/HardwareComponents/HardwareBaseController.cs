@@ -47,9 +47,9 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 		#region Action methods
 		[HttpGet("Search/{pcConfigurationId}")]
-		public async Task<IActionResult> SearchAsync(int pcConfigurationId, int page = 1,
-			string? searchQuery = null)
+		public async Task<IActionResult> SearchAsync(int pcConfigurationId, int page = 1)
 		{
+			var searchQuery = Request.Query[$"{ComponentName}SearchQuery"].ToString();
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
 

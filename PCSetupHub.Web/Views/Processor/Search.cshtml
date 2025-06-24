@@ -5,6 +5,8 @@
 
 @{
 	ViewData["Title"] = $"Processors";
+
+	string searchQueryName = $"{char.ToLower(Model.ControllerName[0]) + Model.ControllerName[1..]}SearchQuery";
 }
 
 <form class="mb-2" asp-controller="Processor" asp-action="Search" method="get">
@@ -14,7 +16,7 @@
 				<input class="search-input"
 					   placeholder="Search..."
 					   type="search"
-					   name="searchQuery"
+					   name="@searchQueryName"
 					   value="@Model.SearchQuery" />
 			</div>
 		</div>

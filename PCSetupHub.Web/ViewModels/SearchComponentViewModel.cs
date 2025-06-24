@@ -15,7 +15,8 @@ namespace PCSetupHub.Web.ViewModels
 		public SearchComponentViewModel(int pcConfigurationId, string? searchQuery,
 			int? currentComponentId, string controllerName, int page, int totalItems,
 			string actionName = "Search", int pageSize = 30)
-			: base(page, totalItems, actionName, pageSize, searchQuery)
+			: base(page, totalItems, actionName, pageSize, searchQuery,
+				  $"{char.ToLower(controllerName[0]) + controllerName[1..]}SearchQuery")
 		{
 			PcConfigurationId = pcConfigurationId;
 			CurrentComponentId = currentComponentId;
