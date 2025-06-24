@@ -1,0 +1,76 @@
+﻿@using PCSetupHub.Data.Models.Hardware
+@using PCSetupHub.Web.ViewModels
+
+@model PcComponentFormViewModel<PowerSupply>
+
+@{
+	string actionName = Model.Mode switch
+	{
+		FormMode.Create => "Create",
+		FormMode.Edit => "Edit",
+		_ => throw new InvalidOperationException("Unsupported form mode")
+	};
+
+	int? componentId = null;
+	if (Model.Mode == FormMode.Edit)
+		componentId = Model.Component?.Id;
+
+	var selectedColorIds = Model.Component?.ColorPowerSupplies?
+		.Select(cvc => cvc.ColorId)
+		.ToList() ?? new List<int>();
+
+	if (ViewData["SelectedColorsId"] is IEnumerable<int> additionalIds)
+		selectedColorIds.AddRange(additionalIds);
+}
+
+@if (Model.Component != null)
+{
+	<form asp-action="@actionName" asp-route-componentId="@componentId" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
+		<div class="form__group field">
+			<input type="text" class="form__field" placeholder="Name" asp-for="Component.Name" required autocomplete="off">
+			<label for="Name" class="form__label">Name</label>
+		</div>
+
+		<div class="form__group field">
+			<input type="number" class="form__field" placeholder="Price" asp-for="Component.Price" min="0.01" step="0.01">
+			<label for="Price" class="form__label">Price ($)</label>
+		</div>
+
+		<select asp-for="Component.Type" required>
+			<option value="@null" hidden>Select type</option>
+			<option value="Mini ITX">Mini ITX</option>
+			<option value="SFX">SFX</option>
+			<option value="Flex ATX">Flex ATX</option>
+			<option value="TFX">TFX</option>
+			<option value="ATX">ATX</option>
+		</select>
+
+		<select asp-for="Component.Efficiency">
+			<option value="@null" hidden>Select efficiency</option>
+			<option value="@null">Unknown</option>
+			<option value="bronze">Bronze</option>
+			<option value="silver">Silver</option>
+			<option value="plus">Plus</option>
+			<option value="gold">Gold</option>
+			<option value="platinum">Platinum</option>
+			<option value="titanium">Titanium</option>
+		</select>
+
+		<div class="form__group field">
+			<input type="number" class="form__field" placeholder="Wattage" asp-for="Component.Wattage" min="200" required value="@(Model.Component.Wattage == default ? "" : Model.Component.Wattage.ToString())" />
+			<label for="Wattage" class="form__label">Wattage (W)</label>
+		</div>
+
+		<select asp-for="Component.Modular" required>
+			<option value="@null" hidden>Select modular</option>
+			<option value="false">Non-modular</option>
+			<option value="Semi">Semi</option>
+			<option value="Full">Full</option>
+			<option value="Full / Side">Full / Side</option>
+		</select>
+
+		@await Html.PartialAsync("PcComponents/Forms/_ColorForm", selectedColorIds)
+
+		@await Html.PartialAsync("PcComponents/Forms/_FormSubmitSection", Model.Mode)
+	</form>
+}

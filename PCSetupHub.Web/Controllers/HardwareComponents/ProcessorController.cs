@@ -25,13 +25,13 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override Processor? GetComponent(PcConfiguration pcConfiguration)
 			=> pcConfiguration.Processor;
 		protected override void ChangeComponent(PcConfiguration pcConfiguration,
-			Processor component)
+			Processor processor)
 		{
-			pcConfiguration.ChangeProcessor(component);
+			pcConfiguration.ChangeProcessor(processor);
 		}
 		protected override void ClearComponent(PcConfiguration pcConfiguration)
 			=> pcConfiguration.ClearProcessor();
-		protected override bool IsComponentInPcConfig(PcConfiguration pcConfig, int componentId)
-			=> pcConfig.Processor?.Id == componentId;
+		protected override bool IsComponentInPcConfig(PcConfiguration pcConfig, int processorId)
+			=> pcConfig.Processor?.Id == processorId;
 	}
 }

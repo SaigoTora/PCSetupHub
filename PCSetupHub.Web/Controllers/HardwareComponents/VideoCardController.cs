@@ -30,14 +30,14 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override VideoCard? GetComponent(PcConfiguration pcConfiguration)
 			=> pcConfiguration.VideoCard;
 		protected override void ChangeComponent(PcConfiguration pcConfiguration,
-			VideoCard component)
+			VideoCard videoCard)
 		{
-			pcConfiguration.ChangeVideoCard(component);
+			pcConfiguration.ChangeVideoCard(videoCard);
 		}
 		protected override void ClearComponent(PcConfiguration pcConfiguration)
 			=> pcConfiguration.ClearVideoCard();
-		protected override bool IsComponentInPcConfig(PcConfiguration pcConfig, int componentId)
-			=> pcConfig.VideoCard?.Id == componentId;
+		protected override bool IsComponentInPcConfig(PcConfiguration pcConfig, int videoCardId)
+			=> pcConfig.VideoCard?.Id == videoCardId;
 
 		protected override async Task<VideoCard> UpdateColorRelationshipsAsync(VideoCard videoCard,
 			List<int> colorIds)

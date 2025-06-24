@@ -89,9 +89,11 @@ namespace PCSetupHub.Data.Models.Hardware
 		public void ChangeProcessor(Processor processor) => Processor = processor;
 		public void ChangeVideoCard(VideoCard videoCard) => VideoCard = videoCard;
 		public void ChangeMotherboard(Motherboard motherboard) => Motherboard = motherboard;
+		public void ChangePowerSupply(PowerSupply powerSupply) => PowerSupply = powerSupply;
 
 		public void ClearProcessor() => Processor = null;
 		public void ClearVideoCard() => VideoCard = null;
 		public void ClearMotherboard() => Motherboard = null;
+		public void ClearPowerSupply() => PowerSupply = null;
 	}
 }

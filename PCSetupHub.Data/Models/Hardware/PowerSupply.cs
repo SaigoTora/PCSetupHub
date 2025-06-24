@@ -1,12 +1,32 @@
 ﻿using PCSetupHub.Data.Models.Relationships;
 
+using System.ComponentModel.DataAnnotations;
+
 namespace PCSetupHub.Data.Models.Hardware
 {
 	public class PowerSupply : HardwareComponent
 	{
+		[Required(ErrorMessage = "Type is required.")]
+		[StringLength(64, MinimumLength = 3,
+			ErrorMessage = "Type must be between 3 and 64 characters long.")]
+		[RegularExpression(@"^[A-Za-z/ ]+$",
+			ErrorMessage = "Type can contain Latin letters, spaces and slashes (/).")]
 		public string Type { get; set; } = string.Empty;
+
+		[StringLength(64, MinimumLength = 3,
+			ErrorMessage = "Efficiency must be between 3 and 64 characters long.")]
+		[RegularExpression(@"^[A-Za-z/ ]+$",
+			ErrorMessage = "Efficiency can contain Latin letters, spaces and slashes (/).")]
 		public string? Efficiency { get; set; }
+
+		[Range(200, int.MaxValue, ErrorMessage = "Wattage must be at least 200 W.")]
 		public int Wattage { get; set; }
+
+		[Required(ErrorMessage = "Modular is required.")]
+		[StringLength(64, MinimumLength = 3,
+			ErrorMessage = "Modular must be between 3 and 64 characters long.")]
+		[RegularExpression(@"^[A-Za-z/ ]+$",
+			ErrorMessage = "Modular can contain Latin letters, spaces and slashes (/).")]
 		public string Modular { get; set; } = string.Empty;
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 		public ICollection<ColorPowerSupply>? ColorPowerSupplies { get; private set; }
@@ -22,5 +42,8 @@ namespace PCSetupHub.Data.Models.Hardware
 			Wattage = wattage;
 			Modular = modular;
 		}
+
+		public void SetColorPowerSupplies(ICollection<ColorPowerSupply> colorPowerSupplies)
+			=> ColorPowerSupplies = colorPowerSupplies;
 	}
 }
