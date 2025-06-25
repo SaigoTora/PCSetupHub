@@ -17,9 +17,8 @@ namespace PCSetupHub.Data.Models.Hardware
 		[Required(ErrorMessage = "Form factor is required.")]
 		[StringLength(255, MinimumLength = 3,
 			ErrorMessage = "Form factor must be between 3 and 255 characters long.")]
-		[RegularExpression(@"^[a-zA-Z0-9\-+ ]+$",
-			ErrorMessage = "Form factor can contain Latin letters, numbers, spaces, " +
-			"hyphens (-) and plus signs (+).")]
+		[RegularExpression(@"^[A-Za-z/ ]+$", 
+			ErrorMessage = "Form factor can contain Latin letters, spaces and slashes (/).")]
 		public string FormFactor { get; set; } = string.Empty;
 
 		[Range(2, int.MaxValue, ErrorMessage = "Max memory must be at least 2 GB.")]

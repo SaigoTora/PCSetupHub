@@ -43,10 +43,22 @@
 			<label for="Socket" class="form__label">Socket</label>
 		</div>
 
-		<div class="form__group field">
-			<input type="text" class="form__field" placeholder="FormFactor" asp-for="Component.FormFactor" required>
-			<label for="FormFactor" class="form__label">Form factor</label>
-		</div>
+		<select class="mb-4" asp-for="Component.FormFactor" required>
+			<optgroup label="Form factor">
+				<option value="@null" hidden>Select form factor</option>
+				<option value="Thin Mini ITX">Thin Mini ITX</option>
+				<option value="Mini ITX">Mini ITX</option>
+				<option value="Mini DTX">Mini DTX</option>
+				<option value="Flex ATX">Flex ATX</option>
+				<option value="Micro ATX">Micro ATX</option>
+				<option value="ATX">ATX</option>
+				<option value="EATX">EATX</option>
+				<option value="SSI CEB">SSI CEB</option>
+				<option value="SSI EEB">SSI EEB</option>
+				<option value="XL ATX">XL ATX</option>
+				<option value="HPTX">HPTX</option>
+			</optgroup>
+		</select>
 
 		<div class="form__group field">
 			<input type="number" class="form__field" placeholder="MaxMemory" asp-for="Component.MaxMemory" min="2" required value="@(Model.Component.MaxMemory == default ? "" : Model.Component.MaxMemory.ToString())" />
