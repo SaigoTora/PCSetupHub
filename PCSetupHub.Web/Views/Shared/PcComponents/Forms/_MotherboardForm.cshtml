@@ -4,6 +4,8 @@
 @model PcComponentFormViewModel<Motherboard>
 
 @{
+	<link rel="stylesheet" href="~/css/form.css" />
+
 	string actionName = Model.Mode switch
 	{
 		FormMode.Create => "Create",

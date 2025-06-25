@@ -56,10 +56,6 @@ html {
         font-size: 0.75rem !important;
     }
 
-    .form__group {
-        width: 85% !important;
-    }
-
     .radio-button-container {
         width: 85% !important;
     }
@@ -73,10 +69,6 @@ html {
     .container {
         margin: 0px !important;
         padding: 0px !important;
-    }
-
-    .form__group {
-        width: 100% !important;
     }
 
     .radio-button-container {
@@ -561,32 +553,6 @@ caption {
         background-color: rgb(200, 125, 26);
     }
 
-.create-component-button {
-    font-size: 1.25rem;
-    background-color: rgb(40, 185, 69);
-}
-
-    .create-component-button:hover {
-        background-color: rgb(35, 165, 60);
-    }
-
-    .create-component-button:active {
-        background-color: rgb(30, 140, 52);
-    }
-
-.edit-component-button {
-    font-size: 1.25rem;
-    background-color: rgb(200, 193, 7);
-}
-
-    .edit-component-button:hover {
-        background-color: rgb(180, 174, 6);
-    }
-
-    .edit-component-button:active {
-        background-color: rgb(160, 154, 5);
-    }
-
 
 .page-item {
     margin-inline: 0.15rem;
@@ -655,214 +621,6 @@ caption {
         color: var(--color-accent);
     }
 
-
-.form__group {
-    position: relative;
-    padding: 1.25rem 0 0;
-    margin-bottom: 1.7rem;
-    width: 50%;
-}
-
-.form__field {
-    font-family: inherit;
-    width: 100%;
-    border: none;
-    border-bottom: 2px solid #9b9b9b;
-    outline: 0;
-    font-size: 1.1rem;
-    color: #fff;
-    padding: 0.45rem 0;
-    background: transparent;
-    transition: border-color 0.2s;
-}
-
-    .form__field::placeholder {
-        color: transparent;
-        user-select: none;
-    }
-
-    .form__field:placeholder-shown ~ .form__label {
-        font-size: 1.1rem;
-        cursor: text;
-        top: 1.25rem;
-    }
-
-.form__label {
-    position: absolute;
-    top: 0;
-    display: block;
-    transition: 0.2s;
-    font-size: 1.1rem;
-    color: #9b9b9b;
-    pointer-events: none;
-}
-
-.form__field:focus {
-    padding-bottom: 0.4rem;
-    font-weight: 700;
-    border-width: 3px;
-    border-image: linear-gradient(to right, rgb(55, 153, 122), var(--color-accent));
-    border-image-slice: 1;
-}
-
-    .form__field:focus ~ .form__label {
-        position: absolute;
-        top: 0;
-        display: block;
-        transition: 0.2s;
-        font-size: 1.1rem;
-        color: var(--color-accent);
-        font-weight: 700;
-    }
-
-.form__field:required, .form__field:invalid {
-    box-shadow: none;
-}
-
-
-.radio-button-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 50%;
-}
-
-.radio-button {
-    display: inline-block;
-    position: relative;
-    cursor: pointer;
-}
-
-.radio-button__input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.radio-button__label {
-    display: inline-block;
-    padding-left: 1.75rem;
-    position: relative;
-    font-size: 0.938rem;
-    color: var(--color-light-text);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.radio-button__custom {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 1.25rem;
-    height: 1.25rem;
-    border-radius: 50%;
-    border: 2px solid #555;
-    transition: all 0.3s ease;
-}
-
-.radio-button__input:checked + .radio-button__label .radio-button__custom {
-    background-color: var(--color-accent);
-    border-color: transparent;
-    transform: scale(0.8);
-    box-shadow: 0 0 20px var(--color-accent);
-}
-
-.radio-button__input:checked + .radio-button__label {
-    color: var(--color-accent);
-}
-
-.radio-button__label:hover .radio-button__custom {
-    transform: scale(1.2);
-    border-color: var(--color-accent);
-    box-shadow: 0 0 1.25rem var(--color-accent);
-}
-
-
-.checkbox-container input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-}
-
-.checkbox-container {
-    display: block;
-    position: relative;
-    cursor: pointer;
-    font-size: 1.5rem;
-    user-select: none;
-}
-
-.checkmark {
-    --clr: #0B6E4F;
-    position: relative;
-    top: 0;
-    left: 0;
-    height: 1.15em;
-    width: 1.15em;
-    background-color: #ccc;
-    border-radius: 50%;
-    transition: 300ms;
-    border: 1px solid black;
-}
-
-.checkbox-container input:checked ~ .checkmark {
-    background-color: var(--clr);
-    background: var(--clr);
-    border-radius: var(--border-radius);
-    animation: pulse 500ms ease-in-out;
-    border: none;
-}
-
-.checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-}
-
-.checkbox-container input:checked ~ .checkmark:after {
-    display: block;
-}
-
-.checkbox-container .checkmark:after {
-    left: 0.46em;
-    top: 0.27em;
-    width: 0.25em;
-    height: 0.5em;
-    border: solid var(--color-light-text);
-    border-width: 0 0.127em 0.127em 0;
-    transform: rotate(45deg);
-}
-
-.color-checkbox-label {
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 #0B6E4F90;
-        transform: rotate(20deg);
-    }
-
-    50% {
-        transform: rotate(-20deg);
-    }
-
-    75% {
-        box-shadow: 0 0 0 10px #0B6E4F60;
-    }
-
-    100% {
-        box-shadow: 0 0 0 13px #0B6E4F30;
-        transform: rotate(0deg);
-    }
-}
-
-
 .mb-2-5 {
     margin-bottom: 0.75rem;
 }
@@ -901,10 +659,6 @@ footer {
 
     .nav-menu-text {
         display: none !important;
-    }
-
-    .form__group {
-        width: 60%;
     }
 
     .radio-button-container {
