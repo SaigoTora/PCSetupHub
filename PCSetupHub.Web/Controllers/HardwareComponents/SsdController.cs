@@ -29,8 +29,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				.GetSomeAsync(r => r.PcConfigurationId == pcConfigId))
 				.Select(r => r.SsdId)];
 		}
-		protected override async Task UpdateComponentRelationAsync(int pcConfigId, int currentId,
-			int newId)
+		protected override async Task UpdateRelationAsync(int pcConfigId, int currentId, int newId)
 		{
 			var item = (await _pcConfigSsdRepository
 				.GetSomeAsync(r => r.PcConfigurationId == pcConfigId && r.SsdId == currentId))
@@ -42,14 +41,21 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			item.ChangeSsdId(newId);
 			await _pcConfigSsdRepository.UpdateAsync(item);
 		}
+		protected override async Task ClearRelationAsync(int pcConfigId, int ssdId)
+		{
+			var item = (await _pcConfigSsdRepository
+				.GetSomeAsync(r => r.PcConfigurationId == pcConfigId && r.SsdId == ssdId))
+				.FirstOrDefault();
 
-		public IActionResult Add()
-		{
-			return Ok($"Add from {GetType().Name}");
+			if (item == null)
+				return;
+
+			await _pcConfigSsdRepository.DeleteAsync(item);
 		}
-		public IActionResult Clear()
+		protected override async Task CreateRelationAsync(int pcConfigId, int ssdId)
 		{
-			return Ok($"Clear from {GetType().Name}");
+			PcConfigurationSsd newItem = new(pcConfigId, ssdId);
+			await _pcConfigSsdRepository.AddAsync(newItem);
 		}
 		public IActionResult Edit()
 		{

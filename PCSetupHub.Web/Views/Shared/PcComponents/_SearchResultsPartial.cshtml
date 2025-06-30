@@ -51,13 +51,13 @@
 				</td>
 				<td>
 					<form asp-controller="@Model.ControllerName" asp-action="Select" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-currentComponentId="@Model.CurrentComponentId" asp-route-componentId="@Model.Components[i].Id" method="post">
-						@if (Model.Components[i].Id != Model.CurrentComponentId && (Model.SelectedComponentIds != null && !Model.SelectedComponentIds.Any(id => id == Model.Components[i].Id)))
+						@if (Model.Components[i].Id == Model.CurrentComponentId || (Model.SelectedComponentIds != null && Model.SelectedComponentIds.Any(id => id == Model.Components[i].Id)))
 						{
-							<button class="select-component-button" type="submit">Select</button>
+							<button class="select-component-button" type="submit" disabled>Selected</button>
 						}
 						else
 						{
-							<button class="select-component-button" type="submit" disabled>Selected</button>
+							<button class="select-component-button" type="submit">Select</button>
 						}
 					</form>
 				</td>
