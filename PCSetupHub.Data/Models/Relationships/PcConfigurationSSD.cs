@@ -16,5 +16,7 @@ namespace PCSetupHub.Data.Models.Relationships
 			PcConfigurationId = pcConfigurationId;
 			SsdId = ssdId;
 		}
+
+		public void ChangeSsdId(int ssdId) => SsdId = ssdId;
 	}
 }

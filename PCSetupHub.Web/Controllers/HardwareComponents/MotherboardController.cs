@@ -10,7 +10,7 @@ using PCSetupHub.Data.Repositories.Interfaces.Users;
 namespace PCSetupHub.Web.Controllers.HardwareComponents
 {
 	[Route("[Controller]")]
-	public class MotherboardController : HardwareBaseController<Motherboard>
+	public class MotherboardController : HardwareSingleController<Motherboard>
 	{
 		private readonly IRepository<ColorMotherboard> ColorMotherboardRepository;
 

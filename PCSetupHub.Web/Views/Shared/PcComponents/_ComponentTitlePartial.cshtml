@@ -30,7 +30,7 @@
 
 			if (Model.Component == null && !Model.ShowAddButton)
 			{
-				<form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-id="@Model.PcConfigurationId" method="get" class="d-inline">
+				<form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-pcConfigurationId="@Model.PcConfigurationId" method="get" class="d-inline">
 					<button class="select-button" type="submit" translate="no">Select</button>
 				</form>
 			}
@@ -38,7 +38,7 @@
 			{
 				if (Model.Component.IsDefault)
 				{
-					<form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-id="@Model.PcConfigurationId" method="get" class="d-inline">
+					<form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-componentId="@Model.Component.Id" method="get" class="d-inline">
 						<button class="select-button" type="submit" translate="no">Select</button>
 					</form>
 					<form asp-controller="@Model.ControllerName" asp-action="Clear" asp-route-id="@Model.PcConfigurationId" class="d-inline">

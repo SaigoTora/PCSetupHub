@@ -9,7 +9,7 @@ using PCSetupHub.Data.Repositories.Interfaces.Users;
 namespace PCSetupHub.Web.Controllers.HardwareComponents
 {
 	[Route("[Controller]")]
-	public class ProcessorController : HardwareBaseController<Processor>
+	public class ProcessorController : HardwareSingleController<Processor>
 	{
 		protected override string ComponentName => "Processor";
 		protected override bool IsComponentColorful => false;

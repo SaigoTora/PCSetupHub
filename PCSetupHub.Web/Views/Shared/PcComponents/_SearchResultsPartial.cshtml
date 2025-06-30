@@ -50,8 +50,8 @@
 					@await Html.PartialAsync("PcComponents/_ComponentModalPartial", Model.Components[i])
 				</td>
 				<td>
-					<form asp-controller="@Model.ControllerName" asp-action="Select" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-componentId="@Model.Components[i].Id" method="post">
-						@if (Model.Components[i].Id != Model.CurrentComponentId)
+					<form asp-controller="@Model.ControllerName" asp-action="Select" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-currentComponentId="@Model.CurrentComponentId" asp-route-componentId="@Model.Components[i].Id" method="post">
+						@if (Model.Components[i].Id != Model.CurrentComponentId && (Model.SelectedComponentIds != null && !Model.SelectedComponentIds.Any(id => id == Model.Components[i].Id)))
 						{
 							<button class="select-component-button" type="submit">Select</button>
 						}

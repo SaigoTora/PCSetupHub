@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+
 using PCSetupHub.Data.Models.Attributes;
 using PCSetupHub.Data.Models.Hardware;
 using PCSetupHub.Data.Models.Relationships;
@@ -9,7 +10,7 @@ using PCSetupHub.Data.Repositories.Interfaces.Users;
 namespace PCSetupHub.Web.Controllers.HardwareComponents
 {
 	[Route("[Controller]")]
-	public class PowerSupplyController : HardwareBaseController<PowerSupply>
+	public class PowerSupplyController : HardwareSingleController<PowerSupply>
 	{
 		private readonly IRepository<ColorPowerSupply> ColorPowerSupplyRepository;
 

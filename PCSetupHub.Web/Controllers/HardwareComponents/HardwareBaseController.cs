@@ -4,9 +4,7 @@ using PCSetupHub.Core.Extensions;
 using PCSetupHub.Data.Models.Attributes;
 using PCSetupHub.Data.Models.Hardware;
 using PCSetupHub.Data.Repositories.Base;
-using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
-using PCSetupHub.Web.ViewModels;
 
 namespace PCSetupHub.Web.Controllers.HardwareComponents
 {
@@ -15,245 +13,38 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 	{
 		protected abstract string ComponentName { get; }
 		protected abstract bool IsComponentColorful { get; }
-		protected abstract PcConfigurationIncludes PcConfigurationIncludes { get; }
 
-		private readonly IPcConfigurationRepository _pcConfigRepository;
-		private readonly IRepository<TComponent> _componentRepository;
-		private readonly IRepository<Color> _colorRepository;
-		private readonly IUserRepository _userRepository;
+		protected readonly IUserRepository UserRepository;
+		protected readonly IRepository<TComponent> ComponentRepository;
+		protected readonly IRepository<Color> ColorRepository;
 
-		protected HardwareBaseController(IPcConfigurationRepository pcConfigRepository,
-			IRepository<TComponent> componentRepository, IRepository<Color> colorRepository,
-			IUserRepository userRepository)
+		protected HardwareBaseController(IRepository<TComponent> componentRepository,
+			IRepository<Color> colorRepository, IUserRepository userRepository)
 		{
-			_pcConfigRepository = pcConfigRepository;
-			_componentRepository = componentRepository;
-			_colorRepository = colorRepository;
-			_userRepository = userRepository;
+			ComponentRepository = componentRepository;
+			ColorRepository = colorRepository;
+			UserRepository = userRepository;
 		}
-
-		#region Abstract methods
-		protected abstract TComponent? GetComponent(PcConfiguration pcConfiguration);
-		protected abstract void ChangeComponent(PcConfiguration pcConfiguration,
-			TComponent component);
-		protected abstract void ClearComponent(PcConfiguration pcConfiguration);
-		protected abstract bool IsComponentInPcConfig(PcConfiguration pcConfig, int componentId);
-		#endregion
-
-		#region Virtual methods
-		protected virtual Task<TComponent> UpdateColorRelationshipsAsync(TComponent component,
-			List<int> colorIds)
-			=> Task.FromResult(component);
-		#endregion
-
-		#region Action methods
-		[HttpGet("Search/{pcConfigurationId}")]
-		public async Task<IActionResult> SearchAsync(int pcConfigurationId, int page = 1)
-		{
-			var searchQuery = Request.Query[$"{ComponentName}SearchQuery"].ToString();
-			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
-				return StatusCode(403);
-
-			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				PcConfigurationIncludes);
-			if (pcConfig == null)
-				return NotFound();
-
-			var filteredComponents = await GetFilteredComponentsAsync(searchQuery);
-			int totalItems = filteredComponents.Count;
-
-			SearchComponentViewModel model = new(pcConfigurationId, searchQuery,
-				GetComponent(pcConfig)?.Id, ComponentName, page, totalItems);
-
-			model.Components = GetPagedItems(filteredComponents, model.Page, model.PageSize);
-			return View(model);
-		}
-
-		[HttpPost("Select/{pcConfigurationId}/{componentId}")]
-		public async Task<IActionResult> SelectAsync(int pcConfigurationId, int componentId)
-		{
-			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
-				return StatusCode(403);
-
-			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				PcConfigurationIncludes);
-			if (pcConfig == null)
-				return NotFound();
-
-			TComponent? component = await _componentRepository.GetOneAsync(componentId);
-
-			if (component == null)
-				return NotFound();
-			if (!component.IsDefault)
-				return StatusCode(403);
-
-			await TryDeleteCurrentAsync(pcConfig);
-
-			ChangeComponent(pcConfig, component);
-			await _pcConfigRepository.UpdateAsync(pcConfig);
-
-			return RedirectToPcSetup(pcConfigurationId);
-		}
-
-		[HttpPost("Clear/{pcConfigurationId}")]
-		public async Task<IActionResult> ClearAsync(int pcConfigurationId)
-		{
-			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
-				return StatusCode(403);
-
-			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				PcConfigurationIncludes);
-			if (pcConfig == null)
-				return NotFound();
-
-			TComponent? component = GetComponent(pcConfig);
-			if (component != null && !component.IsDefault)
-				return StatusCode(403);
-
-			ClearComponent(pcConfig);
-			await _pcConfigRepository.UpdateAsync(pcConfig);
-
-			return RedirectToPcSetup(pcConfigurationId);
-		}
-
-		[HttpGet("Create/{pcConfigurationId}")]
-		public async Task<IActionResult> CreateAsync(int pcConfigurationId)
-		{
-			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
-				return StatusCode(403);
-
-			await SetColorsAsync();
-			return View(new TComponent());
-		}
-
-		[HttpPost("Create/{pcConfigurationId}")]
-		public async Task<IActionResult> CreateAsync(int pcConfigurationId,
-			PcComponentFormViewModel<TComponent> model)
-		{
-			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
-				return StatusCode(403);
-
-			if (model == null)
-				return NotFound();
-
-			model.Component.IsDefault = false;
-
-			if (!ModelState.IsValid)
-			{
-				SetFirstError();
-				await SetColorsAsync(model.SelectedColorsId);
-				return View(model.Component);
-			}
-
-			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				PcConfigurationIncludes);
-			if (pcConfig == null)
-				return NotFound();
-
-			await TryDeleteCurrentAsync(pcConfig);
-
-			await _componentRepository.AddAsync(model.Component);
-			ChangeComponent(pcConfig, model.Component);
-			await _pcConfigRepository.UpdateAsync(pcConfig);
-
-			await RemoveInvalidColorIdsAsync(model.SelectedColorsId);
-			model.Component = await UpdateColorRelationshipsAsync(model.Component,
-				model.SelectedColorsId);
-
-			return RedirectToPcSetup(pcConfigurationId);
-		}
-
-		[HttpPost("Delete/{pcConfigurationId}")]
-		public async Task<IActionResult> DeleteAsync(int pcConfigurationId)
-		{
-			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
-				return StatusCode(403);
-
-			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				PcConfigurationIncludes);
-			if (pcConfig == null)
-				return NotFound();
-
-			await TryDeleteCurrentAsync(pcConfig);
-
-			return RedirectToPcSetup(pcConfigurationId);
-		}
-
-		[HttpGet("Edit/{pcConfigurationId}")]
-		public async Task<IActionResult> EditAsync(int pcConfigurationId)
-		{
-			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
-				return StatusCode(403);
-
-			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				PcConfigurationIncludes);
-			if (pcConfig == null)
-				return NotFound();
-
-			TComponent? component = GetComponent(pcConfig);
-			if (component == null)
-				return NotFound();
-			if (component.IsDefault)
-				return StatusCode(403);
-
-			await SetColorsAsync();
-			return View(component);
-		}
-
-		[HttpPost("Edit/{pcConfigurationId}/{componentId}")]
-		public async Task<IActionResult> EditAsync(int pcConfigurationId, int componentId,
-			PcComponentFormViewModel<TComponent> model)
-		{
-			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
-				return StatusCode(403);
-
-			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				PcConfigurationIncludes, true);
-			if (pcConfig == null)
-				return NotFound();
-			if (!IsComponentInPcConfig(pcConfig, componentId))
-				return StatusCode(403);
-
-			if (model.Component == null)
-				return NotFound();
-			if (model.Component.IsDefault)
-				return StatusCode(403);
-
-			model.Component.SetId(componentId);
-
-			if (!ModelState.IsValid)
-			{
-				SetFirstError();
-				await SetColorsAsync(model.SelectedColorsId);
-				return View(model.Component);
-			}
-
-			await _componentRepository.UpdateAsync(model.Component);
-
-			await RemoveInvalidColorIdsAsync(model.SelectedColorsId);
-			model.Component = await UpdateColorRelationshipsAsync(model.Component,
-				model.SelectedColorsId);
-
-			return RedirectToPcSetup(pcConfigurationId);
-		}
-		#endregion
 
 		#region Authorization and helpers
 		protected async Task<bool> HasAccessToPcConfigurationAsync(int pcConfigurationId)
 		{
 			int? userId = User.GetId();
-			if (!userId.HasValue || !await _userRepository.UserHasPcConfigurationAsync(userId.Value,
+			if (!userId.HasValue || !await UserRepository.UserHasPcConfigurationAsync(userId.Value,
 				pcConfigurationId))
 				return false;
 
 			return true;
 		}
+		protected string? GetSearchQuery()
+			=> Request.Query[$"{ComponentName}SearchQuery"].ToString();
 		protected IActionResult RedirectToPcSetup(int pcConfigurationId)
 			=> RedirectToAction("Index", "PcSetup", new { id = pcConfigurationId });
+		
 		protected async Task<List<HardwareComponent>> GetFilteredComponentsAsync(
 			string? searchQuery)
 		{
-			var defaultComponents = await _componentRepository.GetSomeAsync(p => p.IsDefault);
+			var defaultComponents = await ComponentRepository.GetSomeAsync(p => p.IsDefault);
 
 			// Filter in memory because DisplayName is a computed property,
 			// not mapped in the database
@@ -269,42 +60,31 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				.Skip((page - 1) * pageSize)
 				.Take(pageSize)];
 		}
-		protected async Task<bool> TryDeleteCurrentAsync(PcConfiguration pcConfig)
-		{
-			// Delete the current component if it is not default.
-			TComponent? currentComponent = GetComponent(pcConfig);
-			if (currentComponent != null && !currentComponent.IsDefault)
-			{
-				await _componentRepository.DeleteAsync(currentComponent.Id);
-				return true;
-			}
 
-			return false;
-		}
 		protected async Task RemoveInvalidColorIdsAsync(List<int> colorIds)
 		{
 			if (colorIds == null || colorIds.Count == 0)
 				return;
 
-			var existingColorIds = (await _colorRepository.GetAllAsync(c => c.Id, true))
+			var existingColorIds = (await ColorRepository.GetAllAsync(c => c.Id, true))
 				.Select(c => c.Id)
 				.ToHashSet();
 
 			colorIds.RemoveAll(id => !existingColorIds.Contains(id));
 		}
 
-		private void SetFirstError()
+		protected void SetFirstError()
 		{
 			ViewData["FirstError"] = ModelState.Values
 				.SelectMany(v => v.Errors)
 				.Select(e => e.ErrorMessage)
 				.FirstOrDefault();
 		}
-		private async Task SetColorsAsync(List<int>? selectedColorsId = null)
+		protected async Task SetColorsAsync(List<int>? selectedColorsId = null)
 		{
 			if (IsComponentColorful)
 			{
-				ViewData["Colors"] = await _colorRepository.GetAllAsync(c => c.Id, true);
+				ViewData["Colors"] = await ColorRepository.GetAllAsync(c => c.Id, true);
 				if (selectedColorsId != null)
 					ViewData["SelectedColorsId"] = selectedColorsId;
 			}
