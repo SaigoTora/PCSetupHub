@@ -1,0 +1,100 @@
+﻿@using PCSetupHub.Data.Models.Hardware
+@using PCSetupHub.Web.ViewModels
+
+@model PcComponentFormViewModel<Ram>
+
+@{
+	<link rel="stylesheet" href="~/css/form.css" />
+
+	string actionName = Model.Mode switch
+	{
+		FormMode.Create => "Create",
+		FormMode.Edit => "Edit",
+		_ => throw new InvalidOperationException("Unsupported form mode")
+	};
+
+	int? componentId = null;
+	if (Model.Mode == FormMode.Edit)
+		componentId = Model.Component?.Id;
+
+	var selectedColorIds = Model.Component?.ColorRams?
+		.Select(cm => cm.ColorId)
+		.ToList() ?? new List<int>();
+
+	if (ViewData["SelectedColorsId"] is IEnumerable<int> additionalIds)
+		selectedColorIds.AddRange(additionalIds);
+}
+
+@if (Model.Component != null)
+{
+	<form asp-action="@actionName" asp-route-componentId="@componentId" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
+		<div class="form__group field">
+			<input type="text" class="form__field" placeholder="Name" asp-for="Component.Name" required autocomplete="off">
+			<label for="Name" class="form__label">Name</label>
+		</div>
+
+		<div class="form__group field">
+			<input type="number" class="form__field" placeholder="Price" asp-for="Component.Price" min="0.01" step="0.01">
+			<label for="Price" class="form__label">Price ($)</label>
+		</div>
+
+		<select class="mb-3" asp-for="Component.MemoryType" required>
+			<optgroup label="Memory type">
+				<option value="0">DDR (DDR1)</option>
+				<option value="0" hidden>Select memory type</option>
+				<option value="2">DDR2</option>
+				<option value="3">DDR3</option>
+				<option value="4">DDR4</option>
+				<option value="5">DDR5</option>
+			</optgroup>
+		</select>
+
+		<div class="form__group field">
+			<input type="number" class="form__field" placeholder="Frequency" asp-for="Component.Frequency" min="333" required value="@(Model.Component.Frequency == default ? "" : Model.Component.Frequency.ToString())" />
+			<label for="Frequency" class="form__label">Frequency (MHz)</label>
+		</div>
+
+		<select class="mb-3" asp-for="Component.ModulesCount" required>
+			<optgroup label="Modules count">
+				<option value="0" hidden>Select modules count</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="6">6</option>
+				<option value="8">8</option>
+			</optgroup>
+		</select>
+
+		<select class="mb-3" asp-for="Component.ModuleCapacity" required>
+			<optgroup label="Module capacity (GB)">
+				<option value="0" hidden>Select module capacity (GB)</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="4">4</option>
+				<option value="8">8</option>
+				<option value="16">16</option>
+				<option value="24">24</option>
+				<option value="32">32</option>
+				<option value="48">48</option>
+				<option value="64">64</option>
+				<option value="128">128</option>
+				<option value="512">512</option>
+			</optgroup>
+		</select>
+
+		<div class="form__group field">
+			<input type="number" class="form__field" placeholder="FirstWordLatency" asp-for="Component.FirstWordLatency" min="6" step="0.001" required value="@(Model.Component.FirstWordLatency == default ? "" : Model.Component.FirstWordLatency.ToString(System.Globalization.CultureInfo.InvariantCulture))" />
+			<label for="FirstWordLatency" class="form__label">First Word Latency (ns)</label>
+		</div>
+
+		<div class="form__group field">
+			<input type="number" class="form__field" placeholder="CASLatency" asp-for="Component.CASLatency" min="1" step="0.1" required value="@(Model.Component.CASLatency == default ? "" : Model.Component.CASLatency.ToString(System.Globalization.CultureInfo.InvariantCulture))" />
+			<label for="CASLatency" class="form__label">CAS Latency</label>
+		</div>
+
+		@await Html.PartialAsync("PcComponents/Forms/_ColorForm", selectedColorIds)
+
+		@await Html.PartialAsync("PcComponents/Forms/_FormSubmitSection", Model.Mode)
+	</form>
+}

@@ -1,0 +1,12 @@
+﻿@using PCSetupHub.Data.Models.Hardware
+@using PCSetupHub.Web.ViewModels
+
+@model Ram
+
+@{
+	ViewData["Title"] = "RAM";
+}
+
+<h1 class="mt-2 mb-5">Create RAM</h1>
+
+@await Html.PartialAsync("PcComponents/Forms/_RamForm", new PcComponentFormViewModel<Ram>(Model, FormMode.Create))

@@ -16,5 +16,7 @@ namespace PCSetupHub.Data.Models.Relationships
 			PcConfigurationId = pcConfigurationId;
 			RamId = ramId;
 		}
+
+		public void ChangeRamId(int ramId) => RamId = ramId;
 	}
 }

@@ -4,12 +4,12 @@
 @model SearchComponentViewModel
 
 @{
-	ViewData["Title"] = "SSDs";
+	ViewData["Title"] = "RAM";
 
 	string searchQueryName = $"{char.ToLower(Model.ControllerName[0]) + Model.ControllerName[1..]}SearchQuery";
 }
 
-<form class="mb-2" asp-controller="Ssd" asp-action="Search" method="get">
+<form class="mb-2" asp-controller="Ram" asp-action="Search" method="get">
 	<div class="searchbar-container">
 		<div class="search-bar">
 			<div class="input-container">
@@ -29,5 +29,5 @@
 </div>
 
 <div class="create-component-prompt mb-3">
-	<span>Didn't find the right SSD? <a asp-action="Create" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-currentComponentId="@Model.CurrentComponentId">Add yours</a>.</span>
+	<span>Didn't find the right RAM? <a asp-action="Create" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-currentComponentId="@Model.CurrentComponentId">Add yours</a>.</span>
 </div>
