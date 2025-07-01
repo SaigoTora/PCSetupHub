@@ -1,6 +1,6 @@
-﻿using PCSetupHub.Data.Models.Relationships;
+﻿using System.ComponentModel.DataAnnotations;
 
-using System.ComponentModel.DataAnnotations;
+using PCSetupHub.Data.Models.Relationships;
 
 namespace PCSetupHub.Data.Models.Hardware
 {

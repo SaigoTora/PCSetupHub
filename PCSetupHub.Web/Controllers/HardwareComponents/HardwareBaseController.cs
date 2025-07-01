@@ -40,7 +40,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			=> Request.Query[$"{ComponentName}SearchQuery"].ToString();
 		protected IActionResult RedirectToPcSetup(int pcConfigurationId)
 			=> RedirectToAction("Index", "PcSetup", new { id = pcConfigurationId });
-		
+
 		protected async Task<List<HardwareComponent>> GetFilteredComponentsAsync(
 			string? searchQuery)
 		{

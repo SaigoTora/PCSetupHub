@@ -21,7 +21,7 @@
 	<div>
 		@if (Model.IsCurrentUserOwner)
 		{
-			if (Model.ShowAddButton)
+			if (Model.ShowAddButton && Model.ComponentCount < Model.MaxAllowedComponentCount)
 			{
 				<form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-pcConfigurationId="@Model.PcConfigurationId" method="get" class="d-inline">
 					<button class="add-button" type="submit" translate="no">Add</button>
@@ -47,10 +47,10 @@
 				}
 				else
 				{
-					<form asp-controller="@Model.ControllerName" asp-action="Edit" asp-route-id="@Model.PcConfigurationId" method="get" class="d-inline">
+					<form asp-controller="@Model.ControllerName" asp-action="Edit" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-componentId="@Model.Component.Id" method="get" class="d-inline">
 						<button class="edit-button" type="submit" translate="no">Edit</button>
 					</form>
-					<form asp-controller="@Model.ControllerName" asp-action="Delete" asp-route-id="@Model.PcConfigurationId" class="d-inline">
+					<form asp-controller="@Model.ControllerName" asp-action="Delete" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-componentId="@Model.Component.Id" class="d-inline">
 						<button class="delete-button" type="submit" translate="no">Delete</button>
 					</form>
 				}

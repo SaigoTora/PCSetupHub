@@ -21,6 +21,10 @@ namespace PCSetupHub.Data.Models.Hardware
 		public ICollection<PcConfigurationSsd>? PcConfigurationSsds { get; private set; }
 		public ICollection<PcConfigurationHdd>? PcConfigurationHdds { get; private set; }
 
+		public const int MAX_RAM_COUNT = 5;
+		public const int MAX_SSD_COUNT = 5;
+		public const int MAX_HDD_COUNT = 5;
+
 		public double? TotalPrice
 		{
 			get

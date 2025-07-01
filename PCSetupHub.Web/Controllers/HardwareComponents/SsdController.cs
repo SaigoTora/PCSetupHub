@@ -8,10 +8,12 @@ using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 namespace PCSetupHub.Web.Controllers.HardwareComponents
 {
+	[Route("[Controller]")]
 	public class SsdController : HardwareMultiController<Ssd>
 	{
 		protected override string ComponentName => "Ssd";
 		protected override bool IsComponentColorful => false;
+		protected override int MaxAllowedCount => PcConfiguration.MAX_SSD_COUNT;
 
 		private readonly IRepository<PcConfigurationSsd> _pcConfigSsdRepository;
 
@@ -56,14 +58,6 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		{
 			PcConfigurationSsd newItem = new(pcConfigId, ssdId);
 			await _pcConfigSsdRepository.AddAsync(newItem);
-		}
-		public IActionResult Edit()
-		{
-			return Ok($"Edit from {GetType().Name}");
-		}
-		public IActionResult Delete()
-		{
-			return Ok($"Delete from {GetType().Name}");
 		}
 	}
 }

@@ -13,6 +13,7 @@ namespace PCSetupHub.Web.Controllers
 				400 => View("BadRequest"),
 				403 => View("Forbidden"),
 				404 => View("NotFound"),
+				409 => View("Conflict"),
 				429 => View("TooManyRequests"),
 				_ => View("GeneralError"),
 			};

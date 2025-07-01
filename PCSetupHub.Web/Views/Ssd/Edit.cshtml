@@ -1,0 +1,12 @@
+﻿@using PCSetupHub.Data.Models.Hardware
+@using PCSetupHub.Web.ViewModels
+
+@model Ssd
+
+@{
+	ViewData["Title"] = "SSD";
+}
+
+<h1 class="mt-2 mb-5">Edit SSD</h1>
+
+@await Html.PartialAsync("PcComponents/Forms/_SsdForm", new PcComponentFormViewModel<Ssd>(Model, FormMode.Edit))

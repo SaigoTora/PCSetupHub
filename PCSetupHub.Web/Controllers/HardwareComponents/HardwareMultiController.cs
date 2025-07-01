@@ -11,15 +11,25 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 	public abstract class HardwareMultiController<TComponent> : HardwareBaseController<TComponent>
 		where TComponent : HardwareComponent, new()
 	{
+		protected abstract int MaxAllowedCount { get; }
+
 		protected HardwareMultiController(IRepository<TComponent> componentRepository,
 			IRepository<Color> colorRepository, IUserRepository userRepository)
 			: base(componentRepository, colorRepository, userRepository)
 		{ }
 
+		#region Abstract methods
 		protected abstract Task<List<int>> GetRelatedComponentIdsAsync(int pcConfigId);
 		protected abstract Task UpdateRelationAsync(int pcConfigId, int currentId, int newId);
 		protected abstract Task ClearRelationAsync(int pcConfigId, int componentId);
 		protected abstract Task CreateRelationAsync(int pcConfigId, int componentId);
+		#endregion
+
+		#region Virtual methods
+		protected virtual Task<TComponent> UpdateColorRelationshipsAsync(TComponent component,
+			List<int> colorIds)
+			=> Task.FromResult(component);
+		#endregion
 
 		#region Action methods
 		[HttpGet("Search/{pcConfigurationId}/{componentId}")]
@@ -85,7 +95,6 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			return RedirectToPcSetup(pcConfigurationId);
 		}
-		#endregion
 
 		[HttpGet("Search/{pcConfigurationId}")]
 		public async Task<IActionResult> SearchAsync(int pcConfigurationId, int page = 1)
@@ -95,6 +104,8 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				return StatusCode(403);
 
 			List<int> relatedComponentIds = await GetRelatedComponentIdsAsync(pcConfigurationId);
+			if (!IsComponentCountUnderLimit(relatedComponentIds.Count))
+				return Conflict();
 
 			var filteredComponents = await GetFilteredComponentsAsync(searchQuery);
 			int totalItems = filteredComponents.Count;
@@ -112,6 +123,9 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
 
+			if (!await IsComponentCountUnderLimitAsync(pcConfigurationId))
+				return Conflict();
+
 			TComponent? component = await ComponentRepository.GetOneAsync(componentId);
 			if (component == null)
 				return NotFound();
@@ -122,6 +136,166 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			return RedirectToPcSetup(pcConfigurationId);
 		}
+
+		[HttpGet("Create/{pcConfigurationId}/{currentComponentId}")]
+		public async Task<IActionResult> CreateAsync(int pcConfigurationId, int currentComponentId)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			await SetColorsAsync();
+			return View(new TComponent());
+		}
+
+		[HttpPost("Create/{pcConfigurationId}/{currentComponentId}")]
+		public async Task<IActionResult> CreateAsync(int pcConfigurationId, int currentComponentId,
+			PcComponentFormViewModel<TComponent> model)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			if (model == null)
+				return NotFound();
+
+			model.Component.IsDefault = false;
+
+			if (!ModelState.IsValid)
+			{
+				SetFirstError();
+				await SetColorsAsync(model.SelectedColorsId);
+				return View(model.Component);
+			}
+
+			List<int> relatedComponentIds = await GetRelatedComponentIdsAsync(pcConfigurationId);
+			if (!relatedComponentIds.Any(i => i == currentComponentId))
+				return StatusCode(403);
+
+			await TryDeleteCurrentAsync(currentComponentId);
+
+			TComponent newComponent = await ComponentRepository.AddAsync(model.Component);
+			await UpdateRelationAsync(pcConfigurationId, currentComponentId, newComponent.Id);
+
+			await RemoveInvalidColorIdsAsync(model.SelectedColorsId);
+			model.Component = await UpdateColorRelationshipsAsync(model.Component,
+				model.SelectedColorsId);
+
+			return RedirectToPcSetup(pcConfigurationId);
+		}
+
+		[HttpPost("Delete/{pcConfigurationId}/{componentId}")]
+		public async Task<IActionResult> DeleteAsync(int pcConfigurationId, int componentId)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			List<int> relatedComponentIds = await GetRelatedComponentIdsAsync(pcConfigurationId);
+			if (!relatedComponentIds.Any(i => i == componentId))
+				return StatusCode(403);
+
+			await TryDeleteCurrentAsync(componentId);
+
+			return RedirectToPcSetup(pcConfigurationId);
+		}
+
+		[HttpGet("Edit/{pcConfigurationId}/{componentId}")]
+		public async Task<IActionResult> EditAsync(int pcConfigurationId, int componentId)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			List<int> relatedComponentIds = await GetRelatedComponentIdsAsync(pcConfigurationId);
+			if (!relatedComponentIds.Any(i => i == componentId))
+				return StatusCode(403);
+
+			TComponent? component = await ComponentRepository.GetOneAsync(componentId);
+			if (component == null)
+				return NotFound();
+			if (component.IsDefault)
+				return StatusCode(403);
+
+			await SetColorsAsync();
+			return View(component);
+		}
+
+		[HttpPost("Edit/{pcConfigurationId}/{componentId}")]
+		public async Task<IActionResult> EditAsync(int pcConfigurationId, int componentId,
+			PcComponentFormViewModel<TComponent> model)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			List<int> relatedComponentIds = await GetRelatedComponentIdsAsync(pcConfigurationId);
+			if (!relatedComponentIds.Any(i => i == componentId))
+				return StatusCode(403);
+
+			if (model.Component == null)
+				return NotFound();
+			if (model.Component.IsDefault)
+				return StatusCode(403);
+
+			model.Component.SetId(componentId);
+
+			if (!ModelState.IsValid)
+			{
+				SetFirstError();
+				await SetColorsAsync(model.SelectedColorsId);
+				return View(model.Component);
+			}
+
+			await ComponentRepository.UpdateAsync(model.Component);
+
+			await RemoveInvalidColorIdsAsync(model.SelectedColorsId);
+			model.Component = await UpdateColorRelationshipsAsync(model.Component,
+				model.SelectedColorsId);
+
+			return RedirectToPcSetup(pcConfigurationId);
+		}
+
+		[HttpGet("Create/{pcConfigurationId}")]
+		public async Task<IActionResult> CreateAsync(int pcConfigurationId)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			if (!await IsComponentCountUnderLimitAsync(pcConfigurationId))
+				return Conflict();
+
+			await SetColorsAsync();
+			return View(new TComponent());
+		}
+
+		[HttpPost("Create/{pcConfigurationId}")]
+		public async Task<IActionResult> CreateAsync(int pcConfigurationId,
+			PcComponentFormViewModel<TComponent> model)
+		{
+			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
+				return StatusCode(403);
+
+			if (!await IsComponentCountUnderLimitAsync(pcConfigurationId))
+				return Conflict();
+
+			if (model == null)
+				return NotFound();
+
+			model.Component.IsDefault = false;
+
+			if (!ModelState.IsValid)
+			{
+				SetFirstError();
+				await SetColorsAsync(model.SelectedColorsId);
+				return View(model.Component);
+			}
+
+			TComponent newComponent = await ComponentRepository.AddAsync(model.Component);
+			await CreateRelationAsync(pcConfigurationId, newComponent.Id);
+
+			await RemoveInvalidColorIdsAsync(model.SelectedColorsId);
+			model.Component = await UpdateColorRelationshipsAsync(model.Component,
+				model.SelectedColorsId);
+
+			return RedirectToPcSetup(pcConfigurationId);
+		}
+		#endregion
 
 		#region Helpers
 		protected async Task<bool> TryDeleteCurrentAsync(int currentComponentId)
@@ -137,6 +311,12 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			}
 
 			return false;
+		}
+		protected bool IsComponentCountUnderLimit(int count) => count < MaxAllowedCount;
+		protected async Task<bool> IsComponentCountUnderLimitAsync(int pcConfigurationId)
+		{
+			List<int> relatedComponentIds = await GetRelatedComponentIdsAsync(pcConfigurationId);
+			return IsComponentCountUnderLimit(relatedComponentIds.Count);
 		}
 		#endregion
 	}

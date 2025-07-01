@@ -171,7 +171,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			return RedirectToPcSetup(pcConfigurationId);
 		}
 
-		[HttpGet("Edit/{pcConfigurationId}")]
+		[HttpGet("Edit/{pcConfigurationId}/{componentId}")]
 		public async Task<IActionResult> EditAsync(int pcConfigurationId)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
