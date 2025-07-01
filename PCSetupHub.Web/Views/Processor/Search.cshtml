@@ -4,7 +4,7 @@
 @model SearchComponentViewModel
 
 @{
-	ViewData["Title"] = $"Processors";
+	ViewData["Title"] = "Processors";
 
 	string searchQueryName = $"{char.ToLower(Model.ControllerName[0]) + Model.ControllerName[1..]}SearchQuery";
 }

@@ -36,7 +36,7 @@
 			<label for="Capacity" class="form__label">Capacity (GB)</label>
 		</div>
 
-		<select class="mb-4" asp-for="Component.Type" required>
+		<select class="mb-3" asp-for="Component.Type" required>
 			<optgroup label="Type">
 				<option value="@null" hidden>Select type</option>
 				<option value="SSD">SSD</option>
@@ -75,7 +75,7 @@
 			</optgroup>
 		</select>
 
-		<select class="mb-4" asp-for="Component.Interface" required>
+		<select class="mb-3" asp-for="Component.Interface" required>
 			<optgroup label="Interface">
 				<option value="@null" hidden>Select interface</option>
 				<option value="PATA 44-Pin 100">PATA 44-Pin 100</option>

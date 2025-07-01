@@ -1,0 +1,85 @@
+﻿@using PCSetupHub.Data.Models.Hardware
+@using PCSetupHub.Web.ViewModels
+
+@model PcComponentFormViewModel<Hdd>
+
+@{
+	<link rel="stylesheet" href="~/css/form.css" />
+
+	string actionName = Model.Mode switch
+	{
+		FormMode.Create => "Create",
+		FormMode.Edit => "Edit",
+		_ => throw new InvalidOperationException("Unsupported form mode")
+	};
+
+	int? componentId = null;
+	if (Model.Mode == FormMode.Edit)
+		componentId = Model.Component?.Id;
+
+	var selectedColorIds = Model.Component?.ColorHdds?
+		.Select(cm => cm.ColorId)
+		.ToList() ?? new List<int>();
+
+	if (ViewData["SelectedColorsId"] is IEnumerable<int> additionalIds)
+		selectedColorIds.AddRange(additionalIds);
+}
+
+@if (Model.Component != null)
+{
+	<form asp-action="@actionName" asp-route-componentId="@componentId" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
+		<div class="form__group field">
+			<input type="text" class="form__field" placeholder="Name" asp-for="Component.Name" required autocomplete="off">
+			<label for="Name" class="form__label">Name</label>
+		</div>
+
+		<div class="form__group field">
+			<input type="number" class="form__field" placeholder="Price" asp-for="Component.Price" min="0.01" step="0.01">
+			<label for="Price" class="form__label">Price ($)</label>
+		</div>
+
+		<select class="mb-4" asp-for="Component.Type" required>
+			<optgroup label="Type">
+				<option value="@null" hidden>Select type</option>
+				<option value="Desktop">Desktop</option>
+				<option value="Portable">Portable</option>
+			</optgroup>
+		</select>
+
+		<select class="mb-3" asp-for="Component.Interface">
+			<optgroup label="Interface">
+				<option value="@null" hidden>Select interface</option>
+				<option value="@null">Unknown</option>
+				<option value="IEEE 1394A 6-Pin, IEEE 1394B 9-Pin, eSATA 3.0 Gb/s, USB Type-A 2.0">IEEE 1394A 6-Pin, IEEE 1394B 9-Pin, eSATA 3.0 Gb/s, USB Type-A 2.0</option>
+				<option value="IEEE 1394B 9-Pin, eSATA 3.0 Gb/s, USB Type-A 3.2 Gen 1">IEEE 1394B 9-Pin, eSATA 3.0 Gb/s, USB Type-A 3.2 Gen 1</option>
+				<option value="IEEE 1394B 9-Pin, eSATA 6.0 Gb/s, USB Type-A 3.2 Gen 1">IEEE 1394B 9-Pin, eSATA 6.0 Gb/s, USB Type-A 3.2 Gen 1</option>
+				<option value="IEEE 1394B 9-Pin, USB Type-A 2.0">IEEE 1394B 9-Pin, USB Type-A 2.0</option>
+				<option value="IEEE 1394B 9-Pin, USB Type-A 3.2 Gen 1">IEEE 1394B 9-Pin, USB Type-A 3.2 Gen 1</option>
+				<option value="eSATA 3.0 Gb/s, USB Type-A 2.0">eSATA 3.0 Gb/s, USB Type-A 2.0</option>
+				<option value="USB Type-A 2.0">USB Type-A 2.0</option>
+				<option value="USB Type-A 2.0, USB Type-A 3.2 Gen 1">USB Type-A 2.0, USB Type-A 3.2 Gen 1</option>
+				<option value="USB Type-A 2.0, USB Type-C 3.2 Gen 1">USB Type-A 2.0, USB Type-C 3.2 Gen 1</option>
+				<option value="USB Type-A 3.2 Gen 1">USB Type-A 3.2 Gen 1</option>
+				<option value="USB Type-A 3.2 Gen 1, USB Type-C 3.2 Gen 1">USB Type-A 3.2 Gen 1, USB Type-C 3.2 Gen 1</option>
+				<option value="USB Type-A 3.2 Gen 1, USB Type-C 3.2 Gen 2">USB Type-A 3.2 Gen 1, USB Type-C 3.2 Gen 2</option>
+				<option value="USB Type-A 3.2 Gen 2">USB Type-A 3.2 Gen 2</option>
+				<option value="USB Type-A 3.2 Gen 2, USB Type-C 3.2 Gen 2">USB Type-A 3.2 Gen 2, USB Type-C 3.2 Gen 2</option>
+				<option value="USB Type-C">USB Type-C</option>
+				<option value="USB Type-C 3.2 Gen 1">USB Type-C 3.2 Gen 1</option>
+				<option value="USB Type-C 3.2 Gen 2">USB Type-C 3.2 Gen 2</option>
+				<option value="USB Type-C 3.2 Gen 2x2">USB Type-C 3.2 Gen 2x2</option>
+				<option value="Thunderbolt">Thunderbolt</option>
+				<option value="Thunderbolt, USB Type-A 3.2 Gen 1">Thunderbolt, USB Type-A 3.2 Gen 1</option>
+			</optgroup>
+		</select>
+
+		<div class="form__group field">
+			<input type="number" class="form__field" placeholder="Capacity" asp-for="Component.Capacity" min="120" required value="@(Model.Component.Capacity == default ? "" : Model.Component.Capacity.ToString())" />
+			<label for="Capacity" class="form__label">Capacity (GB)</label>
+		</div>
+
+		@await Html.PartialAsync("PcComponents/Forms/_ColorForm", selectedColorIds)
+
+		@await Html.PartialAsync("PcComponents/Forms/_FormSubmitSection", Model.Mode)
+	</form>
+}
