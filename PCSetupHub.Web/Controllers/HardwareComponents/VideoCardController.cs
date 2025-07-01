@@ -20,7 +20,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			PcConfigurationIncludes.VideoCard;
 
 		public VideoCardController(IPcConfigurationRepository pcConfigRepository,
-			IRepository<VideoCard> videoCardRepository, IRepository<Color> colorRepository,
+			IHardwareComponentRepository<VideoCard> videoCardRepository, IRepository<Color> colorRepository,
 			IRepository<ColorVideoCard> colorVideoCardRepository, IUserRepository userRepository)
 			: base(pcConfigRepository, videoCardRepository, colorRepository, userRepository)
 		{

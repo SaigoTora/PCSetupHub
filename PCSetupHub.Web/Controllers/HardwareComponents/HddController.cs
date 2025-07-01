@@ -4,6 +4,7 @@ using PCSetupHub.Data.Models.Attributes;
 using PCSetupHub.Data.Models.Hardware;
 using PCSetupHub.Data.Models.Relationships;
 using PCSetupHub.Data.Repositories.Base;
+using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 namespace PCSetupHub.Web.Controllers.HardwareComponents
@@ -19,7 +20,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 		private readonly IRepository<PcConfigurationHdd> _pcConfigHddRepository;
 
-		public HddController(IRepository<Hdd> hddRepository,
+		public HddController(IHardwareComponentRepository<Hdd> hddRepository,
 			IRepository<PcConfigurationHdd> pcConfigHddRepository,
 			IRepository<Color> colorRepository,
 			IRepository<ColorHdd> colorHddRepository,

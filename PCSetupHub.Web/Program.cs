@@ -7,6 +7,7 @@ using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Core.Middlewares;
 using PCSetupHub.Core.Services;
 using PCSetupHub.Data;
+using PCSetupHub.Data.Models.Hardware;
 using PCSetupHub.Data.Repositories.Base;
 using PCSetupHub.Data.Repositories.Implementations.PcConfigurations;
 using PCSetupHub.Data.Repositories.Implementations.Users;
@@ -42,6 +43,12 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 	services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
 	services.AddScoped(typeof(IRepository<>), typeof(BaseRepo<>));
 	services.AddScoped<IUserService, UserService>();
+
+	services.AddScoped<IHardwareComponentRepository<VideoCard>, VideoCardRepository>();
+	services.AddScoped<IHardwareComponentRepository<Motherboard>, MotherboardRepository>();
+	services.AddScoped<IHardwareComponentRepository<PowerSupply>, PowerSupplyRepository>();
+	services.AddScoped<IHardwareComponentRepository<Hdd>, HddRepository>();
+	services.AddScoped<IHardwareComponentRepository<Ram>, RamRepository>();
 }
 static void CreateDbIfNotExists(IHost host)
 {

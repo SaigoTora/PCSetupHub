@@ -20,7 +20,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			PcConfigurationIncludes.PowerSupply;
 
 		public PowerSupplyController(IPcConfigurationRepository pcConfigRepository,
-			IRepository<PowerSupply> powerSupplyRepository, IRepository<Color> colorRepository,
+			IHardwareComponentRepository<PowerSupply> powerSupplyRepository, IRepository<Color> colorRepository,
 			IRepository<ColorPowerSupply> colorPowerSupplyRepository, IUserRepository userRepository)
 			: base(pcConfigRepository, powerSupplyRepository, colorRepository, userRepository)
 		{

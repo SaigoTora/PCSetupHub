@@ -20,7 +20,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			PcConfigurationIncludes.Motherboard;
 
 		public MotherboardController(IPcConfigurationRepository pcConfigRepository,
-			IRepository<Motherboard> motherboardRepository, IRepository<Color> colorRepository,
+			IHardwareComponentRepository<Motherboard> motherboardRepository, IRepository<Color> colorRepository,
 			IRepository<ColorMotherboard> colorMotherboardRepository, IUserRepository userRepository)
 			: base(pcConfigRepository, motherboardRepository, colorRepository, userRepository)
 		{
