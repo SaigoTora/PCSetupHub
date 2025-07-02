@@ -40,7 +40,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 		#region Action methods
 		[HttpGet("Search/{pcConfigurationId}")]
-		public async Task<IActionResult> SearchAsync(int pcConfigurationId, int page = 1)
+		public async Task<IActionResult> Search(int pcConfigurationId, int page = 1)
 		{
 			var searchQuery = GetSearchQuery();
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
@@ -62,7 +62,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Select/{pcConfigurationId}/{componentId}")]
-		public async Task<IActionResult> SelectAsync(int pcConfigurationId, int componentId)
+		public async Task<IActionResult> Select(int pcConfigurationId, int componentId)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
@@ -88,7 +88,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Clear/{pcConfigurationId}")]
-		public async Task<IActionResult> ClearAsync(int pcConfigurationId)
+		public async Task<IActionResult> Clear(int pcConfigurationId)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
@@ -109,7 +109,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpGet("Create/{pcConfigurationId}")]
-		public async Task<IActionResult> CreateAsync(int pcConfigurationId)
+		public async Task<IActionResult> Create(int pcConfigurationId)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
@@ -119,7 +119,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Create/{pcConfigurationId}")]
-		public async Task<IActionResult> CreateAsync(int pcConfigurationId,
+		public async Task<IActionResult> Create(int pcConfigurationId,
 			PcComponentFormViewModel<TComponent> model)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
@@ -156,7 +156,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Delete/{pcConfigurationId}")]
-		public async Task<IActionResult> DeleteAsync(int pcConfigurationId)
+		public async Task<IActionResult> Delete(int pcConfigurationId)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
@@ -172,7 +172,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpGet("Edit/{pcConfigurationId}/{componentId}")]
-		public async Task<IActionResult> EditAsync(int pcConfigurationId)
+		public async Task<IActionResult> Edit(int pcConfigurationId)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
 				return StatusCode(403);
@@ -193,7 +193,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Edit/{pcConfigurationId}/{componentId}")]
-		public async Task<IActionResult> EditAsync(int pcConfigurationId, int componentId,
+		public async Task<IActionResult> Edit(int pcConfigurationId, int componentId,
 			PcComponentFormViewModel<TComponent> model)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))

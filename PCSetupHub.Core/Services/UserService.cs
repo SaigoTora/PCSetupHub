@@ -46,7 +46,7 @@ namespace PCSetupHub.Core.Services
 			else
 				throw new AuthenticationException("Invalid password.");
 		}
-		public async Task<AuthResponse> LoginOrRegisterByGoogleId(string googleId, string email,
+		public async Task<AuthResponse> LoginOrRegisterByGoogleIdAsync(string googleId, string email,
 			string name)
 		{
 			User? user = await _userRepository.GetByGoogleIdAsync(googleId);
@@ -60,7 +60,7 @@ namespace PCSetupHub.Core.Services
 			return new AuthResponse(_jwtService.GenerateAccessToken(user, true),
 				_jwtService.GenerateRefreshToken());
 		}
-		public async Task<bool> IsUserLoggedIn(string accessToken, string refreshToken)
+		public async Task<bool> IsUserLoggedInAsync(string accessToken, string refreshToken)
 		{
 			(bool isRefreshTokenValid, _)
 				= await _jwtService.ValidateAndRefreshTokensAsync(accessToken, refreshToken);

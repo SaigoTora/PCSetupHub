@@ -45,12 +45,12 @@ namespace PCSetupHub.Core.Services
 				if (accessTokenValid)
 					return (true, new AuthResponse(null, null));
 
-				return (true, await RefreshTokens(tokenHandler, accessToken));
+				return (true, await RefreshTokensAsync(tokenHandler, accessToken));
 			}
 			catch
 			{ return (false, new AuthResponse(null, null)); }
 		}
-		private async Task<AuthResponse> RefreshTokens(JwtSecurityTokenHandler tokenHandler,
+		private async Task<AuthResponse> RefreshTokensAsync(JwtSecurityTokenHandler tokenHandler,
 			string accessToken)
 		{
 			JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(accessToken);

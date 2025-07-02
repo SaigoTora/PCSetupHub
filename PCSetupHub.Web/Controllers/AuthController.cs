@@ -27,7 +27,7 @@ namespace PCSetupHub.Web.Controllers
 		#region Registration
 		public async Task<IActionResult> Register()
 		{
-			if (await IsUserLoggedIn())
+			if (await IsUserLoggedInAsync())
 				return RedirectToAction("Index", "Home");
 
 			return View();
@@ -99,7 +99,7 @@ namespace PCSetupHub.Web.Controllers
 		#region Login
 		public async Task<IActionResult> Login(LoginRequest loginRequest)
 		{
-			if (await IsUserLoggedIn())
+			if (await IsUserLoggedInAsync())
 				return RedirectToAction("Index", "Home");
 
 			return View(loginRequest);
@@ -173,7 +173,7 @@ namespace PCSetupHub.Web.Controllers
 			if (string.IsNullOrWhiteSpace(name))
 				name = DEFAULT_NAME;
 
-			AuthResponse authResponse = await _userService.LoginOrRegisterByGoogleId(googleId!,
+			AuthResponse authResponse = await _userService.LoginOrRegisterByGoogleIdAsync(googleId!,
 				email!, name!);
 			AddTokensToCookies(authResponse, false);
 			_logger.LogInformation("Google authentication succeeded for user {Email} " +
@@ -229,12 +229,12 @@ namespace PCSetupHub.Web.Controllers
 			HttpContext.Response.Cookies.Delete(_accessTokenSettings.CookieName);
 			HttpContext.Response.Cookies.Delete(_refreshTokenSettings.CookieName);
 		}
-		private async Task<bool> IsUserLoggedIn()
+		private async Task<bool> IsUserLoggedInAsync()
 		{
 			string? accessToken = HttpContext.Request.Cookies[_accessTokenSettings.CookieName];
 			string? refreshToken = HttpContext.Request.Cookies[_refreshTokenSettings.CookieName];
 
-			return await _userService.IsUserLoggedIn(accessToken!, refreshToken!);
+			return await _userService.IsUserLoggedInAsync(accessToken!, refreshToken!);
 		}
 	}
 }
