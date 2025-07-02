@@ -11,12 +11,15 @@ using PCSetupHub.Core.DTOs;
 using PCSetupHub.Core.Exceptions;
 using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Core.Settings;
+using PCSetupHub.Core.Extensions;
 
 namespace PCSetupHub.Web.Controllers
 {
-	public class AuthController(IUserService userService, IOptions<AuthSettings> options)
+	public class AuthController(ILogger<AuthController> logger, IUserService userService,
+		IOptions<AuthSettings> options)
 		: Controller
 	{
+		private readonly ILogger<AuthController> _logger = logger;
 		private readonly IUserService _userService = userService;
 		private readonly TokenSettings _accessTokenSettings = options.Value.AccessToken;
 		private readonly TokenSettings _refreshTokenSettings = options.Value.RefreshToken;
@@ -50,9 +53,13 @@ namespace PCSetupHub.Web.Controllers
 					registerRequest.Password!, true);
 
 				AddTokensToCookies(authResponse, false);
+				_logger.LogInformation("User registered successfully: {Login}",
+					registerRequest.Login);
 			}
 			catch (Exception ex) when (HandleRegistrationExceptions(ex))
 			{
+				_logger.LogWarning("Registration failed for user {Login}: {ExceptionMessage}",
+					registerRequest.Login, ex.Message);
 				return View();
 			}
 
@@ -114,11 +121,13 @@ namespace PCSetupHub.Web.Controllers
 					loginRequest.Password, loginRequest.RememberMe);
 
 				AddTokensToCookies(authResponse, !loginRequest.RememberMe);
+				_logger.LogInformation("User logged in successfully: {Login}", loginRequest.Login);
 			}
 			catch (AuthenticationException)
 			{
 				ModelState.AddModelError("Login", "Invalid login or password.");
 				SetFirstError();
+				_logger.LogWarning("Invalid login attempt for user {Login}", loginRequest.Login);
 				return View();
 			}
 
@@ -153,7 +162,13 @@ namespace PCSetupHub.Web.Controllers
 			string? name = claims?.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value;
 
 			if (googleId == null || email == null)
+			{
+				googleId = googleId ?? "Unknown";
+				email = email ?? "Unknown";
+				_logger.LogInformation("Google authentication failed for user {Email} " +
+					"(GoogleId: {GoogleId})", email, googleId);
 				return HandleGoogleAuthError();
+			}
 
 			if (string.IsNullOrWhiteSpace(name))
 				name = DEFAULT_NAME;
@@ -161,6 +176,8 @@ namespace PCSetupHub.Web.Controllers
 			AuthResponse authResponse = await _userService.LoginOrRegisterByGoogleId(googleId!,
 				email!, name!);
 			AddTokensToCookies(authResponse, false);
+			_logger.LogInformation("Google authentication succeeded for user {Email} " +
+				"(GoogleId: {GoogleId})", email, googleId);
 
 			return RedirectToAction("Index", "Home");
 		}
@@ -176,8 +193,10 @@ namespace PCSetupHub.Web.Controllers
 
 		public async Task<IActionResult> Logout()
 		{
-			DeleteTokensCookies();
+			string login = User.GetLogin() ?? "Unknown";
 			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			DeleteTokensCookies();
+			_logger.LogInformation("User logged out successfully: {Login}", login);
 
 			return RedirectToAction("Index", "Home");
 		}

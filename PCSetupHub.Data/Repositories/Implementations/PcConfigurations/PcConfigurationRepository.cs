@@ -45,7 +45,7 @@ namespace PCSetupHub.Data.Repositories.Implementations.PcConfigurations
 			if (asNoTracking)
 				query = query.AsNoTracking();
 
-			return await query.FirstOrDefaultAsync(pc => pc.Id == id);
+			return await query.AsSplitQuery().FirstOrDefaultAsync(pc => pc.Id == id);
 		}
 
 		private static void ApplyProcessorInclude(ref IQueryable<PcConfiguration> query,

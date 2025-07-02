@@ -32,6 +32,7 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 							.ThenInclude(hdd => hdd!.ColorHdds!).ThenInclude(x => x.Color)
 					.Include(u => u.ReceivedFriendRequests!).ThenInclude(rfr => rfr.Initiator)
 					.Include(u => u.SentFriendRequests!).ThenInclude(sfr => sfr.Friend)
+					.AsSplitQuery()
 					.FirstOrDefaultAsync(u => u.Login == login);
 
 			return await query.FirstOrDefaultAsync(u => u.Login == login);

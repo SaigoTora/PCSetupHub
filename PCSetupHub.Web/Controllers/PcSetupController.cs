@@ -9,8 +9,8 @@ using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
 
 namespace PCSetupHub.Web.Controllers
 {
-	public class PcSetupController(IPcConfigurationRepository _pcConfigRepository,
-		IRepository<PcType> _pcTypeRepository)
+	public class PcSetupController(ILogger<PcSetupController> _logger,
+		IPcConfigurationRepository _pcConfigRepository, IRepository<PcType> _pcTypeRepository)
 		: Controller
 	{
 		[HttpGet("PcSetup/{id}")]
@@ -34,7 +34,8 @@ namespace PCSetupHub.Web.Controllers
 			if (pcConfiguration == null)
 				return NotFound();
 
-			if (pcConfiguration.User != null && pcConfiguration.User.Id != User.GetId())
+			int userId = User.GetId() ?? -1;
+			if (pcConfiguration.User != null && pcConfiguration.User.Id != userId)
 				return StatusCode(403);
 
 			// There should be no more than 1 element since the Name field is unique
@@ -42,8 +43,19 @@ namespace PCSetupHub.Web.Controllers
 			if (pcType == null || pcType.Count == 0 || pcType[0] == null)
 				return NotFound();
 
-			pcConfiguration.ChangeType(pcType[0]);
-			await _pcConfigRepository.UpdateAsync(pcConfiguration);
+			try
+			{
+				pcConfiguration.ChangeType(pcType[0]);
+				await _pcConfigRepository.UpdateAsync(pcConfiguration);
+				_logger.LogInformation("User {UserId} updated PcConfiguration {Id} " +
+					"to type '{TypeName}'", userId, id, typeName);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "User {UserId} failed to update PcConfiguration {Id} " +
+					"to type '{TypeName}'", userId, id, typeName);
+				throw;
+			}
 
 			return RedirectToAction("Index", new { id });
 		}

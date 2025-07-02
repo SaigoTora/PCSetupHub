@@ -10,8 +10,8 @@ using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 namespace PCSetupHub.Web.Controllers
 {
-	public class ProfileController(IUserRepository _userRepository,
-		IRepository<Friendship> _friendshipRepository)
+	public class ProfileController(ILogger<ProfileController> _logger,
+		IUserRepository _userRepository, IRepository<Friendship> _friendshipRepository)
 		: Controller
 	{
 		[HttpGet("Profile/{login?}")]
@@ -36,11 +36,24 @@ namespace PCSetupHub.Web.Controllers
 			Friendship? friendship = await _friendshipRepository.GetOneAsync(id);
 			if (friendship == null)
 				return NotFound();
-			if (friendship.FriendId != User.GetId())
+
+			int userId = User.GetId() ?? -1;
+			if (friendship.FriendId != userId)
 				return StatusCode(403);
 
-			friendship.ChangeStatus((FriendshipStatusType)newStatusId);
-			await _friendshipRepository.UpdateAsync(friendship);
+			try
+			{
+				friendship.ChangeStatus((FriendshipStatusType)newStatusId);
+				await _friendshipRepository.UpdateAsync(friendship);
+				_logger.LogInformation("User {UserId} updated friendship {FriendshipId} " +
+					"to status {StatusId}", userId, id, newStatusId);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "User {UserId} failed to update friendship {FriendshipId} " +
+					"to status {StatusId}", userId, id, newStatusId);
+				throw;
+			}
 
 			User? user = await _userRepository.GetOneAsync(friendship.InitiatorId);
 			if (user == null)
@@ -55,16 +68,26 @@ namespace PCSetupHub.Web.Controllers
 		public async Task<IActionResult> SendFriendRequest(int id)
 		{
 			int? initiatorId = User.GetId();
+			if (!initiatorId.HasValue)
+				return Unauthorized();
 
 			User? user = await _userRepository.GetOneAsync(id);
 			if (user == null)
 				return NotFound();
 
-			if (initiatorId.HasValue)
+			try
 			{
 				Friendship friendship = new(initiatorId.Value, id,
 					(int)FriendshipStatusType.Pending);
 				await _friendshipRepository.AddAsync(friendship);
+				_logger.LogInformation("User {InitiatorId} sent a friend request " +
+					"to user {TargetId}", initiatorId, id);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "User {InitiatorId} failed to send a friend request " +
+					"to user {TargetId}", initiatorId, id);
+				throw;
 			}
 
 			return RedirectToAction("Index", new { login = user.Login });
@@ -78,10 +101,22 @@ namespace PCSetupHub.Web.Controllers
 			Friendship? friendship = await _friendshipRepository.GetOneAsync(id);
 			if (friendship == null)
 				return NotFound();
-			if (friendship.InitiatorId != User.GetId())
+
+			int userId = User.GetId() ?? -1;
+			if (friendship.InitiatorId != userId)
 				return StatusCode(403);
 
-			await _friendshipRepository.DeleteAsync(id);
+			try
+			{
+				await _friendshipRepository.DeleteAsync(id);
+				_logger.LogInformation("User {UserId} deleted friendship {FriendshipId}", userId, id);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "User {UserId} failed to delete friendship {FriendshipId}",
+					userId, id);
+				throw;
+			}
 
 			User? user = await _userRepository.GetOneAsync(friendship.FriendId);
 			if (user == null)

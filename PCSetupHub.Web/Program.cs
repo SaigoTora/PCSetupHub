@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Interfaces;
@@ -16,11 +17,21 @@ using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((context, loggerConfig) =>
+{
+	loggerConfig.ReadFrom.Configuration(context.Configuration);
+});
+
 ConfigureServices(builder.Services, builder.Configuration);
 
+
 var app = builder.Build();
-CreateDbIfNotExists(app);
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+CreateDbIfNotExists(app, logger);
 ConfigureMiddleware(app);
+
+logger.LogInformation("Application started and is now listening for requests.");
 app.Run();
 
 
@@ -50,10 +61,11 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 	services.AddScoped<IHardwareComponentRepository<Hdd>, HddRepository>();
 	services.AddScoped<IHardwareComponentRepository<Ram>, RamRepository>();
 }
-static void CreateDbIfNotExists(IHost host)
+static void CreateDbIfNotExists(IHost host, ILogger<Program> logger)
 {
 	using var scope = host.Services.CreateScope();
 	var services = scope.ServiceProvider;
+
 	try
 	{
 		var context = services.GetRequiredService<PcSetupContext>();
@@ -62,7 +74,6 @@ static void CreateDbIfNotExists(IHost host)
 	}
 	catch (Exception ex)
 	{
-		var logger = services.GetRequiredService<ILogger<Program>>();
 		logger.LogError(ex, "An error occurred creating the DB.");
 	}
 }
