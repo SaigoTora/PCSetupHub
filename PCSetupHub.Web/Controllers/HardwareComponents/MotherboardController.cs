@@ -19,10 +19,14 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override PcConfigurationIncludes PcConfigurationIncludes =>
 			PcConfigurationIncludes.Motherboard;
 
-		public MotherboardController(IPcConfigurationRepository pcConfigRepository,
-			IHardwareComponentRepository<Motherboard> motherboardRepository, IRepository<Color> colorRepository,
-			IRepository<ColorMotherboard> colorMotherboardRepository, IUserRepository userRepository)
-			: base(pcConfigRepository, motherboardRepository, colorRepository, userRepository)
+		public MotherboardController(ILogger<MotherboardController> logger,
+			IPcConfigurationRepository pcConfigRepository,
+			IHardwareComponentRepository<Motherboard> motherboardRepository,
+			IRepository<Color> colorRepository,
+			IRepository<ColorMotherboard> colorMotherboardRepository,
+			IUserRepository userRepository)
+			: base(logger, pcConfigRepository, motherboardRepository, colorRepository,
+				  userRepository)
 		{
 			ColorMotherboardRepository = colorMotherboardRepository;
 		}
@@ -42,38 +46,53 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override async Task<Motherboard> UpdateColorRelationshipsAsync(
 			Motherboard motherboard, List<int> colorIds)
 		{
-			// Getting existing relationships
-			var existingRelations = await ColorMotherboardRepository
+			try
+			{
+				// Getting existing relationships
+				var existingRelations = await ColorMotherboardRepository
 				.GetSomeAsync(cm => cm.MotherboardId == motherboard.Id);
 
-			var existingColorIds = existingRelations.Select(r => r.ColorId).ToHashSet();
-			var newColorIds = colorIds.ToHashSet();
+				var existingColorIds = existingRelations.Select(r => r.ColorId).ToHashSet();
+				var newColorIds = colorIds.ToHashSet();
 
-			// Removing relationships that no longer exist
-			var relationsToRemove = existingRelations
-				.Where(r => !newColorIds.Contains(r.ColorId))
-				.ToList();
+				// Removing relationships that no longer exist
+				var relationsToRemove = existingRelations
+					.Where(r => !newColorIds.Contains(r.ColorId))
+					.ToList();
 
-			foreach (var relation in relationsToRemove)
-				await ColorMotherboardRepository.DeleteAsync(relation);
+				foreach (var relation in relationsToRemove)
+					await ColorMotherboardRepository.DeleteAsync(relation);
 
-			// Adding new relationships
-			var relationsToAdd = newColorIds
-				.Except(existingColorIds)
-				.Select(colorId => new ColorMotherboard(colorId, motherboard.Id))
-				.ToList();
+				// Adding new relationships
+				var relationsToAdd = newColorIds
+					.Except(existingColorIds)
+					.Select(colorId => new ColorMotherboard(colorId, motherboard.Id))
+					.ToList();
 
-			await ColorMotherboardRepository.AddAsync(relationsToAdd);
+				await ColorMotherboardRepository.AddAsync(relationsToAdd);
 
-			// Updating the collection in entity
-			var updatedRelations = existingRelations
-				.Where(r => newColorIds.Contains(r.ColorId))
-				.Concat(relationsToAdd)
-				.ToList();
+				// Updating the collection in entity
+				var updatedRelations = existingRelations
+					.Where(r => newColorIds.Contains(r.ColorId))
+					.Concat(relationsToAdd)
+					.ToList();
 
-			motherboard.SetColorMotherboards(updatedRelations);
+				if (relationsToAdd.Count != 0 || relationsToRemove.Count != 0)
+				{
+					motherboard.SetColorMotherboards(updatedRelations);
+					Logger.LogInformation("Updated colors for Motherboard with id " +
+						"{MotherboardId}: added {AddedCount}, removed {RemovedCount}",
+						motherboard.Id, relationsToAdd.Count, relationsToRemove.Count);
+				}
 
-			return motherboard;
+				return motherboard;
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex, "Failed to update colors for Motherboard with id " +
+					"{MotherboardId}", motherboard.Id);
+				throw;
+			}
 		}
 	}
 }

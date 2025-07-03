@@ -14,13 +14,16 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 	{
 		protected abstract PcConfigurationIncludes PcConfigurationIncludes { get; }
 
+		protected readonly ILogger<HardwareSingleController<TComponent>> Logger;
 		private readonly IPcConfigurationRepository _pcConfigRepository;
 
-		protected HardwareSingleController(IPcConfigurationRepository pcConfigRepository,
+		protected HardwareSingleController(ILogger<HardwareSingleController<TComponent>> logger,
+			IPcConfigurationRepository pcConfigRepository,
 			IRepository<TComponent> componentRepository, IRepository<Color> colorRepository,
 			IUserRepository userRepository)
 			: base(componentRepository, colorRepository, userRepository)
 		{
+			Logger = logger;
 			_pcConfigRepository = pcConfigRepository;
 		}
 
@@ -81,8 +84,19 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			await TryDeleteCurrentAsync(pcConfig);
 
-			ChangeComponent(pcConfig, component);
-			await _pcConfigRepository.UpdateAsync(pcConfig);
+			try
+			{
+				ChangeComponent(pcConfig, component);
+				await _pcConfigRepository.UpdateAsync(pcConfig);
+				Logger.LogInformation("Selected {ComponentName} with id {ComponentId} to config " +
+					"{ConfigId}", ComponentName, componentId, pcConfigurationId);
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex, "Failed to select {ComponentName} with id {ComponentId} " +
+					"to config {ConfigId}", ComponentName, componentId, pcConfigurationId);
+				throw;
+			}
 
 			return RedirectToPcSetup(pcConfigurationId);
 		}
@@ -101,9 +115,23 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			TComponent? component = GetComponent(pcConfig);
 			if (component != null && !component.IsDefault)
 				return StatusCode(403);
+			if (component == null)
+				return NotFound();
 
-			ClearComponent(pcConfig);
-			await _pcConfigRepository.UpdateAsync(pcConfig);
+			try
+			{
+				ClearComponent(pcConfig);
+				await _pcConfigRepository.UpdateAsync(pcConfig);
+				Logger.LogInformation("Cleared {ComponentName} with id {ComponentId} " +
+					"from config {ConfigId}", ComponentName, component.Id, pcConfigurationId);
+
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex, "Failed to clear {ComponentName} with id {ComponentId} " +
+					"from config {ConfigId}", ComponentName, component.Id, pcConfigurationId);
+				throw;
+			}
 
 			return RedirectToPcSetup(pcConfigurationId);
 		}
@@ -144,9 +172,20 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			await TryDeleteCurrentAsync(pcConfig);
 
-			await ComponentRepository.AddAsync(model.Component);
-			ChangeComponent(pcConfig, model.Component);
-			await _pcConfigRepository.UpdateAsync(pcConfig);
+			try
+			{
+				await ComponentRepository.AddAsync(model.Component);
+				ChangeComponent(pcConfig, model.Component);
+				await _pcConfigRepository.UpdateAsync(pcConfig);
+				Logger.LogInformation("Created and linked {ComponentName} with id {ComponentId} " +
+					"to config {ConfigId}", ComponentName, model.Component.Id, pcConfigurationId);
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex, "Failed to create and link {ComponentName} " +
+					"to config {ConfigId}", ComponentName, pcConfigurationId);
+				throw;
+			}
 
 			await RemoveInvalidColorIdsAsync(model.SelectedColorsId);
 			model.Component = await UpdateColorRelationshipsAsync(model.Component,
@@ -220,7 +259,18 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				return View(model.Component);
 			}
 
-			await ComponentRepository.UpdateAsync(model.Component);
+			try
+			{
+				await ComponentRepository.UpdateAsync(model.Component);
+				Logger.LogInformation("Updated {ComponentName} with id {ComponentId} in config " +
+					"{ConfigId}", ComponentName, componentId, pcConfigurationId);
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex, "Failed to update {ComponentName} with id {ComponentId} " +
+					"in config {ConfigId}", ComponentName, componentId, pcConfigurationId);
+				throw;
+			}
 
 			await RemoveInvalidColorIdsAsync(model.SelectedColorsId);
 			model.Component = await UpdateColorRelationshipsAsync(model.Component,
@@ -237,7 +287,18 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			TComponent? currentComponent = GetComponent(pcConfig);
 			if (currentComponent != null && !currentComponent.IsDefault)
 			{
-				await ComponentRepository.DeleteAsync(currentComponent.Id);
+				try
+				{
+					await ComponentRepository.DeleteAsync(currentComponent.Id);
+					Logger.LogInformation("Deleted {ComponentName} with id {ComponentId}",
+						ComponentName, currentComponent.Id);
+				}
+				catch (Exception ex)
+				{
+					Logger.LogError(ex, "Failed to delete {ComponentName} with id {ComponentId}",
+						ComponentName, currentComponent.Id);
+					throw;
+				}
 				return true;
 			}
 

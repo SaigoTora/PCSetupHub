@@ -17,10 +17,10 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 		private readonly IRepository<PcConfigurationSsd> _pcConfigSsdRepository;
 
-		public SsdController(IRepository<Ssd> ssdRepository,
+		public SsdController(ILogger<SsdController> logger, IRepository<Ssd> ssdRepository,
 			IRepository<PcConfigurationSsd> pcConfigSsdRepository,
 			IRepository<Color> colorRepository, IUserRepository userRepository)
-			: base(ssdRepository, colorRepository, userRepository)
+			: base(logger, ssdRepository, colorRepository, userRepository)
 		{
 			_pcConfigSsdRepository = pcConfigSsdRepository;
 		}

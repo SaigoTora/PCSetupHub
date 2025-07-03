@@ -16,10 +16,12 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override PcConfigurationIncludes PcConfigurationIncludes =>
 			PcConfigurationIncludes.Processor;
 
-		public ProcessorController(IPcConfigurationRepository pcConfigRepository,
+		public ProcessorController(ILogger<ProcessorController> logger,
+			IPcConfigurationRepository pcConfigRepository,
 			IRepository<Processor> processorRepository, IRepository<Color> colorRepository,
 			IUserRepository userRepository)
-			: base(pcConfigRepository, processorRepository, colorRepository, userRepository)
+			: base(logger, pcConfigRepository, processorRepository, colorRepository,
+				  userRepository)
 		{ }
 
 		protected override Processor? GetComponent(PcConfiguration pcConfiguration)

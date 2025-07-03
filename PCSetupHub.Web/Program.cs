@@ -31,7 +31,7 @@ var logger = app.Services.GetRequiredService<ILogger<Program>>();
 CreateDbIfNotExists(app, logger);
 ConfigureMiddleware(app);
 
-logger.LogInformation("Application started and is now listening for requests.");
+logger.LogInformation("Application started and is now listening for requests");
 app.Run();
 
 
@@ -74,7 +74,7 @@ static void CreateDbIfNotExists(IHost host, ILogger<Program> logger)
 	}
 	catch (Exception ex)
 	{
-		logger.LogError(ex, "An error occurred creating the DB.");
+		logger.LogError(ex, "An error occurred creating the DB");
 	}
 }
 static void ConfigureMiddleware(WebApplication app)

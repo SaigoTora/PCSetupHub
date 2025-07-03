@@ -19,10 +19,14 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override PcConfigurationIncludes PcConfigurationIncludes =>
 			PcConfigurationIncludes.PowerSupply;
 
-		public PowerSupplyController(IPcConfigurationRepository pcConfigRepository,
-			IHardwareComponentRepository<PowerSupply> powerSupplyRepository, IRepository<Color> colorRepository,
-			IRepository<ColorPowerSupply> colorPowerSupplyRepository, IUserRepository userRepository)
-			: base(pcConfigRepository, powerSupplyRepository, colorRepository, userRepository)
+		public PowerSupplyController(ILogger<PowerSupplyController> logger,
+			IPcConfigurationRepository pcConfigRepository,
+			IHardwareComponentRepository<PowerSupply> powerSupplyRepository,
+			IRepository<Color> colorRepository,
+			IRepository<ColorPowerSupply> colorPowerSupplyRepository,
+			IUserRepository userRepository)
+			: base(logger, pcConfigRepository, powerSupplyRepository, colorRepository,
+				  userRepository)
 		{
 			ColorPowerSupplyRepository = colorPowerSupplyRepository;
 		}
@@ -42,38 +46,52 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override async Task<PowerSupply> UpdateColorRelationshipsAsync(
 			PowerSupply powerSupply, List<int> colorIds)
 		{
-			// Getting existing relationships
-			var existingRelations = await ColorPowerSupplyRepository
+			try
+			{
+				// Getting existing relationships
+				var existingRelations = await ColorPowerSupplyRepository
 				.GetSomeAsync(cps => cps.PowerSupplyId == powerSupply.Id);
 
-			var existingColorIds = existingRelations.Select(r => r.ColorId).ToHashSet();
-			var newColorIds = colorIds.ToHashSet();
+				var existingColorIds = existingRelations.Select(r => r.ColorId).ToHashSet();
+				var newColorIds = colorIds.ToHashSet();
 
-			// Removing relationships that no longer exist
-			var relationsToRemove = existingRelations
-				.Where(r => !newColorIds.Contains(r.ColorId))
-				.ToList();
+				// Removing relationships that no longer exist
+				var relationsToRemove = existingRelations
+					.Where(r => !newColorIds.Contains(r.ColorId))
+					.ToList();
 
-			foreach (var relation in relationsToRemove)
-				await ColorPowerSupplyRepository.DeleteAsync(relation);
+				foreach (var relation in relationsToRemove)
+					await ColorPowerSupplyRepository.DeleteAsync(relation);
 
-			// Adding new relationships
-			var relationsToAdd = newColorIds
-				.Except(existingColorIds)
-				.Select(colorId => new ColorPowerSupply(colorId, powerSupply.Id))
-				.ToList();
+				// Adding new relationships
+				var relationsToAdd = newColorIds
+					.Except(existingColorIds)
+					.Select(colorId => new ColorPowerSupply(colorId, powerSupply.Id))
+					.ToList();
 
-			await ColorPowerSupplyRepository.AddAsync(relationsToAdd);
+				await ColorPowerSupplyRepository.AddAsync(relationsToAdd);
 
-			// Updating the collection in entity
-			var updatedRelations = existingRelations
-				.Where(r => newColorIds.Contains(r.ColorId))
-				.Concat(relationsToAdd)
-				.ToList();
+				// Updating the collection in entity
+				var updatedRelations = existingRelations
+					.Where(r => newColorIds.Contains(r.ColorId))
+					.Concat(relationsToAdd)
+					.ToList();
 
-			powerSupply.SetColorPowerSupplies(updatedRelations);
-
-			return powerSupply;
+				if (relationsToAdd.Count != 0 || relationsToRemove.Count != 0)
+				{
+					powerSupply.SetColorPowerSupplies(updatedRelations);
+					Logger.LogInformation("Updated colors for PowerSupply with id " +
+						"{PowerSupplyId}: added {AddedCount}, removed {RemovedCount}",
+						powerSupply.Id, relationsToAdd.Count, relationsToRemove.Count);
+				}
+				return powerSupply;
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex, "Failed to update colors for PowerSupply with id " +
+					"{PowerSupplyId}", powerSupply.Id);
+				throw;
+			}
 		}
 	}
 }

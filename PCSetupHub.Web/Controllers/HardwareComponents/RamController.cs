@@ -20,12 +20,13 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 		private readonly IRepository<PcConfigurationRam> _pcConfigRamRepository;
 
-		public RamController(IHardwareComponentRepository<Ram> ramRepository,
+		public RamController(ILogger<RamController> logger,
+			IHardwareComponentRepository<Ram> ramRepository,
 			IRepository<PcConfigurationRam> pcConfigRamRepository,
 			IRepository<Color> colorRepository,
 			IRepository<ColorRam> colorRamRepository,
 			IUserRepository userRepository)
-			: base(ramRepository, colorRepository, userRepository)
+			: base(logger, ramRepository, colorRepository, userRepository)
 		{
 			_pcConfigRamRepository = pcConfigRamRepository;
 			ColorRamRepository = colorRamRepository;
@@ -68,38 +69,52 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override async Task<Ram> UpdateColorRelationshipsAsync(
 			Ram ram, List<int> colorIds)
 		{
-			// Getting existing relationships
-			var existingRelations = await ColorRamRepository
+			try
+			{
+				// Getting existing relationships
+				var existingRelations = await ColorRamRepository
 				.GetSomeAsync(cm => cm.RamId == ram.Id);
 
-			var existingColorIds = existingRelations.Select(r => r.ColorId).ToHashSet();
-			var newColorIds = colorIds.ToHashSet();
+				var existingColorIds = existingRelations.Select(r => r.ColorId).ToHashSet();
+				var newColorIds = colorIds.ToHashSet();
 
-			// Removing relationships that no longer exist
-			var relationsToRemove = existingRelations
-				.Where(r => !newColorIds.Contains(r.ColorId))
-				.ToList();
+				// Removing relationships that no longer exist
+				var relationsToRemove = existingRelations
+					.Where(r => !newColorIds.Contains(r.ColorId))
+					.ToList();
 
-			foreach (var relation in relationsToRemove)
-				await ColorRamRepository.DeleteAsync(relation);
+				foreach (var relation in relationsToRemove)
+					await ColorRamRepository.DeleteAsync(relation);
 
-			// Adding new relationships
-			var relationsToAdd = newColorIds
-				.Except(existingColorIds)
-				.Select(colorId => new ColorRam(colorId, ram.Id))
-				.ToList();
+				// Adding new relationships
+				var relationsToAdd = newColorIds
+					.Except(existingColorIds)
+					.Select(colorId => new ColorRam(colorId, ram.Id))
+					.ToList();
 
-			await ColorRamRepository.AddAsync(relationsToAdd);
+				await ColorRamRepository.AddAsync(relationsToAdd);
 
-			// Updating the collection in entity
-			var updatedRelations = existingRelations
-				.Where(r => newColorIds.Contains(r.ColorId))
-				.Concat(relationsToAdd)
-				.ToList();
+				// Updating the collection in entity
+				var updatedRelations = existingRelations
+					.Where(r => newColorIds.Contains(r.ColorId))
+					.Concat(relationsToAdd)
+					.ToList();
 
-			ram.SetColorRams(updatedRelations);
+				if (relationsToAdd.Count != 0 || relationsToRemove.Count != 0)
+				{
+					ram.SetColorRams(updatedRelations);
+					Logger.LogInformation("Updated colors for Ram with id {RamId}: " +
+						"added {AddedCount}, removed {RemovedCount}", ram.Id,
+						relationsToAdd.Count, relationsToRemove.Count);
+				}
 
-			return ram;
+				return ram;
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex, "Failed to update colors for Ram with id {RamId}", ram.Id);
+				throw;
+			}
 		}
 	}
 }

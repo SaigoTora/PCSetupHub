@@ -20,12 +20,13 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 		private readonly IRepository<PcConfigurationHdd> _pcConfigHddRepository;
 
-		public HddController(IHardwareComponentRepository<Hdd> hddRepository,
+		public HddController(ILogger<HddController> logger,
+			IHardwareComponentRepository<Hdd> hddRepository,
 			IRepository<PcConfigurationHdd> pcConfigHddRepository,
 			IRepository<Color> colorRepository,
 			IRepository<ColorHdd> colorHddRepository,
 			IUserRepository userRepository)
-			: base(hddRepository, colorRepository, userRepository)
+			: base(logger, hddRepository, colorRepository, userRepository)
 		{
 			_pcConfigHddRepository = pcConfigHddRepository;
 			ColorHddRepository = colorHddRepository;
@@ -68,38 +69,52 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override async Task<Hdd> UpdateColorRelationshipsAsync(
 			Hdd hdd, List<int> colorIds)
 		{
-			// Getting existing relationships
-			var existingRelations = await ColorHddRepository
+			try
+			{
+				// Getting existing relationships
+				var existingRelations = await ColorHddRepository
 				.GetSomeAsync(cm => cm.HddId == hdd.Id);
 
-			var existingColorIds = existingRelations.Select(r => r.ColorId).ToHashSet();
-			var newColorIds = colorIds.ToHashSet();
+				var existingColorIds = existingRelations.Select(r => r.ColorId).ToHashSet();
+				var newColorIds = colorIds.ToHashSet();
 
-			// Removing relationships that no longer exist
-			var relationsToRemove = existingRelations
-				.Where(r => !newColorIds.Contains(r.ColorId))
-				.ToList();
+				// Removing relationships that no longer exist
+				var relationsToRemove = existingRelations
+					.Where(r => !newColorIds.Contains(r.ColorId))
+					.ToList();
 
-			foreach (var relation in relationsToRemove)
-				await ColorHddRepository.DeleteAsync(relation);
+				foreach (var relation in relationsToRemove)
+					await ColorHddRepository.DeleteAsync(relation);
 
-			// Adding new relationships
-			var relationsToAdd = newColorIds
-				.Except(existingColorIds)
-				.Select(colorId => new ColorHdd(colorId, hdd.Id))
-				.ToList();
+				// Adding new relationships
+				var relationsToAdd = newColorIds
+					.Except(existingColorIds)
+					.Select(colorId => new ColorHdd(colorId, hdd.Id))
+					.ToList();
 
-			await ColorHddRepository.AddAsync(relationsToAdd);
+				await ColorHddRepository.AddAsync(relationsToAdd);
 
-			// Updating the collection in entity
-			var updatedRelations = existingRelations
-				.Where(r => newColorIds.Contains(r.ColorId))
-				.Concat(relationsToAdd)
-				.ToList();
+				// Updating the collection in entity
+				var updatedRelations = existingRelations
+					.Where(r => newColorIds.Contains(r.ColorId))
+					.Concat(relationsToAdd)
+					.ToList();
 
-			hdd.SetColorHdds(updatedRelations);
+				if (relationsToAdd.Count != 0 || relationsToRemove.Count != 0)
+				{
+					hdd.SetColorHdds(updatedRelations);
+					Logger.LogInformation("Updated colors for Hdd with id {HddId}: " +
+						"added {AddedCount}, removed {RemovedCount}", hdd.Id,
+						relationsToAdd.Count, relationsToRemove.Count);
+				}
 
-			return hdd;
+				return hdd;
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex, "Failed to update colors for Hdd with id {HddId}", hdd.Id);
+				throw;
+			}
 		}
 	}
 }
