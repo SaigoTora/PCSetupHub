@@ -132,5 +132,37 @@ namespace PCSetupHub.Web.Controllers
 
 			return RedirectToAction("Index", new { login = user.Login });
 		}
+
+		[HttpPost("CreateComment/{profileId}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		[EnableRateLimiting("LimitPerUser")]
+		public async Task<IActionResult> CreateComment(int profileId, string commentText)
+		{
+			User? user = await _userRepository.GetOneAsync(profileId);
+			if (user == null)
+				return NotFound();
+
+			int? userId = User.GetId();
+			if (!userId.HasValue)
+				return Unauthorized();
+
+			try
+			{
+				Comment comment = new(profileId, userId.Value, commentText);
+				Comment sanitizedComment = await _commentRepository.AddAsync(comment);
+				sanitizedComment.ClearUser();
+				sanitizedComment.ClearCommentator();
+
+				_logger.LogInformation("Comment created: {@Comment}", sanitizedComment);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Failed to create comment for profile {ProfileId} by user " +
+					"{UserId}", profileId, userId);
+				throw;
+			}
+
+			return RedirectToAction("Index", new { login = user.Login });
+		}
 	}
 }

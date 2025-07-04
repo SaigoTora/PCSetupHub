@@ -341,7 +341,9 @@
 }
 
 <section>
-	<input type="text" />
+	<form class="mb-2" asp-action="CreateComment" asp-route-profileId="@Model.Id">
+		<input placeholder="Add a comment" name="commentText" type="text" autocomplete="off" required />
+	</form>
 
 	@if (Model.ReceivedComments != null && Model.ReceivedComments.Count > 0)
 	{
@@ -352,7 +354,7 @@
 			{
 				<div>
 					<div>
-						@comment.Commentator.Login @comment.Commentator.Name @comment.CreatedAt.ToString("dd MMMM 'at' HH:mm", new CultureInfo("en-US")):
+						@comment.Commentator.Login @comment.Commentator.Name @comment.CreatedAt.ToLocalTime().ToString("dd MMMM 'at' HH:mm", new CultureInfo("en-US")):
 					</div>
 					<div class="d-flex justify-content-between align-items-center">
 						<div>
