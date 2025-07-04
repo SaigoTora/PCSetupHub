@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 using PCSetupHub.Data.Models.Attributes;
 using PCSetupHub.Data.Models.Hardware;
@@ -43,6 +45,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 		#region Action methods
 		[HttpGet("Search/{pcConfigurationId}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Search(int pcConfigurationId, int page = 1)
 		{
 			var searchQuery = GetSearchQuery();
@@ -65,6 +68,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Select/{pcConfigurationId}/{componentId}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Select(int pcConfigurationId, int componentId)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
@@ -102,6 +106,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Clear/{pcConfigurationId}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Clear(int pcConfigurationId)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
@@ -137,6 +142,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpGet("Create/{pcConfigurationId}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Create(int pcConfigurationId)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
@@ -147,6 +153,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Create/{pcConfigurationId}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Create(int pcConfigurationId,
 			PcComponentFormViewModel<TComponent> model)
 		{
@@ -195,6 +202,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Delete/{pcConfigurationId}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Delete(int pcConfigurationId)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
@@ -211,6 +219,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpGet("Edit/{pcConfigurationId}/{componentId}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Edit(int pcConfigurationId)
 		{
 			if (!await HasAccessToPcConfigurationAsync(pcConfigurationId))
@@ -232,6 +241,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Edit/{pcConfigurationId}/{componentId}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Edit(int pcConfigurationId, int componentId,
 			PcComponentFormViewModel<TComponent> model)
 		{

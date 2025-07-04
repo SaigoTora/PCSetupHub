@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
@@ -9,9 +11,9 @@ using System.Security.Claims;
 
 using PCSetupHub.Core.DTOs;
 using PCSetupHub.Core.Exceptions;
+using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Core.Settings;
-using PCSetupHub.Core.Extensions;
 
 namespace PCSetupHub.Web.Controllers
 {
@@ -191,6 +193,7 @@ namespace PCSetupHub.Web.Controllers
 		}
 		#endregion
 
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Logout()
 		{
 			string login = User.GetLogin() ?? "Unknown";
