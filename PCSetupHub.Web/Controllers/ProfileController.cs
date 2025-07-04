@@ -27,7 +27,8 @@ namespace PCSetupHub.Web.Controllers
 				return NotFound();
 
 			const int COMMENT_PAGE_SIZE = 6;
-			ViewData["CommentCount"] = await _commentRepository.CountAsync(c => c.UserId == user.Id);
+			ViewData["CommentCount"] = await _commentRepository
+				.CountAsync(c => c.UserId == user.Id);
 			ViewData["PageSize"] = COMMENT_PAGE_SIZE;
 			var comments = await _commentRepository.GetPageAsync((c => c.UserId == user.Id),
 				commentPage, COMMENT_PAGE_SIZE);
@@ -117,7 +118,8 @@ namespace PCSetupHub.Web.Controllers
 			try
 			{
 				await _friendshipRepository.DeleteAsync(id);
-				_logger.LogInformation("User {UserId} deleted friendship {FriendshipId}", userId, id);
+				_logger.LogInformation("User {UserId} deleted friendship {FriendshipId}", userId,
+					id);
 			}
 			catch (Exception ex)
 			{
@@ -163,6 +165,51 @@ namespace PCSetupHub.Web.Controllers
 			}
 
 			return RedirectToAction("Index", new { login = user.Login });
+		}
+
+		[HttpPost("DeleteComment/{id}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		[EnableRateLimiting("LimitPerUser")]
+		public async Task<IActionResult> DeleteComment(int id)
+		{
+			int? userId = User.GetId();
+			if (!userId.HasValue)
+				return Unauthorized();
+
+			User? user = await _userRepository.GetOneAsync(userId.Value);
+			if (user == null)
+				return NotFound();
+
+			Comment? comment = await _commentRepository.GetOneAsync(id);
+			if (comment == null)
+				return NotFound();
+			if (comment.CommentatorId != userId.Value && comment.UserId != userId.Value)
+				return StatusCode(403);
+
+			User? profileOwner = await _userRepository.GetOneAsync(comment.UserId);
+			if (profileOwner == null)
+				return NotFound();
+
+			try
+			{
+				await _commentRepository.DeleteAsync(comment);
+				comment.ClearUser();
+				comment.ClearCommentator();
+
+				_logger.LogInformation("Comment deleted (by user with id: {UserId}): {@Comment}",
+					userId.Value, comment);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Failed to delete comment (by user with id: " +
+					"{DeletingUserId}) with id {CommentId} for profile {ProfileOwnerId} " +
+					"(commentator id: {CommentatorId})", userId.Value, comment.Id, comment.UserId,
+					comment.CommentatorId);
+
+				throw;
+			}
+
+			return RedirectToAction("Index", new { login = profileOwner.Login });
 		}
 	}
 }

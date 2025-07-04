@@ -94,7 +94,7 @@
 			}
 		}
 	}
-	@if (User.GetId() != Model.Id)
+	@if (userId != Model.Id)
 	{
 		<button class="user-action-btn">Message</button>
 	}
@@ -360,11 +360,11 @@
 						<div>
 							@comment.Text
 						</div>
-						@if (comment.CommentatorId == User.GetId() || comment.UserId == User.GetId())
+						@if (comment.CommentatorId == userId || comment.UserId == userId)
 						{
 							<div>
-								<form>
-									<button>Delete</button>
+								<form asp-action="DeleteComment" asp-route-id="@comment.Id">
+									<button type="submit">Delete</button>
 								</form>
 							</div>
 						}
