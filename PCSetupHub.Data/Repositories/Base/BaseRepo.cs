@@ -61,6 +61,7 @@ namespace PCSetupHub.Data.Repositories.Base
 		public async Task<List<T>> GetPageAsync(int pageNumber, int pageSize)
 		{
 			return await _table
+				   .OrderBy(x => x.Id)
 				   .Skip((pageNumber - 1) * pageSize)
 				   .Take(pageSize)
 				   .ToListAsync();
@@ -70,6 +71,7 @@ namespace PCSetupHub.Data.Repositories.Base
 		{
 			return await _table
 				.Where(where)
+				.OrderBy(x => x.Id)
 				.Skip((pageNumber - 1) * pageSize)
 				.Take(pageSize)
 				.ToListAsync();

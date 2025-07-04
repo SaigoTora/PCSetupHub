@@ -10,7 +10,7 @@
 			<li class="page-item @(Model.Page == 1 ? "disabled" : "")">
 				<a class="page-link page-start-link"
 				   href="@Url.Action(Model.ActionName, null, new Dictionary<string, object?> {
-                       ["page"] = Model.Page - 1,
+                       [Model.PageName] = Model.Page - 1,
                        [Model.SearchQueryName] = Model.SearchQuery
                    })">« Previous</a>
 			</li>
@@ -21,7 +21,7 @@
 					<li class="page-item @(Model.Page == i ? "active" : "")">
 						<a class="page-link"
 						   href="@Url.Action(Model.ActionName, null, new Dictionary<string, object?> {
-                               ["page"] = i,
+                               [Model.PageName] = i,
                                [Model.SearchQueryName] = Model.SearchQuery
                            })">@i</a>
 					</li>
@@ -32,7 +32,7 @@
 				<li class="page-item @(Model.Page == 1 ? "active" : "")">
 					<a class="page-link"
 					   href="@Url.Action(Model.ActionName, null, new Dictionary<string, object?> {
-                           ["page"] = 1,
+                           [Model.PageName] = 1,
                            [Model.SearchQueryName] = Model.SearchQuery
                        })">1</a>
 				</li>
@@ -44,7 +44,7 @@
 						<li class="page-item @(Model.Page == i ? "active" : "")">
 							<a class="page-link"
 							   href="@Url.Action(Model.ActionName, null, new Dictionary<string, object?> {
-                                   ["page"] = i,
+                                   [Model.PageName] = i,
                                    [Model.SearchQueryName] = Model.SearchQuery
                                })">@i</a>
 						</li>
@@ -59,7 +59,7 @@
 						<li class="page-item @(Model.Page == i ? "active" : "")">
 							<a class="page-link"
 							   href="@Url.Action(Model.ActionName, null, new Dictionary<string, object?> {
-                                   ["page"] = i,
+                                   [Model.PageName] = i,
                                    [Model.SearchQueryName] = Model.SearchQuery
                                })">@i</a>
 						</li>
@@ -73,7 +73,7 @@
 						<li class="page-item @(Model.Page == i ? "active" : "")">
 							<a class="page-link"
 							   href="@Url.Action(Model.ActionName, null, new Dictionary<string, object?> {
-                                   ["page"] = i,
+                                   [Model.PageName] = i,
                                    [Model.SearchQueryName] = Model.SearchQuery
                                })">@i</a>
 						</li>
@@ -84,7 +84,7 @@
 				<li class="page-item @(Model.Page == Model.TotalPages ? "active" : "")">
 					<a class="page-link"
 					   href="@Url.Action(Model.ActionName, null, new Dictionary<string, object?> {
-                           ["page"] = Model.TotalPages,
+                           [Model.PageName] = Model.TotalPages,
                            [Model.SearchQueryName] = Model.SearchQuery
                        })">@Model.TotalPages</a>
 				</li>
@@ -92,7 +92,7 @@
 			<li class="page-item @(Model.Page == Model.TotalPages ? "disabled" : "")">
 				<a class="page-link page-end-link"
 				   href="@Url.Action(Model.ActionName, null, new Dictionary<string, object?> {
-                       ["page"] = Model.Page + 1,
+                       [Model.PageName] = Model.Page + 1,
                        [Model.SearchQueryName] = Model.SearchQuery
                    })">Next »</a>
 			</li>

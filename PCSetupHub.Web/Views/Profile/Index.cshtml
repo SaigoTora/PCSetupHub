@@ -1,6 +1,10 @@
-﻿@using PCSetupHub.Data.Models.Hardware
+﻿@using System.Globalization
+
+@using PCSetupHub.Data.Models.Hardware
 @using PCSetupHub.Data.Models.Users
 @using PCSetupHub.Web.Helpers
+@using PCSetupHub.Web.ViewModels
+
 
 @model User
 
@@ -13,6 +17,16 @@
 	var rams = pcConfig?.GetRams();
 	var ssds = pcConfig?.GetSsds();
 	var hdds = pcConfig?.GetHdds();
+
+	int page = 1;
+	var rawPage = Context.Request.Query["commentPage"].ToString();
+	if (!string.IsNullOrWhiteSpace(rawPage) && int.TryParse(rawPage, out var parsedPage))
+	{
+		page = parsedPage;
+	}
+
+	int commentCount = ViewData["CommentCount"] as int? ?? 0;
+	int pageSize = ViewData["PageSize"] as int? ?? 1;
 }
 
 <section class="mb-4 d-inline-flex justify-content-center">
@@ -325,3 +339,41 @@
 		}
 	</section>
 }
+
+<section>
+	<input type="text" />
+
+	@if (Model.ReceivedComments != null && Model.ReceivedComments.Count > 0)
+	{
+
+		foreach (Comment comment in Model.ReceivedComments)
+		{
+			if (comment.Commentator != null)
+			{
+				<div>
+					<div>
+						@comment.Commentator.Login @comment.Commentator.Name @comment.CreatedAt.ToString("dd MMMM 'at' HH:mm", new CultureInfo("en-US")):
+					</div>
+					<div class="d-flex justify-content-between align-items-center">
+						<div>
+							@comment.Text
+						</div>
+						@if (comment.CommentatorId == User.GetId() || comment.UserId == User.GetId())
+						{
+							<div>
+								<form>
+									<button>Delete</button>
+								</form>
+							</div>
+						}
+					</div>
+				</div>
+			}
+		}
+
+		<div class="d-flex justify-content-center">
+			@await Html.PartialAsync("_PageNavigator", new PaginationViewModel(page, commentCount, "Index", pageSize, "commentPage"))
+		</div>
+	}
+
+</section>

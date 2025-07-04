@@ -25,7 +25,7 @@ namespace PCSetupHub.Core.Services
 
 			User user = new(login, password, name, email, description, pcConfigurationId);
 			string passwordHash = new PasswordHasher<User>().HashPassword(user, password);
-			user.ChangePasswordHash(passwordHash);
+			user.SetPasswordHash(passwordHash);
 
 			await _userRepository.AddAsync(user);
 		}
@@ -53,7 +53,7 @@ namespace PCSetupHub.Core.Services
 			if (user == null)
 			{
 				user = new User(email, null, name, email, null, null);
-				user.ChangeGoogleId(googleId);
+				user.SetGoogleId(googleId);
 				await _userRepository.AddAsync(user);
 			}
 

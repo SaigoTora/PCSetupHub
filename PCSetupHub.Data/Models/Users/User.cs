@@ -105,10 +105,12 @@ namespace PCSetupHub.Data.Models.Users
 				PcConfiguration = new PcConfiguration();
 		}
 
-		public void ChangePasswordHash(string newPasswordHash)
+		public void SetPasswordHash(string newPasswordHash)
 			=> PasswordHash = newPasswordHash;
-		public void ChangeGoogleId(string googleId)
+		public void SetGoogleId(string googleId)
 			=> GoogleId = googleId;
+		public void SetReceivedComments(ICollection<Comment> receivedComments)
+			=> ReceivedComments = receivedComments;
 
 		public Friendship? GetReceivedRequestFrom(int userId)
 			=> ReceivedFriendRequests?.FirstOrDefault(fr => fr.InitiatorId == userId);

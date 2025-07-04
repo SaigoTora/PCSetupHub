@@ -11,12 +11,13 @@ using PCSetupHub.Data.Repositories.Interfaces.Users;
 namespace PCSetupHub.Web.Controllers
 {
 	public class ProfileController(ILogger<ProfileController> _logger,
-		IUserRepository _userRepository, IRepository<Friendship> _friendshipRepository)
+		IUserRepository _userRepository, IRepository<Friendship> _friendshipRepository,
+		IRepository<Comment> _commentRepository)
 		: Controller
 	{
 		[HttpGet("Profile/{login?}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-		public async Task<IActionResult> Index(string login)
+		public async Task<IActionResult> Index(string login, int commentPage = 1)
 		{
 			if (string.IsNullOrWhiteSpace(login))
 				return BadRequest();
@@ -24,6 +25,13 @@ namespace PCSetupHub.Web.Controllers
 			User? user = await _userRepository.GetByLoginAsync(login, true);
 			if (user == null)
 				return NotFound();
+
+			const int COMMENT_PAGE_SIZE = 6;
+			ViewData["CommentCount"] = await _commentRepository.CountAsync(c => c.UserId == user.Id);
+			ViewData["PageSize"] = COMMENT_PAGE_SIZE;
+			var comments = await _commentRepository.GetPageAsync((c => c.UserId == user.Id),
+				commentPage, COMMENT_PAGE_SIZE);
+			user.SetReceivedComments(comments);
 
 			return View(user);
 		}
