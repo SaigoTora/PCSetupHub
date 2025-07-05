@@ -4,12 +4,14 @@
 @using PCSetupHub.Data.Models.Users
 @using PCSetupHub.Web.Helpers
 @using PCSetupHub.Web.ViewModels
+@using System.Web
 
 
 @model User
 
 @{
 	ViewData["Title"] = $"{Model.Login}";
+	<link rel="stylesheet" href="~/css/comment.css" />
 
 	string? userLogin = User.GetLogin();
 	int? userId = User.GetId();
@@ -143,7 +145,7 @@
 
 @if (pcConfig != null)
 {
-	<section class="mb-2 pc-config-section">
+	<section class="pc-config-section">
 		@if (pcConfig.Type != null)
 		{
 			<div class="mb-2 text-end">
@@ -341,41 +343,74 @@
 }
 
 <section>
-	<form class="mb-2" asp-action="CreateComment" asp-route-profileId="@Model.Id">
-		<input placeholder="Add a comment" name="commentText" type="text" autocomplete="off" required />
+	<h5 class="mb-2">Comments</h5>
+	<form class="ps-2 pe-2 mb-4" asp-action="CreateComment" asp-route-profileId="@Model.Id">
+		<textarea id="comment-input" class="comment-input" placeholder="Add a comment" name="commentText" type="text" autocomplete="off" title="" required oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+		<div class="d-flex justify-content-end">
+			<button id="submit-comment-button" class="submit-comment-button" type="submit" title="Post Comment">Comment</button>
+		</div>
 	</form>
 
-	@if (Model.ReceivedComments != null && Model.ReceivedComments.Count > 0)
+	@if (Model.ReceivedComments != null)
 	{
-
-		foreach (Comment comment in Model.ReceivedComments)
+		@if (Model.ReceivedComments.Count > 0)
 		{
-			if (comment.Commentator != null)
+			foreach (Comment comment in Model.ReceivedComments)
 			{
-				<div>
-					<div>
-						@comment.Commentator.Login @comment.Commentator.Name @comment.CreatedAt.ToLocalTime().ToString("dd MMMM 'at' HH:mm", new CultureInfo("en-US")):
-					</div>
-					<div class="d-flex justify-content-between align-items-center">
-						<div>
-							@comment.Text
-						</div>
-						@if (comment.CommentatorId == userId || comment.UserId == userId)
-						{
+				if (comment.Commentator != null)
+				{
+					<div class="comment-container">
+						<div class="mb-1 d-flex justify-content-between align-items-center">
 							<div>
-								<form asp-action="DeleteComment" asp-route-id="@comment.Id">
-									<button type="submit">Delete</button>
-								</form>
+								<a asp-route-login="@comment.Commentator.Login" class="comment-login" title="@comment.Commentator.Name">
+									@comment.Commentator.Login
+								</a>
+								<span class="comment-date" title="@comment.CreatedAt.ToLocalTime().ToString("dd MMMM, yyyy 'at' HH:mm:ss", new CultureInfo("en-US"))">
+									@if (DateTime.UtcNow.Year == comment.CreatedAt.Year)
+									{
+										@comment.CreatedAt.ToLocalTime().ToString("d MMMM 'at' HH:mm", new CultureInfo("en-US"))
+									}
+									else
+									{
+										@comment.CreatedAt.ToLocalTime().ToString("d MMMM, yyyy 'at' HH:mm", new CultureInfo("en-US"))
+									}
+								</span>
 							</div>
-						}
+							@if (comment.CommentatorId == userId || comment.UserId == userId)
+							{
+								<div>
+									<form asp-action="DeleteComment" asp-route-id="@comment.Id">
+										<button class="delete-comment-button" title="Delete"><i class="d-flex justify-content-center align-items-center fa fa-trash text-muted"></i></button>
+									</form>
+								</div>
+							}
+						</div>
+						<div class="comment-text">
+							@Html.Raw(HttpUtility.HtmlEncode(comment.Text).Replace("\n", "<br />"))
+						</div>
 					</div>
-				</div>
+				}
 			}
+
+			<div class="d-flex justify-content-center mt-4">
+				@await Html.PartialAsync("_PageNavigator", new PaginationViewModel(page, commentCount, "Index", pageSize, "commentPage"))
+			</div>
+		}
+		else
+		{
+			<p class="text-muted text-center">No comments yet.</p>
 		}
 
-		<div class="d-flex justify-content-center">
-			@await Html.PartialAsync("_PageNavigator", new PaginationViewModel(page, commentCount, "Index", pageSize, "commentPage"))
-		</div>
 	}
 
 </section>
+
+<script>
+	const input = document.getElementById('comment-input');
+	const button = document.getElementById('submit-comment-button');
+	button.style.display = 'none';
+
+	input.addEventListener('input', () => {
+	  button.style.display = input.value.trim().length > 0 ? 'inline-block' : 'none';
+	});
+</script>

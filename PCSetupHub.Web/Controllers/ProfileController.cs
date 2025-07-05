@@ -140,6 +140,9 @@ namespace PCSetupHub.Web.Controllers
 		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> CreateComment(int profileId, string commentText)
 		{
+			if (string.IsNullOrWhiteSpace(commentText))
+				return BadRequest();
+
 			User? user = await _userRepository.GetOneAsync(profileId);
 			if (user == null)
 				return NotFound();
