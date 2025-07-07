@@ -5,7 +5,7 @@ namespace PCSetupHub.Data.Repositories.Interfaces.Users
 {
 	public interface IUserRepository : IRepository<User>
 	{
-		public Task<User?> GetByLoginAsync(string login, bool includeConfiguration);
+		public Task<User?> GetByLoginAsync(string login, bool includeDetails);
 		public Task<User?> GetByGoogleIdAsync(string googleId);
 
 		public Task<bool> ExistsByLoginAsync(string login);

@@ -1,10 +1,10 @@
 ﻿@using System.Globalization
+@using System.Web
 
 @using PCSetupHub.Data.Models.Hardware
 @using PCSetupHub.Data.Models.Users
 @using PCSetupHub.Web.Helpers
 @using PCSetupHub.Web.ViewModels
-@using System.Web
 
 
 @model User
@@ -106,33 +106,33 @@
 	{
 		if (Model.Friends.Count == 1)
 		{
-			<a class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> friend</span></a>
+			<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> friend</span></a>
 		}
 		else
 		{
-			<a class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Friends.Count<span class="ms-1 text-muted"> friends</span></a>
+			<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Friends.Count<span class="ms-1 text-muted"> friends</span></a>
 		}
 	}
 	@if (Model.Followers != null)
 	{
 		if (Model.Followers.Count == 1)
 		{
-			<a class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> follower</span></a>
+			<a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> follower</span></a>
 		}
 		else
 		{
-			<a class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Followers.Count<span class="ms-1 text-muted"> followers</span></a>
+			<a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Followers.Count<span class="ms-1 text-muted"> followers</span></a>
 		}
 	}
 	@if (Model.Followings != null)
 	{
 		if (Model.Followings.Count == 1)
 		{
-			<a class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> following</span></a>
+			<a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> following</span></a>
 		}
 		else
 		{
-			<a class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Followings.Count<span class="ms-1 text-muted"> followings</span></a>
+			<a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Followings.Count<span class="ms-1 text-muted"> followings</span></a>
 		}
 	}
 </section>

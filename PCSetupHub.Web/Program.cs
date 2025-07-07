@@ -55,6 +55,7 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 	services.AddScoped(typeof(IRepository<>), typeof(BaseRepo<>));
 	services.AddScoped<IUserService, UserService>();
 
+	services.AddScoped<IFriendshipRepository, FriendshipRepository>();
 	services.AddScoped<IHardwareComponentRepository<VideoCard>, VideoCardRepository>();
 	services.AddScoped<IHardwareComponentRepository<Motherboard>, MotherboardRepository>();
 	services.AddScoped<IHardwareComponentRepository<PowerSupply>, PowerSupplyRepository>();
