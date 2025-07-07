@@ -8,7 +8,7 @@ namespace PCSetupHub.Web.Controllers
 {
 	public class ContactsController : Controller
 	{
-		private const int CONTACTS_PAGE_SIZE = 1;
+		private const int CONTACTS_PAGE_SIZE = 30;
 
 		private readonly ILogger<ContactsController> _logger;
 		private readonly IUserRepository _userRepository;
@@ -30,10 +30,10 @@ namespace PCSetupHub.Web.Controllers
 			if (user == null)
 				return NotFound();
 
-			var friendships = await _friendshipRepository.GetFriendsPageAsync(user.Id,
-				friendSearchQuery, page, CONTACTS_PAGE_SIZE);
 			int totalItems = await _friendshipRepository.CountFriendsAsync(user.Id,
 				friendSearchQuery);
+			var friendships = await _friendshipRepository.GetFriendsPageAsync(user.Id,
+				friendSearchQuery, page, CONTACTS_PAGE_SIZE);
 
 			List<User> contacts = [];
 			foreach (Friendship friendship in friendships)
@@ -44,8 +44,56 @@ namespace PCSetupHub.Web.Controllers
 					contacts.Add(friendship.Initiator);
 			}
 
-			ContactsViewModel model = new(contacts, friendSearchQuery, page, totalItems, "Friends",
-				CONTACTS_PAGE_SIZE, nameof(friendSearchQuery));
+			ContactsViewModel model = new(contacts, friendSearchQuery, page, totalItems,
+				nameof(Friends), CONTACTS_PAGE_SIZE, nameof(friendSearchQuery));
+
+			return View(model);
+		}
+
+		[HttpGet("Followers/{login}")]
+		public async Task<IActionResult> Followers(string login, string followerSearchQuery,
+			int page = 1)
+		{
+			User? user = await _userRepository.GetByLoginAsync(login, false);
+			if (user == null)
+				return NotFound();
+
+			int totalItems = await _friendshipRepository.CountFollowersAsync(user.Id,
+				followerSearchQuery);
+			var friendships = await _friendshipRepository.GetFollowersPageAsync(user.Id,
+				followerSearchQuery, page, CONTACTS_PAGE_SIZE);
+
+			List<User> contacts = [];
+			foreach (Friendship friendship in friendships)
+				if (friendship.FriendId == user.Id && friendship.Initiator != null)
+					contacts.Add(friendship.Initiator);
+
+			ContactsViewModel model = new(contacts, followerSearchQuery, page, totalItems,
+				nameof(Followers), CONTACTS_PAGE_SIZE, nameof(followerSearchQuery));
+
+			return View(model);
+		}
+
+		[HttpGet("Followings/{login}")]
+		public async Task<IActionResult> Followings(string login, string followingSearchQuery,
+			int page = 1)
+		{
+			User? user = await _userRepository.GetByLoginAsync(login, false);
+			if (user == null)
+				return NotFound();
+
+			int totalItems = await _friendshipRepository.CountFollowingsAsync(user.Id,
+				followingSearchQuery);
+			var friendships = await _friendshipRepository.GetFollowingsPageAsync(user.Id,
+				followingSearchQuery, page, CONTACTS_PAGE_SIZE);
+
+			List<User> contacts = [];
+			foreach (Friendship friendship in friendships)
+				if (friendship.InitiatorId == user.Id && friendship.Friend != null)
+					contacts.Add(friendship.Friend);
+
+			ContactsViewModel model = new(contacts, followingSearchQuery, page, totalItems,
+				nameof(Followings), CONTACTS_PAGE_SIZE, nameof(followingSearchQuery));
 
 			return View(model);
 		}

@@ -1,0 +1,34 @@
+﻿@using PCSetupHub.Web.ViewModels
+
+@model ContactsViewModel
+
+@{
+	ViewData["Title"] = "Followings";
+}
+
+<form class="mb-2" asp-controller="Contacts" asp-action="Followings" method="get">
+	<div class="searchbar-container">
+		<div class="search-bar">
+			<div class="input-container">
+				<input class="search-input"
+					   placeholder="Search..."
+					   type="search"
+					   name="followingSearchQuery"
+					   value="@Model.SearchQuery" />
+			</div>
+		</div>
+		<button type="submit" class="search-button"><i class="fa fa-search"></i></button>
+	</div>
+</form>
+
+@if (Model.Contacts != null)
+{
+	foreach (var user in Model?.Contacts ?? [])
+	{
+		@await Html.PartialAsync("Users/_UserInfo", user)
+	}
+
+	<div class="d-flex justify-content-center mt-4">
+		@await Html.PartialAsync("_PageNavigator", Model)
+	</div>
+}
