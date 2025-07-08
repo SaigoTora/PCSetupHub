@@ -9,10 +9,16 @@ using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 namespace PCSetupHub.Core.Services
 {
-	public class UserService(IUserRepository userRepository, JwtService jwtService) : IUserService
+	public class UserService : IUserService
 	{
-		private readonly IUserRepository _userRepository = userRepository;
-		private readonly JwtService _jwtService = jwtService;
+		private readonly IUserRepository _userRepository;
+		private readonly JwtService _jwtService;
+
+		public UserService(IUserRepository userRepository, JwtService jwtService)
+		{
+			_userRepository = userRepository;
+			_jwtService = jwtService;
+		}
 
 		public async Task RegisterAsync(string login, string password, string name, string email,
 			string? description, int? pcConfigurationId = null, bool checkUniqueness = true)

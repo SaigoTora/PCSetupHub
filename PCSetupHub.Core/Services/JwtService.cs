@@ -11,10 +11,16 @@ using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 namespace PCSetupHub.Core.Services
 {
-	public class JwtService(IOptions<AuthSettings> options, IUserRepository userRepository)
+	public class JwtService
 	{
-		private readonly IOptions<AuthSettings> _options = options;
-		private readonly IUserRepository _userRepository = userRepository;
+		private readonly IOptions<AuthSettings> _options;
+		private readonly IUserRepository _userRepository;
+
+		public JwtService(IOptions<AuthSettings> options, IUserRepository userRepository)
+		{
+			_options = options;
+			_userRepository = userRepository;
+		}
 
 		public async Task<(bool isRefreshTokenValid, AuthResponse newTokens)>
 			ValidateAndRefreshTokensAsync(string accessToken, string refreshToken)

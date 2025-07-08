@@ -9,10 +9,20 @@ using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
 
 namespace PCSetupHub.Web.Controllers
 {
-	public class PcSetupController(ILogger<PcSetupController> _logger,
-		IPcConfigurationRepository _pcConfigRepository, IRepository<PcType> _pcTypeRepository)
-		: Controller
+	public class PcSetupController : Controller
 	{
+		private readonly ILogger<PcSetupController> _logger;
+		private readonly IPcConfigurationRepository _pcConfigRepository;
+		private readonly IRepository<PcType> _pcTypeRepository;
+
+		public PcSetupController(ILogger<PcSetupController> logger,
+			IPcConfigurationRepository pcConfigRepository, IRepository<PcType> pcTypeRepository)
+		{
+			_logger = logger;
+			_pcConfigRepository = pcConfigRepository;
+			_pcTypeRepository = pcTypeRepository;
+		}
+
 		[HttpGet("PcSetup/{id}")]
 		public async Task<IActionResult> Index(int id)
 		{

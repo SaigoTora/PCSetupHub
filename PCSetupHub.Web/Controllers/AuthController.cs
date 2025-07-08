@@ -17,14 +17,21 @@ using PCSetupHub.Core.Settings;
 
 namespace PCSetupHub.Web.Controllers
 {
-	public class AuthController(ILogger<AuthController> logger, IUserService userService,
-		IOptions<AuthSettings> options)
-		: Controller
+	public class AuthController : Controller
 	{
-		private readonly ILogger<AuthController> _logger = logger;
-		private readonly IUserService _userService = userService;
-		private readonly TokenSettings _accessTokenSettings = options.Value.AccessToken;
-		private readonly TokenSettings _refreshTokenSettings = options.Value.RefreshToken;
+		private readonly ILogger<AuthController> _logger;
+		private readonly IUserService _userService;
+		private readonly TokenSettings _accessTokenSettings;
+		private readonly TokenSettings _refreshTokenSettings;
+
+		public AuthController(ILogger<AuthController> logger, IUserService userService,
+			IOptions<AuthSettings> options)
+		{
+			_logger = logger;
+			_userService = userService;
+			_accessTokenSettings = options.Value.AccessToken;
+			_refreshTokenSettings = options.Value.RefreshToken;
+		}
 
 		#region Registration
 		public async Task<IActionResult> Register()

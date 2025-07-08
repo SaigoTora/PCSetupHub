@@ -10,11 +10,23 @@ using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 namespace PCSetupHub.Web.Controllers
 {
-	public class ProfileController(ILogger<ProfileController> _logger,
-		IUserRepository _userRepository, IRepository<Friendship> _friendshipRepository,
-		IRepository<Comment> _commentRepository)
-		: Controller
+	public class ProfileController : Controller
 	{
+		private readonly ILogger<ProfileController> _logger;
+		private readonly IUserRepository _userRepository;
+		private readonly IRepository<Friendship> _friendshipRepository;
+		private readonly IRepository<Comment> _commentRepository;
+
+		public ProfileController(ILogger<ProfileController> logger,
+			IUserRepository userRepository, IRepository<Friendship> friendshipRepository,
+			IRepository<Comment> commentRepository)
+		{
+			_logger = logger;
+			_userRepository = userRepository;
+			_friendshipRepository = friendshipRepository;
+			_commentRepository = commentRepository;
+		}
+
 		[HttpGet("Profile/{login?}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Index(string login, int commentPage = 1)
