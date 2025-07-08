@@ -6,6 +6,7 @@ using PCSetupHub.Web.ViewModels;
 
 namespace PCSetupHub.Web.Controllers
 {
+	[Route("[Controller]")]
 	public class ContactsController : Controller
 	{
 		private const int CONTACTS_PAGE_SIZE = 30;
@@ -44,7 +45,7 @@ namespace PCSetupHub.Web.Controllers
 					contacts.Add(friendship.Initiator);
 			}
 
-			ContactsViewModel model = new(contacts, friendSearchQuery, page, totalItems,
+			ContactsViewModel model = new(contacts, login, friendSearchQuery, page, totalItems,
 				nameof(Friends), CONTACTS_PAGE_SIZE, nameof(friendSearchQuery));
 
 			return View(model);
@@ -68,7 +69,7 @@ namespace PCSetupHub.Web.Controllers
 				if (friendship.FriendId == user.Id && friendship.Initiator != null)
 					contacts.Add(friendship.Initiator);
 
-			ContactsViewModel model = new(contacts, followerSearchQuery, page, totalItems,
+			ContactsViewModel model = new(contacts, login, followerSearchQuery, page, totalItems,
 				nameof(Followers), CONTACTS_PAGE_SIZE, nameof(followerSearchQuery));
 
 			return View(model);
@@ -92,7 +93,7 @@ namespace PCSetupHub.Web.Controllers
 				if (friendship.InitiatorId == user.Id && friendship.Friend != null)
 					contacts.Add(friendship.Friend);
 
-			ContactsViewModel model = new(contacts, followingSearchQuery, page, totalItems,
+			ContactsViewModel model = new(contacts, login, followingSearchQuery, page, totalItems,
 				nameof(Followings), CONTACTS_PAGE_SIZE, nameof(followingSearchQuery));
 
 			return View(model);

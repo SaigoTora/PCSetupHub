@@ -1,0 +1,48 @@
+﻿.contacts-tabs-container {
+    border-bottom: 1px solid var(--color-text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.contacts-tab-item {
+    border-radius: var(--border-radius);
+    margin-right: 0.25rem;
+}
+
+.contacts-nav-link {
+    display: block;
+    font-size: 1.25rem;
+    color: var(--color-light-text);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+}
+
+    .contacts-nav-link.active {
+        color: black;
+        background-color: var(--color-text-muted);
+    }
+
+.user-container {
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+}
+
+.user-link {
+    color: var(--color-light-text);
+    text-decoration: none;
+}
+
+.user-container:hover {
+    background-color: var(--color-dark-background-hover);
+}
+
+.user-login {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.user-name {
+    font-size: 1.1rem;
+    padding-left: 0.5rem;
+}

@@ -6,6 +6,8 @@
 	ViewData["Title"] = "Followers";
 }
 
+@await Html.PartialAsync("Users/_ContactsTabs", Model)
+
 <form class="mb-2" asp-controller="Contacts" asp-action="Followers" method="get">
 	<div class="searchbar-container">
 		<div class="search-bar">
@@ -21,14 +23,4 @@
 	</div>
 </form>
 
-@if (Model.Contacts != null)
-{
-	foreach (var user in Model?.Contacts ?? [])
-	{
-		@await Html.PartialAsync("Users/_UserInfo", user)
-	}
-
-	<div class="d-flex justify-content-center mt-4">
-		@await Html.PartialAsync("_PageNavigator", Model)
-	</div>
-}
+@await Html.PartialAsync("Users/_UsersInfo", Model)
