@@ -3,12 +3,12 @@
 @model ContactsViewModel
 
 @{
-	ViewData["Title"] = "Friends";
+	ViewData["Title"] = "Search";
 }
 
-@await Html.PartialAsync("Users/_ContactsTabs", Model)
+<h2 class="text-center">Search Users</h2>
 
-<form class="mb-2" asp-controller="Contacts" asp-action="Friends" method="get">
+<form class="mb-2" asp-controller="Contacts" asp-action="Search" method="get">
 	<div class="searchbar-container">
 		<div class="search-bar">
 			<div class="input-container">

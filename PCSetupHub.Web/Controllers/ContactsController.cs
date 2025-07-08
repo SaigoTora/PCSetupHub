@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
@@ -95,6 +96,22 @@ namespace PCSetupHub.Web.Controllers
 
 			ContactsViewModel model = new(contacts, login, followingSearchQuery, page, totalItems,
 				nameof(Followings), CONTACTS_PAGE_SIZE, nameof(followingSearchQuery));
+
+			return View(model);
+		}
+
+		public async Task<IActionResult> Search(string contactSearchQuery, int page = 1)
+		{
+			Expression<Func<User, bool>> filter = u
+				=> u.Login.Contains(contactSearchQuery) || u.Name.Contains(contactSearchQuery);
+
+			int totalItems = await _userRepository.CountAsync(filter);
+			List<User> contacts = await _userRepository
+				.GetPageAsync(filter, page, CONTACTS_PAGE_SIZE);
+
+
+			ContactsViewModel model = new(contacts, string.Empty, contactSearchQuery, page,
+				totalItems, nameof(Search), CONTACTS_PAGE_SIZE, nameof(contactSearchQuery));
 
 			return View(model);
 		}
