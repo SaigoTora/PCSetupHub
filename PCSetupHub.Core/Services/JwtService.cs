@@ -8,6 +8,7 @@ using PCSetupHub.Core.DTOs;
 using PCSetupHub.Core.Settings;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
+using PCSetupHub.Core.Interfaces;
 
 namespace PCSetupHub.Core.Services
 {
@@ -15,10 +16,13 @@ namespace PCSetupHub.Core.Services
 	{
 		private readonly IOptions<AuthSettings> _options;
 		private readonly IUserRepository _userRepository;
+		private readonly ITokenKeyService _tokenKeyService;
 
-		public JwtService(IOptions<AuthSettings> options, IUserRepository userRepository)
+		public JwtService(IOptions<AuthSettings> options, ITokenKeyService tokenKeyService,
+			IUserRepository userRepository)
 		{
 			_options = options;
+			_tokenKeyService = tokenKeyService;
 			_userRepository = userRepository;
 		}
 
@@ -29,9 +33,9 @@ namespace PCSetupHub.Core.Services
 
 			try
 			{
+				string refreshKey = await _tokenKeyService.GetRefreshTokenKeyAsync();
 				tokenHandler.ValidateToken(refreshToken,
-					GetTokenValidationParameters(_options.Value.RefreshToken.SecretKey),
-					out SecurityToken validatedToken);
+					GetTokenValidationParameters(refreshKey), out SecurityToken validatedToken);
 				if (validatedToken.ValidTo < DateTime.UtcNow)
 					throw new SecurityTokenException("Refresh token expired.");
 
@@ -39,9 +43,9 @@ namespace PCSetupHub.Core.Services
 				bool accessTokenValid = true;
 				try
 				{
+					string accessKey = await _tokenKeyService.GetAccessTokenKeyAsync();
 					tokenHandler.ValidateToken(accessToken,
-						GetTokenValidationParameters(_options.Value.AccessToken.SecretKey),
-						out validatedToken);
+						GetTokenValidationParameters(accessKey), out validatedToken);
 					if (validatedToken.ValidTo < DateTime.UtcNow)
 						throw new SecurityTokenException("Access token expired.");
 				}
@@ -66,9 +70,9 @@ namespace PCSetupHub.Core.Services
 			bool userRememberMe = bool.Parse(jwtToken.Claims
 				.FirstOrDefault(c => c.Type == "userRememberMe")?.Value ?? "false");
 
-			string newAccessToken = GenerateAccessToken(await _userRepository.GetOneAsync(userId),
-				userRememberMe);
-			string newRefreshToken = GenerateRefreshToken();
+			User? user = await _userRepository.GetOneAsync(userId);
+			string newAccessToken = await GenerateAccessTokenAsync(user, userRememberMe);
+			string newRefreshToken = await GenerateRefreshTokenAsync();
 			return new AuthResponse(newAccessToken, newRefreshToken);
 		}
 		public static TokenValidationParameters GetTokenValidationParameters(string key)
@@ -83,12 +87,18 @@ namespace PCSetupHub.Core.Services
 			};
 		}
 
-		public string GenerateAccessToken(User? user, bool userRememberMe)
-			=> GenerateToken(_options.Value.AccessToken, user, userRememberMe);
-		public string GenerateRefreshToken()
-			=> GenerateToken(_options.Value.RefreshToken);
-		private static string GenerateToken(TokenSettings tokenSettings, User? user = null,
-			bool userRememberMe = false)
+		public async Task<string> GenerateAccessTokenAsync(User? user, bool userRememberMe)
+		{
+			string key = await _tokenKeyService.GetAccessTokenKeyAsync();
+			return GenerateToken(_options.Value.AccessToken, key, user, userRememberMe);
+		}
+		public async Task<string> GenerateRefreshTokenAsync()
+		{
+			string key = await _tokenKeyService.GetRefreshTokenKeyAsync();
+			return GenerateToken(_options.Value.RefreshToken, key);
+		}
+		private static string GenerateToken(TokenSettings tokenSettings, string key,
+			User? user = null, bool userRememberMe = false)
 		{
 			List<Claim>? claims = null;
 			if (user != null)
@@ -105,7 +115,7 @@ namespace PCSetupHub.Core.Services
 				claims: claims,
 				signingCredentials:
 				new SigningCredentials(new SymmetricSecurityKey(
-					Encoding.UTF8.GetBytes(tokenSettings.SecretKey)),
+					Encoding.UTF8.GetBytes(key)),
 					SecurityAlgorithms.HmacSha256));
 
 			return new JwtSecurityTokenHandler().WriteToken(jwtToken);

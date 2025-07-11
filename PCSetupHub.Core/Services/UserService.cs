@@ -46,8 +46,10 @@ namespace PCSetupHub.Core.Services
 
 			if (result == PasswordVerificationResult.Success)
 			{
-				return new AuthResponse(_jwtService.GenerateAccessToken(user, userRememberMe),
-					_jwtService.GenerateRefreshToken());
+				string accessToken = await _jwtService.GenerateAccessTokenAsync(user,
+					userRememberMe);
+				string refreshToken = await _jwtService.GenerateRefreshTokenAsync();
+				return new AuthResponse(accessToken, refreshToken);
 			}
 			else
 				throw new AuthenticationException("Invalid password.");
@@ -63,8 +65,9 @@ namespace PCSetupHub.Core.Services
 				await _userRepository.AddAsync(user);
 			}
 
-			return new AuthResponse(_jwtService.GenerateAccessToken(user, true),
-				_jwtService.GenerateRefreshToken());
+			string accessToken = await _jwtService.GenerateAccessTokenAsync(user, true);
+			string refreshToken = await _jwtService.GenerateRefreshTokenAsync();
+			return new AuthResponse(accessToken, refreshToken);
 		}
 		public async Task<bool> IsUserLoggedInAsync(string accessToken, string refreshToken)
 		{

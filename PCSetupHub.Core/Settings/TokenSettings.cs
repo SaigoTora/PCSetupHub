@@ -4,6 +4,5 @@
 	{
 		public required string CookieName { get; set; }
 		public TimeSpan Lifetime { get; set; }
-		public required string SecretKey { get; set; }
 	}
 }

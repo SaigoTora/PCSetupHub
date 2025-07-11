@@ -1,3 +1,4 @@
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,7 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 	loggerConfig.ReadFrom.Configuration(context.Configuration);
 });
 
-ConfigureServices(builder.Services, builder.Configuration);
+await ConfigureServicesAsync(builder.Services, builder.Configuration);
 
 
 var app = builder.Build();
@@ -32,10 +33,11 @@ CreateDbIfNotExists(app, logger);
 ConfigureMiddleware(app);
 
 logger.LogInformation("Application started and is now listening for requests");
+logger.LogDebug("Debug information =)");
 app.Run();
 
 
-static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+static async Task ConfigureServicesAsync(IServiceCollection services, IConfiguration configuration)
 {// Add services to the container.
 	services.AddControllersWithViews(options =>
 	{
@@ -43,12 +45,15 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 	});
 
 	services.AddHttpClient();
-	services.AddDbContext<PcSetupContext>(options =>
-		options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+	KeyVaultSecret secretConnection = await AzureSecretService.GetSecretAsync(configuration,
+		"ConnectionStrings--DefaultConnection");
+	string connectionString = secretConnection.Value;
+	services.AddDbContext<PcSetupContext>(options => options.UseSqlServer(connectionString));
 
 	services.AddDatabaseDeveloperPageExceptionFilter();
-	services.AddAuth(configuration)
-			.AddExternalAuthProviders(configuration);
+	await services.AddAuthAsync(configuration);
+	await services.AddExternalAuthProvidersAsync(configuration);
 	services.ConfigureRateLimiter();
 	services.AddScoped<IUserRepository, UserRepository>();
 	services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();

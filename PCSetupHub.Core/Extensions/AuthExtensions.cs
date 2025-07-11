@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Azure.Security.KeyVault.Secrets;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using PCSetupHub.Core.DTOs;
+using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Core.Services;
 using PCSetupHub.Core.Settings;
 
@@ -13,9 +15,16 @@ namespace PCSetupHub.Core.Extensions
 {
 	public static class AuthExtensions
 	{
-		public static IServiceCollection AddExternalAuthProviders(this IServiceCollection services,
-			IConfiguration configuration)
+		public static async Task<IServiceCollection> AddExternalAuthProvidersAsync(
+			this IServiceCollection services, IConfiguration configuration)
 		{
+			KeyVaultSecret secretId = await AzureSecretService.GetSecretAsync(configuration,
+				"GoogleClientId");
+			string clientId = secretId.Value;
+			KeyVaultSecret secretSecret = await AzureSecretService.GetSecretAsync(configuration,
+				"GoogleClientSecret");
+			string clientSecret = secretSecret.Value;
+
 			services.AddAuthentication(options =>
 			{
 				options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -24,15 +33,16 @@ namespace PCSetupHub.Core.Extensions
 			.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
 			.AddGoogle(googleOptions =>
 			{
-				googleOptions.ClientId = configuration["Authentication:Google:ClientId"]!;
-				googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"]!;
+				googleOptions.ClientId = clientId;
+				googleOptions.ClientSecret = clientSecret;
 				googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 			});
 			return services;
 		}
-		public static IServiceCollection AddAuth(this IServiceCollection serviceCollection,
-			IConfiguration configuration)
+		public async static Task<IServiceCollection> AddAuthAsync(
+			this IServiceCollection serviceCollection, IConfiguration configuration)
 		{
+			serviceCollection.AddSingleton<ITokenKeyService, TokenKeyService>();
 			serviceCollection.AddScoped<JwtService>();
 			serviceCollection.Configure<AuthSettings>(
 					configuration.GetSection(nameof(AuthSettings)));
@@ -47,20 +57,23 @@ namespace PCSetupHub.Core.Extensions
 
 			TokenSettings accessTokenSettings = authSettings.AccessToken;
 			TokenSettings refreshTokenSettings = authSettings.RefreshToken;
+			TokenKeyService tokenKeyService = new(configuration);
+			string accessTokenKey = await tokenKeyService.GetAccessTokenKeyAsync();
 
 			serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 				.AddJwtBearer(o => ConfigureTokenOptions(o, refreshTokenSettings,
-					accessTokenSettings));
+					accessTokenSettings, accessTokenKey));
 
 			serviceCollection.AddAuthorization();
 			return serviceCollection;
 		}
 
 		private static void ConfigureTokenOptions(JwtBearerOptions options,
-			TokenSettings refreshTokenSettings, TokenSettings accessTokenSettings)
+			TokenSettings refreshTokenSettings, TokenSettings accessTokenSettings,
+			string accessTokenKey)
 		{
 			options.TokenValidationParameters
-				= JwtService.GetTokenValidationParameters(accessTokenSettings.SecretKey);
+				= JwtService.GetTokenValidationParameters(accessTokenKey);
 
 			options.Events = new JwtBearerEvents
 			{
