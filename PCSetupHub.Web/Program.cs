@@ -93,6 +93,7 @@ static void ConfigureMiddleware(WebApplication app)
 	}
 
 	app.UseHttpsRedirection();
+	app.UseStaticFiles();
 	app.UseRouting();
 
 	app.UseMiddleware<TokenRefreshMiddleware>();
