@@ -1,3 +1,4 @@
+using Amazon.S3;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Core.Middlewares;
 using PCSetupHub.Core.Services;
+using PCSetupHub.Core.Settings;
 using PCSetupHub.Data;
 using PCSetupHub.Data.Models.Hardware;
 using PCSetupHub.Data.Repositories.Base;
@@ -33,7 +35,6 @@ CreateDbIfNotExists(app, logger);
 ConfigureMiddleware(app);
 
 logger.LogInformation("Application started and is now listening for requests");
-logger.LogDebug("Debug information =)");
 app.Run();
 
 
@@ -52,20 +53,25 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 	services.AddDbContext<PcSetupContext>(options => options.UseSqlServer(connectionString));
 
 	services.AddDatabaseDeveloperPageExceptionFilter();
+	services.ConfigureRateLimiter();
 	await services.AddAuthAsync(configuration);
 	await services.AddExternalAuthProvidersAsync(configuration);
-	services.ConfigureRateLimiter();
+	services.AddAWSService<IAmazonS3>();
+
 	services.AddScoped<IUserRepository, UserRepository>();
 	services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
 	services.AddScoped(typeof(IRepository<>), typeof(BaseRepo<>));
-	services.AddScoped<IUserService, UserService>();
-
 	services.AddScoped<IFriendshipRepository, FriendshipRepository>();
 	services.AddScoped<IHardwareComponentRepository<VideoCard>, VideoCardRepository>();
 	services.AddScoped<IHardwareComponentRepository<Motherboard>, MotherboardRepository>();
 	services.AddScoped<IHardwareComponentRepository<PowerSupply>, PowerSupplyRepository>();
 	services.AddScoped<IHardwareComponentRepository<Hdd>, HddRepository>();
 	services.AddScoped<IHardwareComponentRepository<Ram>, RamRepository>();
+
+	services.AddScoped<IUserService, UserService>();
+	services.AddScoped<IImageStorageService, ImageStorageService>();
+
+	services.Configure<AwsSettings>(configuration.GetSection("AwsSettings"));
 }
 static void CreateDbIfNotExists(IHost host, ILogger<Program> logger)
 {
