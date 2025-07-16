@@ -21,6 +21,10 @@ namespace PCSetupHub.Data.Models.Users
 		public string? Description { get; private set; }
 		public PcConfiguration? PcConfiguration { get; private set; }
 		public int PcConfigurationId { get; private set; }
+
+		[Required]
+		public string AvatarUrl { get; private set; }
+			= "https://pcsetuphub-user-images.s3.us-east-1.amazonaws.com/avatars/default.png";
 		public ICollection<Friendship>? ReceivedFriendRequests { get; private set; }
 		public ICollection<Friendship>? SentFriendRequests { get; private set; }
 		public ICollection<Comment>? WrittenComments { get; private set; }
