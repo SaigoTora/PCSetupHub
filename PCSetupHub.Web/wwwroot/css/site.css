@@ -230,6 +230,26 @@ h1 {
     text-align: center;
 }
 
+.user-avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid black;
+    user-select: none;
+    cursor: pointer;
+}
+
+.avatar-cropper-wrapper img {
+    display: block;
+    max-width: 100%;
+    max-height: 60vh;
+    margin: 0 auto;
+}
+
+.cropper-crop-box,
+.cropper-view-box {
+    border-radius: 50% !important;
+}
+
 .user-login {
     font-weight: bold;
     font-size: 1.25rem;
@@ -302,8 +322,8 @@ h1 {
     padding-bottom: 2rem;
     background-image: linear-gradient(-40deg, rgba(57, 62, 70, 0.35), var(--color-dark-background));
     border-radius: var(--border-radius);
-    margin-top: 2.5rem;
-    margin-bottom: 4.5rem;
+    margin-top: 5rem;
+    margin-bottom: 6.5rem;
 }
 
 table {

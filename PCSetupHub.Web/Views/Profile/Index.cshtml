@@ -13,6 +13,11 @@
 	ViewData["Title"] = $"{Model.Login}";
 	<link rel="stylesheet" href="~/css/comment.css" />
 
+	<!-- Cropper CSS and JS-->
+	<link rel="stylesheet" href="~/css/cropper/cropper.css" />
+	<script src="~/js/cropper/cropper.js"></script>
+	<script src="~/js/cropper/avatar-cropper.js"></script>
+
 	string? userLogin = User.GetLogin();
 	int? userId = User.GetId();
 	PcConfiguration? pcConfig = Model.PcConfiguration;
@@ -31,111 +36,134 @@
 	int pageSize = ViewData["PageSize"] as int? ?? 1;
 }
 
-<section class="mb-4 d-inline-flex justify-content-center">
-	<span class="user-login me-4 text-white" translate="no">@Model.Login</span>
-	@if (userLogin != null && userLogin == Model.Login)
-	{
-		<button class="user-action-btn me-2">Settings</button>
-	}
-	else if (userId.HasValue)
-	{
-		Friendship? friendship = Model.GetReceivedRequestFrom(userId.Value);
-		if (friendship != null)
+<section>
+	<section class="d-inline">
+		<img id="avatar-preview" src="@Model.AvatarUrl" alt="User avatar @Model.Name"
+			 title="Change avatar" width="100" height="100"
+			 class="user-avatar me-3 mb-3 rounded-circle" data-login="@Model.Login" />
+
+		<input type="file" id="avatar-input" accept="image/*" style="display: none;" />
+	</section>
+
+	<section class="mb-4 d-inline-flex justify-content-center">
+		<span class="user-login me-4 text-white" translate="no">@Model.Login</span>
+		@if (userLogin != null && userLogin == Model.Login)
 		{
-			switch ((FriendshipStatusType)friendship.FriendshipStatusId)
-			{
-				case FriendshipStatusType.Pending:
-					<button class="user-action-btn me-2">Requested</button>
-					break;
-				case FriendshipStatusType.Accepted:
-					<button class="user-action-btn me-2">Friend</button>
-					break;
-				case FriendshipStatusType.Cancelled:
-					<button class="user-action-btn me-2">Declined</button>
-					break;
-				default:
-					<button class="user-action-btn me-2">Unknown</button>
-					break;
-			}
-			<form class="d-inline-block me-3" asp-controller="Profile" asp-action="DeleteFriendship" asp-route-id="@friendship.Id" method="post">
-				<button class="user-action-btn"><i class="d-flex justify-content-center align-items-center fa fa-user-slash text-danger"></i></button>
-			</form>
+			<button class="user-action-btn me-2">Settings</button>
 		}
-		else
+		else if (userId.HasValue)
 		{
-			friendship = Model.GetSentRequestTo(userId.Value);
+			Friendship? friendship = Model.GetReceivedRequestFrom(userId.Value);
 			if (friendship != null)
 			{
-				FriendshipStatusType status = (FriendshipStatusType)friendship.FriendshipStatusId;
-				string highlightClass = status == FriendshipStatusType.Pending ? "friend-status-select-highlighted" : string.Empty;
-
-				<form class="d-inline-block me-2" asp-controller="Profile" asp-action="UpdateFriendshipStatus" asp-route-id="@friendship.Id" method="post">
-					<select name="newStatusId" class="friend-status-select @highlightClass" onchange="this.form.submit()" title="Choose friendship status">
-						@if (status == FriendshipStatusType.Pending)
-						{
-							<option hidden>Respond</option>
-						}
-						else if (status == FriendshipStatusType.Accepted)
-						{
-							<option hidden>Friend</option>
-						}
-
-						@if (status != FriendshipStatusType.Accepted)
-						{
-							<option value=@((int)FriendshipStatusType.Accepted) selected="@(friendship.FriendshipStatusId == (int)FriendshipStatusType.Accepted)">Accept</option>
-						}
-						<option value=@((int)FriendshipStatusType.Cancelled) selected="@(friendship.FriendshipStatusId == (int)FriendshipStatusType.Cancelled)">Reject</option>
-					</select>
+				switch ((FriendshipStatusType)friendship.FriendshipStatusId)
+				{
+					case FriendshipStatusType.Pending:
+						<button class="user-action-btn me-2">Requested</button>
+						break;
+					case FriendshipStatusType.Accepted:
+						<button class="user-action-btn me-2">Friend</button>
+						break;
+					case FriendshipStatusType.Cancelled:
+						<button class="user-action-btn me-2">Declined</button>
+						break;
+					default:
+						<button class="user-action-btn me-2">Unknown</button>
+						break;
+				}
+				<form class="d-inline-block me-3" asp-controller="Profile" asp-action="DeleteFriendship" asp-route-id="@friendship.Id" method="post">
+					<button class="user-action-btn"><i class="d-flex justify-content-center align-items-center fa fa-user-slash text-danger"></i></button>
 				</form>
 			}
 			else
 			{
-				<form class="d-inline-block me-2" asp-controller="Profile" asp-action="SendFriendRequest" asp-route-id="@Model.Id" method="post">
-					<button class="user-action-btn friend-status-select-highlighted">Follow</button>
-				</form>
+				friendship = Model.GetSentRequestTo(userId.Value);
+				if (friendship != null)
+				{
+					FriendshipStatusType status = (FriendshipStatusType)friendship.FriendshipStatusId;
+					string highlightClass = status == FriendshipStatusType.Pending ? "friend-status-select-highlighted" : string.Empty;
+
+					<form class="d-inline-block me-2" asp-controller="Profile" asp-action="UpdateFriendshipStatus" asp-route-id="@friendship.Id" method="post">
+						<select name="newStatusId" class="friend-status-select @highlightClass" onchange="this.form.submit()" title="Choose friendship status">
+							@if (status == FriendshipStatusType.Pending)
+							{
+								<option hidden>Respond</option>
+							}
+							else if (status == FriendshipStatusType.Accepted)
+							{
+								<option hidden>Friend</option>
+							}
+
+							@if (status != FriendshipStatusType.Accepted)
+							{
+								<option value=@((int)FriendshipStatusType.Accepted) selected="@(friendship.FriendshipStatusId == (int)FriendshipStatusType.Accepted)">Accept</option>
+							}
+							<option value=@((int)FriendshipStatusType.Cancelled) selected="@(friendship.FriendshipStatusId == (int)FriendshipStatusType.Cancelled)">Reject</option>
+						</select>
+					</form>
+				}
+				else
+				{
+					<form class="d-inline-block me-2" asp-controller="Profile" asp-action="SendFriendRequest" asp-route-id="@Model.Id" method="post">
+						<button class="user-action-btn friend-status-select-highlighted">Follow</button>
+					</form>
+				}
 			}
 		}
-	}
-	@if (userId != Model.Id)
-	{
-		<button class="user-action-btn">Message</button>
-	}
+		@if (userId != Model.Id)
+		{
+			<button class="user-action-btn">Message</button>
+		}
+	</section>
+
+	<section>
+		<div id="avatar-cropper-section" style="display: none; margin-top: 1rem;">
+			<div class="avatar-cropper-wrapper">
+				<img id="cropper-image" src="#" alt="Image for cropping" />
+			</div>
+			<div class="d-flex align-content-center justify-content-center">
+				<button id="save-avatar-btn" class="btn btn-primary mt-2">Save</button>
+			</div>
+		</div>
+	</section>
+
+	<section class="mb-4">
+		@if (Model.Friends != null)
+		{
+			if (Model.Friends.Count == 1)
+			{
+				<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> friend</span></a>
+			}
+			else
+			{
+				<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Friends.Count<span class="ms-1 text-muted"> friends</span></a>
+			}
+		}
+		@if (Model.Followers != null)
+		{
+			if (Model.Followers.Count == 1)
+			{
+				<a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> follower</span></a>
+			}
+			else
+			{
+				<a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Followers.Count<span class="ms-1 text-muted"> followers</span></a>
+			}
+		}
+		@if (Model.Followings != null)
+		{
+			if (Model.Followings.Count == 1)
+			{
+				<a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> following</span></a>
+			}
+			else
+			{
+				<a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Followings.Count<span class="ms-1 text-muted"> followings</span></a>
+			}
+		}
+	</section>
 </section>
-<section class="mb-4">
-	@if (Model.Friends != null)
-	{
-		if (Model.Friends.Count == 1)
-		{
-			<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> friend</span></a>
-		}
-		else
-		{
-			<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Friends.Count<span class="ms-1 text-muted"> friends</span></a>
-		}
-	}
-	@if (Model.Followers != null)
-	{
-		if (Model.Followers.Count == 1)
-		{
-			<a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> follower</span></a>
-		}
-		else
-		{
-			<a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Followers.Count<span class="ms-1 text-muted"> followers</span></a>
-		}
-	}
-	@if (Model.Followings != null)
-	{
-		if (Model.Followings.Count == 1)
-		{
-			<a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> following</span></a>
-		}
-		else
-		{
-			<a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Followings.Count<span class="ms-1 text-muted"> followings</span></a>
-		}
-	}
-</section>
+
 <section class="mb-2">
 	<span class="d-block mb-1 user-name text-white">@Model.Name</span>
 	<span class="user-description">@Model.Description</span>

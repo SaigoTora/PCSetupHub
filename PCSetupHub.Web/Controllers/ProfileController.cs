@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
 using PCSetupHub.Core.Extensions;
+using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Base;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
@@ -16,15 +17,17 @@ namespace PCSetupHub.Web.Controllers
 		private readonly IUserRepository _userRepository;
 		private readonly IRepository<Friendship> _friendshipRepository;
 		private readonly IRepository<Comment> _commentRepository;
+		private readonly IImageStorageService _imageStorageService;
 
 		public ProfileController(ILogger<ProfileController> logger,
 			IUserRepository userRepository, IRepository<Friendship> friendshipRepository,
-			IRepository<Comment> commentRepository)
+			IRepository<Comment> commentRepository, IImageStorageService s3FileService)
 		{
 			_logger = logger;
 			_userRepository = userRepository;
 			_friendshipRepository = friendshipRepository;
 			_commentRepository = commentRepository;
+			_imageStorageService = s3FileService;
 		}
 
 		[HttpGet("Profile/{login?}")]
@@ -225,6 +228,15 @@ namespace PCSetupHub.Web.Controllers
 			}
 
 			return RedirectToAction("Index", new { login = profileOwner.Login });
+		}
+
+		[HttpPost("Profile/UploadAvatar/{login?}")]
+		public async Task<IActionResult> UploadAvatar(string login, IFormFile file)
+		{
+			string imageUrl = await _imageStorageService.UploadImageAsync(file,
+				Core.Settings.ImageCategory.Avatar);
+
+			return Ok();
 		}
 	}
 }
