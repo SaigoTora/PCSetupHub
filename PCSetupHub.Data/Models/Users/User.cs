@@ -8,6 +8,9 @@ namespace PCSetupHub.Data.Models.Users
 {
 	public class User : BaseEntity
 	{
+		private const string DEFAULT_AVATAR_URL
+			= "https://pcsetuphub-user-images.s3.us-east-1.amazonaws.com/avatars/default.png";
+
 		[StringLength(254)]
 		public string Login { get; private set; } = string.Empty;
 		[JsonIgnore]
@@ -23,8 +26,7 @@ namespace PCSetupHub.Data.Models.Users
 		public int PcConfigurationId { get; private set; }
 
 		[Required]
-		public string AvatarUrl { get; private set; }
-			= "https://pcsetuphub-user-images.s3.us-east-1.amazonaws.com/avatars/default.png";
+		public string AvatarUrl { get; private set; } = DEFAULT_AVATAR_URL;
 		public ICollection<Friendship>? ReceivedFriendRequests { get; private set; }
 		public ICollection<Friendship>? SentFriendRequests { get; private set; }
 		public ICollection<Comment>? WrittenComments { get; private set; }
@@ -120,5 +122,8 @@ namespace PCSetupHub.Data.Models.Users
 			=> ReceivedFriendRequests?.FirstOrDefault(fr => fr.InitiatorId == userId);
 		public Friendship? GetSentRequestTo(int userId)
 			=> SentFriendRequests?.FirstOrDefault(fr => fr.FriendId == userId);
+
+		public bool HasDefaultAvatar() => AvatarUrl == DEFAULT_AVATAR_URL;
+		public void SetAvatarUrl(string avatarUrl) => AvatarUrl = avatarUrl;
 	}
 }

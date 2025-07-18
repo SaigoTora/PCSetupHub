@@ -83,7 +83,7 @@ namespace PCSetupHub.Web.Controllers
 			if (user == null)
 				return NotFound();
 
-			return RedirectToAction("Index", new { login = user.Login });
+			return RedirectToProfile(user.Login);
 		}
 
 		[HttpPost("SendFriendRequest/{id}")]
@@ -114,7 +114,7 @@ namespace PCSetupHub.Web.Controllers
 				throw;
 			}
 
-			return RedirectToAction("Index", new { login = user.Login });
+			return RedirectToProfile(user.Login);
 		}
 
 		[HttpPost("DeleteFriendship/{id}")]
@@ -147,7 +147,7 @@ namespace PCSetupHub.Web.Controllers
 			if (user == null)
 				return NotFound();
 
-			return RedirectToAction("Index", new { login = user.Login });
+			return RedirectToProfile(user.Login);
 		}
 
 		[HttpPost("CreateComment/{profileId}")]
@@ -182,7 +182,7 @@ namespace PCSetupHub.Web.Controllers
 				throw;
 			}
 
-			return RedirectToAction("Index", new { login = user.Login });
+			return RedirectToProfile(user.Login);
 		}
 
 		[HttpPost("DeleteComment/{id}")]
@@ -227,16 +227,50 @@ namespace PCSetupHub.Web.Controllers
 				throw;
 			}
 
-			return RedirectToAction("Index", new { login = profileOwner.Login });
+			return RedirectToProfile(profileOwner.Login);
 		}
 
 		[HttpPost("Profile/UploadAvatar/{login?}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> UploadAvatar(string login, IFormFile file)
 		{
-			string imageUrl = await _imageStorageService.UploadImageAsync(file,
-				Core.Settings.ImageCategory.Avatar);
+			if (string.IsNullOrWhiteSpace(login))
+				return BadRequest();
 
-			return Ok();
+			User? user = await _userRepository.GetByLoginAsync(login, false);
+			if (user == null)
+				return NotFound();
+			if (user.Id != User.GetId())
+				return StatusCode(403);
+
+			if (!user.HasDefaultAvatar())
+			{
+				_logger.LogInformation("Deleting previous avatar for user with id: {Id}", user.Id);
+				await _imageStorageService.DeleteImageAsync(user.AvatarUrl);
+			}
+
+			try
+			{
+				_logger.LogInformation("Uploading new avatar for user with id: {Id}", user.Id);
+				string imageUrl = await _imageStorageService.UploadImageAsync(file,
+					Core.Settings.ImageCategory.Avatar);
+
+				user.SetAvatarUrl(imageUrl);
+				await _userRepository.UpdateAsync(user);
+				_logger.LogInformation("Avatar successfully updated for user with id: {Id}",
+					user.Id);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Failed to change avatar for user with id: {Id}", user.Id);
+				throw;
+			}
+
+			return RedirectToProfile(login);
 		}
+
+		private RedirectToActionResult RedirectToProfile(string login)
+			=> RedirectToAction("Index", new { login });
 	}
 }

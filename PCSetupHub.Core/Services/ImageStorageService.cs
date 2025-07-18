@@ -54,7 +54,7 @@ namespace PCSetupHub.Core.Services
 			TransferUtility transferUtility = new(_s3Client);
 			await transferUtility.UploadAsync(uploadRequest);
 
-			return $"https://{_bucketName}.s3.amazonaws.com/{key}";
+			return $"https://{_bucketName}.s3.us-east-1.amazonaws.com/{key}";
 		}
 		public async Task DeleteImageAsync(string imageUrl)
 		{
