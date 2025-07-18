@@ -20,6 +20,7 @@
 
 	string? userLogin = User.GetLogin();
 	int? userId = User.GetId();
+	bool canEditAvatar = (Model.Id == userId);
 	PcConfiguration? pcConfig = Model.PcConfiguration;
 	var rams = pcConfig?.GetRams();
 	var ssds = pcConfig?.GetSsds();
@@ -39,8 +40,9 @@
 <section>
 	<section class="d-inline">
 		<img id="avatar-preview" src="@Model.AvatarUrl" alt="User avatar @Model.Name"
-			 title="Change avatar" width="100" height="100"
-			 class="user-avatar me-3 mb-3 rounded-circle" data-login="@Model.Login" />
+			 title="@(canEditAvatar ? "Change avatar" : "")" width="100" height="100"
+			 class="user-avatar me-3 mb-3 rounded-circle @(canEditAvatar ? "cursor-pointer" : "")"
+			 data-login="@Model.Login" @(canEditAvatar ? "data-can-edit='true'" : "") />
 
 		<input type="file" id="avatar-input" accept="image/*" style="display: none;" />
 	</section>
@@ -117,7 +119,7 @@
 	</section>
 
 	<section>
-		<div id="avatar-cropper-section" style="display: none; margin-top: 1rem;">
+		<div id="avatar-cropper-section">
 			<div class="avatar-cropper-wrapper">
 				<img id="cropper-image" src="#" alt="Image for cropping" />
 			</div>

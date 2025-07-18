@@ -1,5 +1,8 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
     const avatarPreview = document.getElementById('avatar-preview');
+
+    if (!avatarPreview.dataset.canEdit) return;
+
     const avatarInput = document.getElementById('avatar-input');
     const cropperImage = document.getElementById('cropper-image');
     const cropperSection = document.getElementById('avatar-cropper-section');
