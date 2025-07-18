@@ -21,8 +21,30 @@
             cropperSection.style.display = 'block';
 
             if (cropper) cropper.destroy();
+            let initialRatio = null;
             cropper = new Cropper(cropperImage, {
-                aspectRatio: 1
+                aspectRatio: 1,
+                viewMode: 2,
+                minCropBoxWidth: 128,
+                minCropBoxHeight: 128,
+
+                ready() {
+                    // Save the original image scale
+                    const imageData = cropper.getImageData();
+                    initialRatio = imageData.width / imageData.naturalWidth;
+                },
+
+                zoom(event) {
+                    if (!initialRatio) return;
+
+                    const newRatio = event.detail.ratio;
+                    const maxRatio = initialRatio * 3;
+
+                    if (newRatio > maxRatio) {
+                        event.preventDefault();
+                        cropper.zoomTo(maxRatio);
+                    }
+                }
             });
         };
         reader.readAsDataURL(file);
