@@ -9,7 +9,7 @@ namespace PCSetupHub.Data.Models.Users
 	public class User : BaseEntity
 	{
 		private const string DEFAULT_AVATAR_URL
-			= "https://pcsetuphub-user-images.s3.us-east-1.amazonaws.com/avatars/default.png";
+			= "https://pcsetuphub-user-images.s3.us-east-1.amazonaws.com/avatars/default.webp";
 
 		[StringLength(254)]
 		public string Login { get; private set; } = string.Empty;

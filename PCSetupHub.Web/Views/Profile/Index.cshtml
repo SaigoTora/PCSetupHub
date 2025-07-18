@@ -40,8 +40,8 @@
 <section>
 	<section class="d-inline">
 		<img id="avatar-preview" src="@Model.AvatarUrl" alt="User avatar @Model.Name"
-			 title="@(canEditAvatar ? "Change avatar" : "")" width="100" height="100"
-			 class="user-avatar me-3 mb-3 rounded-circle @(canEditAvatar ? "cursor-pointer" : "")"
+			 title="@(canEditAvatar ? "Change avatar" : "")" width="110" height="110"
+			 class="user-avatar me-3 mb-3 @(canEditAvatar ? "cursor-pointer" : "")"
 			 data-login="@Model.Login" @(canEditAvatar ? "data-can-edit='true'" : "") />
 
 		<input type="file" id="avatar-input" accept="image/*" style="display: none;" />
@@ -123,8 +123,9 @@
 			<div class="avatar-cropper-wrapper">
 				<img id="cropper-image" src="#" alt="Image for cropping" />
 			</div>
-			<div class="d-flex align-content-center justify-content-center">
-				<button id="save-avatar-btn" class="btn btn-primary mt-2">Save</button>
+			<div class="d-flex align-content-center justify-content-end gap-3 mt-2 mb-5">
+				<button id="cancel-avatar-btn" class="button-cancel-cropping" type="button">Cancel</button>
+				<button id="save-avatar-btn" class="button-save-avatar" type="button">Save</button>
 			</div>
 		</div>
 	</section>
@@ -390,30 +391,37 @@
 				if (comment.Commentator != null)
 				{
 					<div class="comment-container">
-						<div class="mb-1 d-flex justify-content-between align-items-center">
-							<div>
-								<a asp-route-login="@comment.Commentator.Login" class="comment-login" title="@comment.Commentator.Name">
-									@comment.Commentator.Login
-								</a>
-								<span class="comment-date" title="@comment.CreatedAt.ToLocalTime().ToString("dd MMMM, yyyy 'at' HH:mm:ss", new CultureInfo("en-US"))">
-									@if (DateTime.UtcNow.Year == comment.CreatedAt.Year)
-									{
-										@comment.CreatedAt.ToLocalTime().ToString("d MMMM 'at' HH:mm", new CultureInfo("en-US"))
-									}
-									else
-									{
-										@comment.CreatedAt.ToLocalTime().ToString("d MMMM, yyyy 'at' HH:mm", new CultureInfo("en-US"))
-									}
-								</span>
+						<div class="d-flex justify-content-start align-items-start mb-1">
+							<div class="d-flex align-items-center ms-1 me-2">
+								<img src="@comment.Commentator.AvatarUrl" alt="User avatar @comment.Commentator.Name"
+									 title="@comment.Commentator.Login" width="45" height="45"
+									 class="user-avatar" />
 							</div>
-							@if (comment.CommentatorId == userId || comment.UserId == userId)
-							{
+							<div class="d-flex justify-content-between align-items-center w-100">
 								<div>
-									<form asp-action="DeleteComment" asp-route-id="@comment.Id">
-										<button class="delete-comment-button" title="Delete"><i class="d-flex justify-content-center align-items-center fa fa-trash text-muted"></i></button>
-									</form>
+									<a asp-route-login="@comment.Commentator.Login" class="comment-login" title="@comment.Commentator.Name">
+										@comment.Commentator.Login
+									</a>
+									<span class="comment-date" title="@comment.CreatedAt.ToLocalTime().ToString("dd MMMM, yyyy 'at' HH:mm:ss", new CultureInfo("en-US"))">
+										@if (DateTime.UtcNow.Year == comment.CreatedAt.Year)
+										{
+											@comment.CreatedAt.ToLocalTime().ToString("d MMMM 'at' HH:mm", new CultureInfo("en-US"))
+										}
+										else
+										{
+											@comment.CreatedAt.ToLocalTime().ToString("d MMMM, yyyy 'at' HH:mm", new CultureInfo("en-US"))
+										}
+									</span>
 								</div>
-							}
+								@if (comment.CommentatorId == userId || comment.UserId == userId)
+								{
+									<div>
+										<form asp-action="DeleteComment" asp-route-id="@comment.Id">
+											<button class="delete-comment-button" title="Delete"><i class="d-flex justify-content-center align-items-center fa fa-trash text-muted"></i></button>
+										</form>
+									</div>
+								}
+							</div>
 						</div>
 						<div class="comment-text">
 							@Html.Raw(HttpUtility.HtmlEncode(comment.Text).Replace("\n", "<br />"))

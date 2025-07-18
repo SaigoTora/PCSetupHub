@@ -35,15 +35,12 @@
     user-select: none;
 }
 
-    .submit-comment-button:active {
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
-    }
-
     .submit-comment-button:hover {
         background-color: rgb(143, 174, 6);
     }
 
 .comment-container {
+    border-radius: var(--border-radius);
     margin-bottom: 0.5rem;
     padding: 0.5rem;
 }
@@ -56,7 +53,7 @@
     color: var(--color-light-text);
     font-weight: bold;
     font-size: 0.98rem;
-    padding-right: 0.5rem;
+    padding-right: 1rem;
     text-decoration: none;
 }
 

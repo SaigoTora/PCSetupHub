@@ -7,6 +7,7 @@
     const cropperImage = document.getElementById('cropper-image');
     const cropperSection = document.getElementById('avatar-cropper-section');
     const saveButton = document.getElementById('save-avatar-btn');
+    const cancelButton = document.getElementById('cancel-avatar-btn');
     const userLogin = avatarPreview.dataset.login;
     let cropper;
 
@@ -57,8 +58,8 @@
         if (!cropper) return;
 
         const canvas = cropper.getCroppedCanvas({
-            width: 256,
-            height: 256
+            width: 400,
+            height: 400
         });
 
         const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
@@ -93,4 +94,16 @@
             saveButton.disabled = false;
         }
     });
+
+    cancelButton.addEventListener('click', () => {
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+
+        cropperImage.src = '#';
+        cropperSection.style.display = 'none';
+        avatarInput.value = ''; // Reset the file input
+    });
+
 });

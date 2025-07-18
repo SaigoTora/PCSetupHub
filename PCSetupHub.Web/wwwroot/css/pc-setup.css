@@ -142,7 +142,6 @@
     .clear-button:active,
     .edit-button:active,
     .delete-button:active {
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
         color: var(--color-dark-background);
         font-weight: bold;
     }
