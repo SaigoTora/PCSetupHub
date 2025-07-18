@@ -53,7 +53,7 @@
         reader.readAsDataURL(file);
     });
 
-    saveButton.addEventListener('click', () => {
+    saveButton.addEventListener('click', async () => {
         if (!cropper) return;
 
         const canvas = cropper.getCroppedCanvas({
@@ -61,20 +61,36 @@
             height: 256
         });
 
-        canvas.toBlob((blob) => {
-            const formData = new FormData();
-            formData.append("file", blob, `${userLogin}.webp`);
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        const uploadUrl = `/Profile/UploadAvatar/${encodeURIComponent(userLogin)}`;
 
-            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-            const uploadUrl = `/Profile/UploadAvatar/${encodeURIComponent(userLogin)}`;
+        const blob = await new Promise(resolve => {
+            canvas.toBlob(blob => resolve(blob), 'image/webp', 0.85);
+        });
 
-            fetch(uploadUrl, {
+        const formData = new FormData();
+        formData.append("file", blob, `${userLogin}.webp`);
+
+        saveButton.disabled = true;
+        try {
+            const response = await fetch(uploadUrl, {
                 method: 'POST',
                 headers: { 'RequestVerificationToken': token },
                 body: formData
-            })
-                .then(() => location.reload())
-                .catch(err => alert("An error occurred while loading the avatar."));
-        }, 'image/webp', 0.85);
+            });
+
+            if (!response.ok) {
+                throw new Error(`Upload failed with status ${response.status}`);
+            }
+
+            location.reload();
+        }
+        catch (err) {
+            alert("An error occurred while uploading the avatar.");
+            console.error(err);
+        }
+        finally {
+            saveButton.disabled = false;
+        }
     });
 });
