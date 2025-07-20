@@ -14,6 +14,7 @@ namespace PCSetupHub.Data
 		public DbSet<Friendship> Friendships { get; set; }
 		public DbSet<FriendshipStatus> FriendshipStatuses { get; set; }
 		public DbSet<Message> Messages { get; set; }
+		public DbSet<PrivacyLevel> PrivacyLevels { get; set; }
 		public DbSet<User> Users { get; set; }
 		public DbSet<Hdd> Hdds { get; set; }
 		public DbSet<Motherboard> Motherboards { get; set; }
@@ -57,6 +58,7 @@ namespace PCSetupHub.Data
 			_modelBuilder.Entity<Friendship>().ToTable("Friendship");
 			_modelBuilder.Entity<FriendshipStatus>().ToTable("FriendshipStatus");
 			_modelBuilder.Entity<Message>().ToTable("Message");
+			_modelBuilder.Entity<PrivacyLevel>().ToTable("PrivacyLevel");
 			_modelBuilder.Entity<User>().ToTable("User");
 			_modelBuilder.Entity<Hdd>().ToTable("Hdd");
 			_modelBuilder.Entity<Motherboard>().ToTable("Motherboard");
@@ -84,6 +86,10 @@ namespace PCSetupHub.Data
 
 			_modelBuilder.Entity<Color>()
 				.HasIndex(c => c.Name)
+				.IsUnique();
+
+			_modelBuilder.Entity<PrivacyLevel>()
+				.HasIndex(pl => pl.Name)
 				.IsUnique();
 
 			_modelBuilder.Entity<User>()
@@ -171,6 +177,30 @@ namespace PCSetupHub.Data
 		}
 		private void SetUserRelationships()
 		{
+			_modelBuilder.Entity<User>()
+				.HasOne(u => u.FollowersAccess)
+				.WithMany(pl => pl.FollowersAccessUsers)
+				.HasForeignKey(u => u.FollowersAccessId)
+				.OnDelete(DeleteBehavior.Restrict);
+
+			_modelBuilder.Entity<User>()
+				.HasOne(u => u.FollowingsAccess)
+				.WithMany(pl => pl.FollowingsAccessUsers)
+				.HasForeignKey(u => u.FollowingsAccessId)
+				.OnDelete(DeleteBehavior.Restrict);
+
+			_modelBuilder.Entity<User>()
+				.HasOne(u => u.MessagesAccess)
+				.WithMany(pl => pl.MessagesAccessUsers)
+				.HasForeignKey(u => u.MessagesAccessId)
+				.OnDelete(DeleteBehavior.Restrict);
+
+			_modelBuilder.Entity<User>()
+				.HasOne(u => u.PcConfigAccess)
+				.WithMany(pl => pl.PcConfigAccessUsers)
+				.HasForeignKey(u => u.PcConfigAccessId)
+				.OnDelete(DeleteBehavior.Restrict);
+
 			_modelBuilder.Entity<User>()
 				.HasOne(u => u.PcConfiguration)
 				.WithOne(pc => pc.User)

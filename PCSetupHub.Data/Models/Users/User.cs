@@ -11,22 +11,36 @@ namespace PCSetupHub.Data.Models.Users
 		private const string DEFAULT_AVATAR_URL
 			= "https://pcsetuphub-user-images.s3.us-east-1.amazonaws.com/avatars/default.webp";
 
-		[StringLength(254)]
+		[StringLength(255)]
 		public string Login { get; private set; } = string.Empty;
 		[JsonIgnore]
 		public string? PasswordHash { get; private set; }
 		public string? GoogleId { get; private set; }
 		[StringLength(64)]
 		public string Name { get; private set; } = string.Empty;
-		[StringLength(254)]
+		[StringLength(255)]
 		public string Email { get; private set; } = string.Empty;
 		[StringLength(150)]
 		public string? Description { get; private set; }
 		public PcConfiguration? PcConfiguration { get; private set; }
 		public int PcConfigurationId { get; private set; }
-
 		[Required]
 		public string AvatarUrl { get; private set; } = DEFAULT_AVATAR_URL;
+
+		#region Privacy levels
+		public PrivacyLevel? FollowersAccess { get; private set; }
+		public int FollowersAccessId { get; private set; } = (int)PrivacyLevelType.Everyone;
+
+		public PrivacyLevel? FollowingsAccess { get; private set; }
+		public int FollowingsAccessId { get; private set; } = (int)PrivacyLevelType.Everyone;
+
+		public PrivacyLevel? MessagesAccess { get; private set; }
+		public int MessagesAccessId { get; private set; } = (int)PrivacyLevelType.Everyone;
+
+		public PrivacyLevel? PcConfigAccess { get; private set; }
+		public int PcConfigAccessId { get; private set; } = (int)PrivacyLevelType.Everyone;
+		#endregion
+
 		public ICollection<Friendship>? ReceivedFriendRequests { get; private set; }
 		public ICollection<Friendship>? SentFriendRequests { get; private set; }
 		public ICollection<Comment>? WrittenComments { get; private set; }

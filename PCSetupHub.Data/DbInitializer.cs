@@ -63,6 +63,7 @@ namespace PCSetupHub.Data
 		private static void SeedStaticData()
 		{
 			SeedFriendshipStatuses();
+			SeedPrivacyLevels();
 			SeedPcTypes();
 			SeedHdds();
 			SeedMotherboards();
@@ -100,6 +101,17 @@ namespace PCSetupHub.Data
 				new FriendshipStatus("Pending"),
 				new FriendshipStatus("Accepted"),
 				new FriendshipStatus("Cancelled")
+			);
+
+			_context?.SaveChanges();
+		}
+		private static void SeedPrivacyLevels()
+		{
+			_context?.PrivacyLevels.AddRange(
+				new PrivacyLevel("Everyone"),
+				new PrivacyLevel("Friends, followers and followings"),
+				new PrivacyLevel("Friends and followings"),
+				new PrivacyLevel("Friends only")
 			);
 
 			_context?.SaveChanges();
