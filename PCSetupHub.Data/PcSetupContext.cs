@@ -15,6 +15,7 @@ namespace PCSetupHub.Data
 		public DbSet<FriendshipStatus> FriendshipStatuses { get; set; }
 		public DbSet<Message> Messages { get; set; }
 		public DbSet<PrivacyLevel> PrivacyLevels { get; set; }
+		public DbSet<PrivacySetting> PrivacySettings { get; set; }
 		public DbSet<User> Users { get; set; }
 		public DbSet<Hdd> Hdds { get; set; }
 		public DbSet<Motherboard> Motherboards { get; set; }
@@ -59,6 +60,7 @@ namespace PCSetupHub.Data
 			_modelBuilder.Entity<FriendshipStatus>().ToTable("FriendshipStatus");
 			_modelBuilder.Entity<Message>().ToTable("Message");
 			_modelBuilder.Entity<PrivacyLevel>().ToTable("PrivacyLevel");
+			_modelBuilder.Entity<PrivacySetting>().ToTable("PrivacySetting");
 			_modelBuilder.Entity<User>().ToTable("User");
 			_modelBuilder.Entity<Hdd>().ToTable("Hdd");
 			_modelBuilder.Entity<Motherboard>().ToTable("Motherboard");
@@ -90,6 +92,10 @@ namespace PCSetupHub.Data
 
 			_modelBuilder.Entity<PrivacyLevel>()
 				.HasIndex(pl => pl.Name)
+				.IsUnique();
+
+			_modelBuilder.Entity<PrivacySetting>()
+				.HasIndex(ps => ps.UserId)
 				.IsUnique();
 
 			_modelBuilder.Entity<User>()
@@ -178,27 +184,33 @@ namespace PCSetupHub.Data
 		private void SetUserRelationships()
 		{
 			_modelBuilder.Entity<User>()
-				.HasOne(u => u.FollowersAccess)
-				.WithMany(pl => pl.FollowersAccessUsers)
-				.HasForeignKey(u => u.FollowersAccessId)
+				.HasOne(u => u.PrivacySetting)
+				.WithOne(ps => ps.User)
+				.HasForeignKey<PrivacySetting>(ps => ps.UserId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			_modelBuilder.Entity<PrivacySetting>()
+				.HasOne(ps => ps.FollowersAccess)
+				.WithMany(pl => pl.FollowersAccessSettings)
+				.HasForeignKey(ps => ps.FollowersAccessId)
 				.OnDelete(DeleteBehavior.Restrict);
 
-			_modelBuilder.Entity<User>()
-				.HasOne(u => u.FollowingsAccess)
-				.WithMany(pl => pl.FollowingsAccessUsers)
-				.HasForeignKey(u => u.FollowingsAccessId)
+			_modelBuilder.Entity<PrivacySetting>()
+				.HasOne(ps => ps.FollowingsAccess)
+				.WithMany(pl => pl.FollowingsAccessSettings)
+				.HasForeignKey(ps => ps.FollowingsAccessId)
 				.OnDelete(DeleteBehavior.Restrict);
 
-			_modelBuilder.Entity<User>()
-				.HasOne(u => u.MessagesAccess)
-				.WithMany(pl => pl.MessagesAccessUsers)
-				.HasForeignKey(u => u.MessagesAccessId)
+			_modelBuilder.Entity<PrivacySetting>()
+				.HasOne(ps => ps.MessagesAccess)
+				.WithMany(pl => pl.MessagesAccessSettings)
+				.HasForeignKey(ps => ps.MessagesAccessId)
 				.OnDelete(DeleteBehavior.Restrict);
 
-			_modelBuilder.Entity<User>()
-				.HasOne(u => u.PcConfigAccess)
-				.WithMany(pl => pl.PcConfigAccessUsers)
-				.HasForeignKey(u => u.PcConfigAccessId)
+			_modelBuilder.Entity<PrivacySetting>()
+				.HasOne(ps => ps.PcConfigAccess)
+				.WithMany(pl => pl.PcConfigAccessSettings)
+				.HasForeignKey(ps => ps.PcConfigAccessId)
 				.OnDelete(DeleteBehavior.Restrict);
 
 			_modelBuilder.Entity<User>()

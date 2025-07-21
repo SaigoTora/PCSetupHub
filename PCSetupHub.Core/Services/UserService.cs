@@ -6,18 +6,22 @@ using PCSetupHub.Core.Exceptions;
 using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
+using PCSetupHub.Data.Repositories.Base;
 
 namespace PCSetupHub.Core.Services
 {
 	public class UserService : IUserService
 	{
 		private readonly IUserRepository _userRepository;
+		private readonly IRepository<PrivacySetting> _privacySettingRepository;
 		private readonly JwtService _jwtService;
 
-		public UserService(IUserRepository userRepository, JwtService jwtService)
+		public UserService(IUserRepository userRepository,
+			IRepository<PrivacySetting> privacySettingRepository, JwtService jwtService)
 		{
 			_userRepository = userRepository;
 			_jwtService = jwtService;
+			_privacySettingRepository = privacySettingRepository;
 		}
 
 		public async Task RegisterAsync(string login, string password, string name, string email,
@@ -33,7 +37,8 @@ namespace PCSetupHub.Core.Services
 			string passwordHash = new PasswordHasher<User>().HashPassword(user, password);
 			user.SetPasswordHash(passwordHash);
 
-			await _userRepository.AddAsync(user);
+			user = await _userRepository.AddAsync(user);
+			await _privacySettingRepository.AddAsync(new PrivacySetting(user.Id));
 		}
 		public async Task<AuthResponse> LoginAsync(string login, string password,
 			bool userRememberMe)
@@ -54,15 +59,16 @@ namespace PCSetupHub.Core.Services
 			else
 				throw new AuthenticationException("Invalid password.");
 		}
-		public async Task<AuthResponse> LoginOrRegisterByGoogleIdAsync(string googleId, string email,
-			string name)
+		public async Task<AuthResponse> LoginOrRegisterByGoogleIdAsync(string googleId,
+			string email, string name)
 		{
 			User? user = await _userRepository.GetByGoogleIdAsync(googleId);
 			if (user == null)
 			{
 				user = new User(email, null, name, email, null, null);
 				user.SetGoogleId(googleId);
-				await _userRepository.AddAsync(user);
+				user = await _userRepository.AddAsync(user);
+				await _privacySettingRepository.AddAsync(new PrivacySetting(user.Id));
 			}
 
 			string accessToken = await _jwtService.GenerateAccessTokenAsync(user, true);

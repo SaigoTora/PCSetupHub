@@ -34,19 +34,7 @@ namespace PCSetupHub.Data.Models.Users
 		public PcConfiguration? PcConfiguration { get; private set; }
 		public int PcConfigurationId { get; private set; }
 
-		#region Privacy levels
-		public PrivacyLevel? FollowersAccess { get; private set; }
-		public int FollowersAccessId { get; private set; } = (int)PrivacyLevelType.Everyone;
-
-		public PrivacyLevel? FollowingsAccess { get; private set; }
-		public int FollowingsAccessId { get; private set; } = (int)PrivacyLevelType.Everyone;
-
-		public PrivacyLevel? MessagesAccess { get; private set; }
-		public int MessagesAccessId { get; private set; } = (int)PrivacyLevelType.Everyone;
-
-		public PrivacyLevel? PcConfigAccess { get; private set; }
-		public int PcConfigAccessId { get; private set; } = (int)PrivacyLevelType.Everyone;
-		#endregion
+		public PrivacySetting PrivacySetting { get; private set; } = new();
 
 		public ICollection<Friendship>? ReceivedFriendRequests { get; private set; }
 		public ICollection<Friendship>? SentFriendRequests { get; private set; }
