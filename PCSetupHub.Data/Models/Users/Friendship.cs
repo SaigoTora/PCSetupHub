@@ -8,26 +8,26 @@ namespace PCSetupHub.Data.Models.Users
 	{
 		public int InitiatorId { get; private set; }
 		public int FriendId { get; private set; }
-		public int FriendshipStatusId { get; private set; }
+		public int StatusId { get; private set; }
 		public User? Initiator { get; private set; }
 		public User? Friend { get; private set; }
-		public FriendshipStatus? FriendshipStatus { get; private set; }
+		public FriendshipStatus? Status { get; private set; }
 		[Column(TypeName = "date")]
 		public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 		[Column(TypeName = "date")]
 		public DateTime? AcceptedAt { get; private set; }
 
 		public Friendship() { }
-		public Friendship(int initiatorId, int friendId, int friendshipStatusId)
+		public Friendship(int initiatorId, int friendId, int statusId)
 		{
 			InitiatorId = initiatorId;
 			FriendId = friendId;
-			FriendshipStatusId = friendshipStatusId;
+			StatusId = statusId;
 		}
 
 		public void ChangeStatus(FriendshipStatusType status)
 		{
-			FriendshipStatusId = (int)status;
+			StatusId = (int)status;
 
 			if (status == FriendshipStatusType.Accepted)
 				SetAccepted();

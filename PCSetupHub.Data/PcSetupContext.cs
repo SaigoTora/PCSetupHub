@@ -156,9 +156,9 @@ namespace PCSetupHub.Data
 				.OnDelete(DeleteBehavior.Restrict);
 
 			_modelBuilder.Entity<Friendship>()
-				.HasOne(f => f.FriendshipStatus)
+				.HasOne(f => f.Status)
 				.WithMany(fs => fs.Friendships)
-				.HasForeignKey(f => f.FriendshipStatusId)
+				.HasForeignKey(f => f.StatusId)
 				.OnDelete(DeleteBehavior.Restrict);
 		}
 		private void SetMessageRelationships()

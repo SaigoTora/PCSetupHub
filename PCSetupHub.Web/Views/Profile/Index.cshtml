@@ -58,7 +58,7 @@
 			Friendship? friendship = Model.GetReceivedRequestFrom(userId.Value);
 			if (friendship != null)
 			{
-				switch ((FriendshipStatusType)friendship.FriendshipStatusId)
+				switch ((FriendshipStatusType)friendship.StatusId)
 				{
 					case FriendshipStatusType.Pending:
 						<button class="user-action-btn me-2">Requested</button>
@@ -82,7 +82,7 @@
 				friendship = Model.GetSentRequestTo(userId.Value);
 				if (friendship != null)
 				{
-					FriendshipStatusType status = (FriendshipStatusType)friendship.FriendshipStatusId;
+					FriendshipStatusType status = (FriendshipStatusType)friendship.StatusId;
 					string highlightClass = status == FriendshipStatusType.Pending ? "friend-status-select-highlighted" : string.Empty;
 
 					<form class="d-inline-block me-2" asp-controller="Profile" asp-action="UpdateFriendshipStatus" asp-route-id="@friendship.Id" method="post">
@@ -98,9 +98,9 @@
 
 							@if (status != FriendshipStatusType.Accepted)
 							{
-								<option value=@((int)FriendshipStatusType.Accepted) selected="@(friendship.FriendshipStatusId == (int)FriendshipStatusType.Accepted)">Accept</option>
+								<option value=@((int)FriendshipStatusType.Accepted) selected="@(friendship.StatusId == (int)FriendshipStatusType.Accepted)">Accept</option>
 							}
-							<option value=@((int)FriendshipStatusType.Cancelled) selected="@(friendship.FriendshipStatusId == (int)FriendshipStatusType.Cancelled)">Reject</option>
+							<option value=@((int)FriendshipStatusType.Cancelled) selected="@(friendship.StatusId == (int)FriendshipStatusType.Cancelled)">Reject</option>
 						</select>
 					</form>
 				}

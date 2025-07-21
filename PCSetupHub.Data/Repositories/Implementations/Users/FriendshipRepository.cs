@@ -31,7 +31,7 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 			string searchQuery)
 		{
 			return f =>
-				f.FriendshipStatusId == (int)FriendshipStatusType.Accepted &&
+				f.StatusId == (int)FriendshipStatusType.Accepted &&
 				(
 					(f.InitiatorId == userId && f.Friend != null &&
 						(string.IsNullOrEmpty(searchQuery)
@@ -66,8 +66,8 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 			string searchQuery)
 		{
 			return f =>
-				(f.FriendshipStatusId == (int)FriendshipStatusType.Pending
-				|| f.FriendshipStatusId == (int)FriendshipStatusType.Cancelled) &&
+				(f.StatusId == (int)FriendshipStatusType.Pending
+				|| f.StatusId == (int)FriendshipStatusType.Cancelled) &&
 				(
 					f.FriendId == userId && f.Initiator != null &&
 						(string.IsNullOrEmpty(searchQuery)
@@ -98,8 +98,8 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 			string searchQuery)
 		{
 			return f =>
-				(f.FriendshipStatusId == (int)FriendshipStatusType.Pending
-				|| f.FriendshipStatusId == (int)FriendshipStatusType.Cancelled) &&
+				(f.StatusId == (int)FriendshipStatusType.Pending
+				|| f.StatusId == (int)FriendshipStatusType.Cancelled) &&
 				(
 					f.InitiatorId == userId && f.Friend != null &&
 						(string.IsNullOrEmpty(searchQuery)

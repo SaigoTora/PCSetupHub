@@ -58,14 +58,14 @@ namespace PCSetupHub.Data.Models.Users
 				{
 					foreach (Friendship friendship in ReceivedFriendRequests)
 						if (friendship.Initiator != null &&
-							friendship.FriendshipStatusId == (int)FriendshipStatusType.Accepted)
+							friendship.StatusId == (int)FriendshipStatusType.Accepted)
 							friends.Add(friendship.Initiator);
 				}
 				if (SentFriendRequests != null)
 				{
 					foreach (Friendship friendship in SentFriendRequests)
 						if (friendship.Friend != null &&
-							friendship.FriendshipStatusId == (int)FriendshipStatusType.Accepted)
+							friendship.StatusId == (int)FriendshipStatusType.Accepted)
 							friends.Add(friendship.Friend);
 				}
 
@@ -82,8 +82,8 @@ namespace PCSetupHub.Data.Models.Users
 				{
 					foreach (Friendship friendship in ReceivedFriendRequests)
 						if (friendship.Initiator != null &&
-							(friendship.FriendshipStatusId == (int)FriendshipStatusType.Pending ||
-							friendship.FriendshipStatusId == (int)FriendshipStatusType.Cancelled))
+							(friendship.StatusId == (int)FriendshipStatusType.Pending ||
+							friendship.StatusId == (int)FriendshipStatusType.Cancelled))
 							followers.Add(friendship.Initiator);
 				}
 
@@ -100,8 +100,8 @@ namespace PCSetupHub.Data.Models.Users
 				{
 					foreach (Friendship friendship in SentFriendRequests)
 						if (friendship.Friend != null &&
-							(friendship.FriendshipStatusId == (int)FriendshipStatusType.Pending ||
-							friendship.FriendshipStatusId == (int)FriendshipStatusType.Cancelled))
+							(friendship.StatusId == (int)FriendshipStatusType.Pending ||
+							friendship.StatusId == (int)FriendshipStatusType.Cancelled))
 							followings.Add(friendship.Friend);
 				}
 

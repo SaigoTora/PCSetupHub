@@ -366,7 +366,7 @@ namespace PCSetupHub.Data
 			];
 
 			foreach (Friendship friendship in friendships)
-				if (friendship.FriendshipStatusId == 2)
+				if (friendship.StatusId == 2)
 					friendship.SetAccepted();
 
 			_context?.Friendships.AddRange(friendships);
