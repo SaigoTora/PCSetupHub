@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PCSetupHub.Data;
 
@@ -11,9 +12,11 @@ using PCSetupHub.Data;
 namespace PCSetupHub.Data.Migrations
 {
     [DbContext(typeof(PcSetupContext))]
-    partial class PcSetupContextModelSnapshot : ModelSnapshot
+    [Migration("20250721110808_AddCreatedAtToUser")]
+    partial class AddCreatedAtToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

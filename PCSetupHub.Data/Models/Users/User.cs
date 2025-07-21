@@ -13,19 +13,26 @@ namespace PCSetupHub.Data.Models.Users
 
 		[StringLength(255)]
 		public string Login { get; private set; } = string.Empty;
+
 		[JsonIgnore]
 		public string? PasswordHash { get; private set; }
 		public string? GoogleId { get; private set; }
+
 		[StringLength(64)]
 		public string Name { get; private set; } = string.Empty;
+
 		[StringLength(255)]
 		public string Email { get; private set; } = string.Empty;
+
 		[StringLength(150)]
 		public string? Description { get; private set; }
-		public PcConfiguration? PcConfiguration { get; private set; }
-		public int PcConfigurationId { get; private set; }
+
 		[Required]
 		public string AvatarUrl { get; private set; } = DEFAULT_AVATAR_URL;
+		public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+
+		public PcConfiguration? PcConfiguration { get; private set; }
+		public int PcConfigurationId { get; private set; }
 
 		#region Privacy levels
 		public PrivacyLevel? FollowersAccess { get; private set; }
