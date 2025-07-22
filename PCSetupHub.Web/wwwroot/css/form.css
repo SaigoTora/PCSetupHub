@@ -267,6 +267,34 @@ option {
     text-align: center;
 }
 
+.description-title {
+    width: 75%;
+    margin-bottom: 0.5rem;
+}
+
+.description-input {
+    width: 75%;
+    border: 1px solid var(--color-text-muted);
+    border-radius: var(--border-radius);
+    color: var(--color-light-text);
+    font-size: 0.96rem;
+    background-color: rgb(32, 36, 42);
+    padding: 0.5rem 0.75rem;
+    outline: none;
+    resize: none;
+    height: 3.75rem;
+    min-height: 5.5rem;
+    max-height: 20rem;
+}
+
+    .description-input:focus {
+        border-color: var(--color-accent);
+    }
+
+    .description-input::placeholder {
+        user-select: none;
+    }
+
 @media (max-width: 1264px) {
     .form__group {
         width: 60%;
@@ -284,6 +312,10 @@ option {
 
     select {
         width: 65%;
+    }
+
+    .description-input {
+        width: 100%;
     }
 }
 

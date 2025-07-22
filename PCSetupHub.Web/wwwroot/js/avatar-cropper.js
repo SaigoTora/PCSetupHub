@@ -1,5 +1,6 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
     const avatarPreview = document.getElementById('avatar-preview');
+    const buttonChangeAvatar = document.getElementById('button-change-avatar');
 
     if (!avatarPreview.dataset.canEdit) return;
 
@@ -14,6 +15,12 @@
     avatarPreview.addEventListener('click', () => {
         avatarInput.click();
     });
+
+    if (buttonChangeAvatar) {
+        buttonChangeAvatar.addEventListener('click', () => {
+            avatarInput.click();
+        });
+    }
 
     avatarInput.addEventListener('change', (e) => {
         const file = e.target.files[0];

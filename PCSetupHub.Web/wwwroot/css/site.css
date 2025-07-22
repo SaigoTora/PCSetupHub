@@ -261,7 +261,7 @@ h1 {
     border-radius: 50% !important;
 }
 
-.button-cancel-cropping, .button-save-avatar {
+.button-cancel, .button-save {
     border-radius: var(--border-radius);
     border: none;
     font-size: 1.25rem;
@@ -270,21 +270,23 @@ h1 {
     transition: background-color 0.3s ease-in-out;
 }
 
-.button-cancel-cropping {
+.button-cancel {
     background-color: rgb(248, 113, 113);
 }
 
-    .button-cancel-cropping:hover {
+    .button-cancel:hover {
         background-color: rgb(239, 68, 68);
     }
 
-.button-save-avatar {
-    background-color: rgb(134, 239, 172);
+.button-save {
+    background-color: rgb(72, 196, 70);
 }
 
-    .button-save-avatar:hover {
-        background-color: rgb(74, 222, 128);
+    .button-save:hover {
+        background-color: rgb(46, 158, 44);
     }
+
+
 
 .user-login {
     font-weight: bold;
@@ -718,6 +720,10 @@ caption {
     .create-component-prompt a {
         color: var(--color-accent);
     }
+
+.me-2-5 {
+    margin-right: 0.75rem;
+}
 
 .mb-2-5 {
     margin-bottom: 0.75rem;

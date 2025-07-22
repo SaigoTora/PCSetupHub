@@ -10,7 +10,10 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 	{
 		public async Task<User?> GetByLoginAsync(string login, bool includeDetails)
 		{
-			var query = Context.Users.Include(u => u.PrivacySetting).AsQueryable();
+			var query = Context.Users
+				.Include(u => u.PrivacySetting)
+				.Include(u => u.PcConfiguration)
+				.AsQueryable();
 
 			if (includeDetails)
 				return await query

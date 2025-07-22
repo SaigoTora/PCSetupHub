@@ -24,5 +24,13 @@ namespace PCSetupHub.Data.Models.Users
 		{
 			UserId = userId;
 		}
+		public PrivacySetting(int followersAccessId, int followingsAccessId, int messagesAccessId,
+			int pcConfigAccessId)
+		{
+			FollowersAccessId = followersAccessId;
+			FollowingsAccessId = followingsAccessId;
+			MessagesAccessId = messagesAccessId;
+			PcConfigAccessId = pcConfigAccessId;
+		}
 	}
 }
