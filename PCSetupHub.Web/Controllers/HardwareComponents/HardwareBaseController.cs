@@ -72,14 +72,6 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			colorIds.RemoveAll(id => !existingColorIds.Contains(id));
 		}
-
-		protected void SetFirstError()
-		{
-			ViewData["FirstError"] = ModelState.Values
-				.SelectMany(v => v.Errors)
-				.Select(e => e.ErrorMessage)
-				.FirstOrDefault();
-		}
 		protected async Task SetColorsAsync(List<int>? selectedColorsId = null)
 		{
 			if (IsComponentColorful)

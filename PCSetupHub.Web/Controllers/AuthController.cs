@@ -49,7 +49,7 @@ namespace PCSetupHub.Web.Controllers
 
 			if (!ModelState.IsValid)
 			{
-				SetFirstError();
+				this.SetFirstError();
 				return View();
 			}
 
@@ -100,7 +100,7 @@ namespace PCSetupHub.Web.Controllers
 					return false;
 			}
 
-			SetFirstError();
+			this.SetFirstError();
 			return true;
 		}
 		#endregion
@@ -120,7 +120,7 @@ namespace PCSetupHub.Web.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
-				SetFirstError();
+				this.SetFirstError();
 				return View();
 			}
 
@@ -135,7 +135,7 @@ namespace PCSetupHub.Web.Controllers
 			catch (AuthenticationException)
 			{
 				ModelState.AddModelError("Login", "Invalid login or password.");
-				SetFirstError();
+				this.SetFirstError();
 				_logger.LogWarning("Invalid login attempt for user {Login}", loginRequest.Login);
 				return View();
 			}
@@ -194,7 +194,7 @@ namespace PCSetupHub.Web.Controllers
 		private ViewResult HandleGoogleAuthError()
 		{
 			ModelState.AddModelError("Login", "Google authentication failed.");
-			SetFirstError();
+			this.SetFirstError();
 
 			return View("Login");
 		}
@@ -212,13 +212,6 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 
-		private void SetFirstError()
-		{
-			ViewData["FirstError"] = ModelState.Values
-				.SelectMany(v => v.Errors)
-				.Select(e => e.ErrorMessage)
-				.FirstOrDefault();
-		}
 		private void AddTokensToCookies(AuthResponse authResponse, bool isSessionCookies)
 		{
 			DateTime? accessTokenExpires = isSessionCookies ?

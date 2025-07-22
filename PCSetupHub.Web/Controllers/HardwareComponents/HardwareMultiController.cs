@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using PCSetupHub.Core.Extensions;
 using PCSetupHub.Data.Models.Attributes;
 using PCSetupHub.Data.Models.Hardware;
 using PCSetupHub.Data.Repositories.Base;
@@ -212,7 +213,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			if (!ModelState.IsValid)
 			{
-				SetFirstError();
+				this.SetFirstError();
 				await SetColorsAsync(model.SelectedColorsId);
 				return View(model.Component);
 			}
@@ -304,7 +305,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			if (!ModelState.IsValid)
 			{
-				SetFirstError();
+				this.SetFirstError();
 				await SetColorsAsync(model.SelectedColorsId);
 				return View(model.Component);
 			}
@@ -361,7 +362,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			if (!ModelState.IsValid)
 			{
-				SetFirstError();
+				this.SetFirstError();
 				await SetColorsAsync(model.SelectedColorsId);
 				return View(model.Component);
 			}
