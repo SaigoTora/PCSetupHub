@@ -19,8 +19,7 @@ namespace PCSetupHub.Data.Models.Users
 		public PrivacyLevel? PcConfigAccess { get; private set; }
 		public int PcConfigAccessId { get; private set; } = (int)PrivacyLevelType.Everyone;
 
-		public PrivacySetting()
-		{ }
+		public PrivacySetting() { }
 		public PrivacySetting(int userId)
 		{
 			UserId = userId;

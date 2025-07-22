@@ -46,8 +46,8 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 			=> await Context.Users.AnyAsync(u => u.Email == email);
 		public async Task<bool> UserHasPcConfigurationAsync(int userId, int pcConfigurationId)
 		{
-			return await Context.Users.AnyAsync(u => u.Id == userId
-				&& u.PcConfigurationId == pcConfigurationId);
+			return await Context.PcConfigurations.AnyAsync(pc => pc.Id == pcConfigurationId
+				&& pc.UserId == userId);
 		}
 	}
 }

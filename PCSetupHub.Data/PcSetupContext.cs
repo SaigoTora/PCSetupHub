@@ -98,18 +98,19 @@ namespace PCSetupHub.Data
 				.HasIndex(ps => ps.UserId)
 				.IsUnique();
 
+			_modelBuilder.Entity<PcType>()
+				.HasIndex(pcType => pcType.Name)
+				.IsUnique();
+
+			_modelBuilder.Entity<PcConfiguration>()
+				.HasIndex(pc => pc.UserId)
+				.IsUnique();
+
 			_modelBuilder.Entity<User>()
 				.HasIndex(u => u.Login)
 				.IsUnique();
 			_modelBuilder.Entity<User>()
 				.HasIndex(u => u.Email)
-				.IsUnique();
-			_modelBuilder.Entity<User>()
-				.HasIndex(u => u.PcConfigurationId)
-				.IsUnique();
-
-			_modelBuilder.Entity<PcType>()
-				.HasIndex(pcType => pcType.Name)
 				.IsUnique();
 		}
 
@@ -212,16 +213,16 @@ namespace PCSetupHub.Data
 				.WithMany(pl => pl.PcConfigAccessSettings)
 				.HasForeignKey(ps => ps.PcConfigAccessId)
 				.OnDelete(DeleteBehavior.Restrict);
-
-			_modelBuilder.Entity<User>()
-				.HasOne(u => u.PcConfiguration)
-				.WithOne(pc => pc.User)
-				.HasForeignKey<User>(u => u.PcConfigurationId)
-				.OnDelete(DeleteBehavior.Cascade);
 		}
 
 		private void SetPcConfigurationRelationships()
 		{
+			_modelBuilder.Entity<PcConfiguration>()
+				.HasOne(pc => pc.User)
+				.WithOne(u => u.PcConfiguration)
+				.HasForeignKey<PcConfiguration>(pc => pc.UserId)
+				.OnDelete(DeleteBehavior.Cascade);
+
 			_modelBuilder.Entity<PcConfiguration>()
 				.HasOne(pc => pc.Type)
 				.WithMany(t => t.PcConfigurations)

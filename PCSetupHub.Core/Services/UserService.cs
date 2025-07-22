@@ -7,6 +7,7 @@ using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
 using PCSetupHub.Data.Repositories.Base;
+using PCSetupHub.Data.Models.Hardware;
 
 namespace PCSetupHub.Core.Services
 {
@@ -14,18 +15,22 @@ namespace PCSetupHub.Core.Services
 	{
 		private readonly IUserRepository _userRepository;
 		private readonly IRepository<PrivacySetting> _privacySettingRepository;
+		private readonly IRepository<PcConfiguration> _pcConfigurationRepository;
 		private readonly JwtService _jwtService;
 
 		public UserService(IUserRepository userRepository,
-			IRepository<PrivacySetting> privacySettingRepository, JwtService jwtService)
+			IRepository<PrivacySetting> privacySettingRepository,
+			IRepository<PcConfiguration> pcConfigurationRepository,
+			JwtService jwtService)
 		{
 			_userRepository = userRepository;
-			_jwtService = jwtService;
 			_privacySettingRepository = privacySettingRepository;
+			_pcConfigurationRepository = pcConfigurationRepository;
+			_jwtService = jwtService;
 		}
 
 		public async Task RegisterAsync(string login, string password, string name, string email,
-			string? description, int? pcConfigurationId = null, bool checkUniqueness = true)
+			string? description, bool checkUniqueness = true)
 		{
 			if (checkUniqueness && await _userRepository.ExistsByLoginAsync(login))
 				throw new UserAlreadyExistsException($"User with login '{login}' already exists.");
@@ -33,12 +38,13 @@ namespace PCSetupHub.Core.Services
 				throw new EmailAlreadyExistsException($"User with email " +
 					$"'{email}' already exists.");
 
-			User user = new(login, password, name, email, description, pcConfigurationId);
+			User user = new(login, password, name, email, description);
 			string passwordHash = new PasswordHasher<User>().HashPassword(user, password);
 			user.SetPasswordHash(passwordHash);
 
 			user = await _userRepository.AddAsync(user);
 			await _privacySettingRepository.AddAsync(new PrivacySetting(user.Id));
+			await _pcConfigurationRepository.AddAsync(new PcConfiguration(user.Id));
 		}
 		public async Task<AuthResponse> LoginAsync(string login, string password,
 			bool userRememberMe)
@@ -65,10 +71,11 @@ namespace PCSetupHub.Core.Services
 			User? user = await _userRepository.GetByGoogleIdAsync(googleId);
 			if (user == null)
 			{
-				user = new User(email, null, name, email, null, null);
+				user = new User(email, null, name, email, null);
 				user.SetGoogleId(googleId);
 				user = await _userRepository.AddAsync(user);
 				await _privacySettingRepository.AddAsync(new PrivacySetting(user.Id));
+				await _pcConfigurationRepository.AddAsync(new PcConfiguration(user.Id));
 			}
 
 			string accessToken = await _jwtService.GenerateAccessTokenAsync(user, true);

@@ -31,9 +31,7 @@ namespace PCSetupHub.Data.Models.Users
 		public string AvatarUrl { get; private set; } = DEFAULT_AVATAR_URL;
 		public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
-		public PcConfiguration? PcConfiguration { get; private set; }
-		public int PcConfigurationId { get; private set; }
-
+		public PcConfiguration PcConfiguration { get; private set; } = new();
 		public PrivacySetting PrivacySetting { get; private set; } = new();
 
 		public ICollection<Friendship>? ReceivedFriendRequests { get; private set; }
@@ -106,18 +104,13 @@ namespace PCSetupHub.Data.Models.Users
 
 		public User() { }
 		public User(string login, string? passwordHash, string name,
-			string email, string? description, int? pcConfigurationId)
+			string email, string? description)
 		{
 			Login = login;
 			PasswordHash = passwordHash;
 			Name = name;
 			Email = email;
 			Description = description;
-
-			if (pcConfigurationId.HasValue)
-				PcConfigurationId = pcConfigurationId.Value;
-			else
-				PcConfiguration = new PcConfiguration();
 		}
 
 		public void SetPasswordHash(string newPasswordHash)

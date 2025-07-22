@@ -6,6 +6,9 @@ namespace PCSetupHub.Data.Models.Hardware
 {
 	public class PcConfiguration : BaseEntity
 	{
+		public User? User { get; private set; }
+		public int UserId { get; private set; }
+
 		public PcType? Type { get; private set; }
 		public Processor? Processor { get; private set; }
 		public VideoCard? VideoCard { get; private set; }
@@ -16,7 +19,6 @@ namespace PCSetupHub.Data.Models.Hardware
 		public int? VideoCardId { get; private set; }
 		public int? MotherboardId { get; private set; }
 		public int? PowerSupplyId { get; private set; }
-		public User? User { get; private set; }
 		public ICollection<PcConfigurationRam>? PcConfigurationRams { get; private set; }
 		public ICollection<PcConfigurationSsd>? PcConfigurationSsds { get; private set; }
 		public ICollection<PcConfigurationHdd>? PcConfigurationHdds { get; private set; }
@@ -72,6 +74,10 @@ namespace PCSetupHub.Data.Models.Hardware
 		}
 
 		public PcConfiguration() { }
+		public PcConfiguration(int userId)
+		{
+			UserId = userId;
+		}
 		public PcConfiguration(int? typeId, int? processorId, int? videoCardId,
 			int? motherboardId, int? powerSupplyId)
 		{
