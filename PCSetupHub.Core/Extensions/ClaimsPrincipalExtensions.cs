@@ -18,5 +18,10 @@ namespace PCSetupHub.Core.Extensions
 			=> user?.Claims.FirstOrDefault(c => c.Type == "userLogin")?.Value;
 		public static string? GetName(this ClaimsPrincipal user)
 			=> user?.Claims.FirstOrDefault(c => c.Type == "userName")?.Value;
+		public static bool GetRememberMe(this ClaimsPrincipal user)
+		{
+			return bool.Parse(user?.Claims
+				.FirstOrDefault(c => c.Type == "userRememberMe")?.Value ?? "false");
+		}
 	}
 }

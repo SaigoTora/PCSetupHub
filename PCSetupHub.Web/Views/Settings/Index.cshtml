@@ -45,12 +45,20 @@
 	</div>
 </section>
 
+<div class="w-100 mt-5 mb-4 d-flex justify-content-center align-items-center">
+	<form asp-controller="Auth" asp-action="UpdateLogin" asp-route-login="@Model.Login" method="get" class="me-4">
+		<button class="user-action-btn" title="Change login">Change Login</button>
+	</form>
+	<form asp-controller="Auth" asp-action="UpdatePassword" asp-route-login="@Model.Login" method="get">
+		<button class="user-action-btn" title="Change password">Change Password</button>
+	</form>
+</div>
+
 <form asp-controller="Settings" asp-action="Index" asp-route-login="@Model.Login" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
 	<div class="form__group field">
 		<input type="text" class="form__field" placeholder="Name" asp-for="@Model.Name" required>
 		<label for="Name" class="form__label">Name</label>
 	</div>
-
 
 	<div class="form__group field">
 		<input type="text" class="form__field" placeholder="Email" asp-for="@Model.Email" required>
@@ -58,7 +66,7 @@
 	</div>
 
 	<label asp-for="@Model.Description" class="description-title">Description</label>
-	<textarea class="description-input mb-4" placeholder="Write something..." type="text" asp-for="@Model.Description" autocomplete="off" title=""
+	<textarea class="description-input mb-5" placeholder="Write something..." type="text" asp-for="@Model.Description" autocomplete="off" title=""
 			  onkeydown="if(event.key==='Enter'){event.preventDefault();}"
 			  oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">
 	</textarea>

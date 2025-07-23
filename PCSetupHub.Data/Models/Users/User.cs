@@ -128,6 +128,7 @@ namespace PCSetupHub.Data.Models.Users
 		public bool HasDefaultAvatar() => AvatarUrl == DEFAULT_AVATAR_URL;
 		public void SetAvatarUrl(string avatarUrl) => AvatarUrl = avatarUrl;
 
+		public void SetLogin(string login) => Login = login;
 		public void UpdateSettings(string name, string email, string? description,
 			PrivacySetting settings)
 		{

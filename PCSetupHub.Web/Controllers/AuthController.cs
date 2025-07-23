@@ -14,6 +14,8 @@ using PCSetupHub.Core.Exceptions;
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Core.Settings;
+using PCSetupHub.Data.Models.Users;
+using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 namespace PCSetupHub.Web.Controllers
 {
@@ -21,14 +23,16 @@ namespace PCSetupHub.Web.Controllers
 	{
 		private readonly ILogger<AuthController> _logger;
 		private readonly IUserService _userService;
+		private readonly IUserRepository _userRepository;
 		private readonly TokenSettings _accessTokenSettings;
 		private readonly TokenSettings _refreshTokenSettings;
 
 		public AuthController(ILogger<AuthController> logger, IUserService userService,
-			IOptions<AuthSettings> options)
+			IUserRepository userRepository, IOptions<AuthSettings> options)
 		{
 			_logger = logger;
 			_userService = userService;
+			_userRepository = userRepository;
 			_accessTokenSettings = options.Value.AccessToken;
 			_refreshTokenSettings = options.Value.RefreshToken;
 		}
@@ -172,8 +176,8 @@ namespace PCSetupHub.Web.Controllers
 
 			if (googleId == null || email == null)
 			{
-				googleId = googleId ?? "Unknown";
-				email = email ?? "Unknown";
+				googleId ??= "Unknown";
+				email ??= "Unknown";
 				_logger.LogInformation("Google authentication failed for user {Email} " +
 					"(GoogleId: {GoogleId})", email, googleId);
 				return HandleGoogleAuthError();
@@ -197,6 +201,77 @@ namespace PCSetupHub.Web.Controllers
 			this.SetFirstError();
 
 			return View("Login");
+		}
+		#endregion
+
+		#region Updating
+		[HttpGet("UpdateLogin/{login}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		public async Task<IActionResult> UpdateLogin(string login)
+		{
+			User? user = await _userRepository.GetByLoginAsync(login, false);
+			if (user == null)
+				return NotFound();
+			if (user.Id != User.GetId())
+				return StatusCode(403);
+
+			UpdateLoginRequest loginRequest = new(user.Login);
+			return View(loginRequest);
+		}
+
+		[HttpPost("UpdateLogin/{login}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		public async Task<IActionResult> UpdateLogin(string login, UpdateLoginRequest model)
+		{
+			User? user = await _userRepository.GetByLoginAsync(login, false);
+			if (user == null)
+				return NotFound();
+			if (user.Id != User.GetId())
+				return StatusCode(403);
+
+			if (!ModelState.IsValid)
+			{
+				this.SetFirstError();
+				return View(model);
+			}
+
+			if (login == model.NewLogin)
+			{
+				ModelState.AddModelError("Login",
+					"New login cannot be the same as the current login.");
+				this.SetFirstError();
+				return View(model);
+			}
+
+			if (!_userService.VerifyPassword(user, model.Password))
+			{
+				ModelState.AddModelError("Password", "Invalid password.");
+				this.SetFirstError();
+				return View(model);
+			}
+
+			if (model.NewLogin != login
+				&& await _userRepository.ExistsByLoginAsync(model.NewLogin))
+			{
+				ModelState.AddModelError("Login",
+					$"User with login '{model.NewLogin}' already exists.");
+				this.SetFirstError();
+				return View(model);
+			}
+
+			user.SetLogin(model.NewLogin);
+			await _userRepository.UpdateAsync(user);
+
+			bool rememberMe = User.GetRememberMe();
+			AuthResponse authResponse = await _userService.LoginAsync(model.NewLogin,
+				model.Password, rememberMe);
+
+			DeleteTokensCookies();
+			AddTokensToCookies(authResponse, !rememberMe);
+			_logger.LogInformation("User with Id {UserId} changed login from '{OldLogin}' to " +
+				"'{NewLogin}'", user.Id, login, model.NewLogin);
+
+			return RedirectToAction("Index", "Settings", new { login = user.Login });
 		}
 		#endregion
 

@@ -46,16 +46,20 @@ namespace PCSetupHub.Core.Services
 			await _privacySettingRepository.AddAsync(new PrivacySetting(user.Id));
 			await _pcConfigurationRepository.AddAsync(new PcConfiguration(user.Id));
 		}
+		public bool VerifyPassword(User user, string password)
+		{
+			PasswordVerificationResult result = new PasswordHasher<User>()
+				.VerifyHashedPassword(user, user.PasswordHash!, password);
+
+			return result == PasswordVerificationResult.Success;
+		}
 		public async Task<AuthResponse> LoginAsync(string login, string password,
 			bool userRememberMe)
 		{
 			User? user = await _userRepository.GetByLoginAsync(login, false)
 				?? throw new AuthenticationException("User not found.");
 
-			PasswordVerificationResult result = new PasswordHasher<User>()
-				.VerifyHashedPassword(user, user.PasswordHash!, password);
-
-			if (result == PasswordVerificationResult.Success)
+			if (VerifyPassword(user, password))
 			{
 				string accessToken = await _jwtService.GenerateAccessTokenAsync(user,
 					userRememberMe);
