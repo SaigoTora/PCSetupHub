@@ -76,19 +76,19 @@ namespace PCSetupHub.Web.Controllers
 				return View();
 			}
 
-			ClearPasswordsFromTempData();
+			ClearRegisterPasswordsFromTempData();
 			return RedirectToAction("Index", "Home");
 		}
 
 		private void SavePasswordsToTempData(RegisterRequest request)
 		{
-			TempData["Password"] = request.Password ?? string.Empty;
-			TempData["ConfirmPassword"] = request.ConfirmPassword ?? string.Empty;
+			TempData[nameof(RegisterRequest.Password)] = request.Password ?? string.Empty;
+			TempData[nameof(RegisterRequest.ConfirmPassword)] = request.ConfirmPassword ?? string.Empty;
 		}
-		private void ClearPasswordsFromTempData()
+		private void ClearRegisterPasswordsFromTempData()
 		{
-			TempData.Remove("Password");
-			TempData.Remove("ConfirmPassword");
+			TempData.Remove(nameof(RegisterRequest.Password));
+			TempData.Remove(nameof(RegisterRequest.ConfirmPassword));
 		}
 		private bool HandleRegistrationExceptions(Exception ex)
 		{
@@ -209,11 +209,9 @@ namespace PCSetupHub.Web.Controllers
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> UpdateLogin(string login)
 		{
-			User? user = await _userRepository.GetByLoginAsync(login, false);
-			if (user == null)
-				return NotFound();
-			if (user.Id != User.GetId())
-				return StatusCode(403);
+			var (authResult, user) = await CheckUserAuthorizationAsync(login);
+			if (authResult != null)
+				return authResult;
 
 			UpdateLoginRequest loginRequest = new(user.Login);
 			return View(loginRequest);
@@ -223,11 +221,9 @@ namespace PCSetupHub.Web.Controllers
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> UpdateLogin(string login, UpdateLoginRequest model)
 		{
-			User? user = await _userRepository.GetByLoginAsync(login, false);
-			if (user == null)
-				return NotFound();
-			if (user.Id != User.GetId())
-				return StatusCode(403);
+			var (authResult, user) = await CheckUserAuthorizationAsync(login);
+			if (authResult != null)
+				return authResult;
 
 			if (!ModelState.IsValid)
 			{
@@ -235,29 +231,8 @@ namespace PCSetupHub.Web.Controllers
 				return View(model);
 			}
 
-			if (login == model.NewLogin)
-			{
-				ModelState.AddModelError("Login",
-					"New login cannot be the same as the current login.");
-				this.SetFirstError();
-				return View(model);
-			}
-
-			if (!_userService.VerifyPassword(user, model.Password))
-			{
-				ModelState.AddModelError("Password", "Invalid password.");
-				this.SetFirstError();
-				return View(model);
-			}
-
-			if (model.NewLogin != login
-				&& await _userRepository.ExistsByLoginAsync(model.NewLogin))
-			{
-				ModelState.AddModelError("Login",
-					$"User with login '{model.NewLogin}' already exists.");
-				this.SetFirstError();
-				return View(model);
-			}
+			if (await ValidateLoginChangeAsync(model, user) is IActionResult validationResult)
+				return validationResult;
 
 			user.SetLogin(model.NewLogin);
 			await _userRepository.UpdateAsync(user);
@@ -271,8 +246,122 @@ namespace PCSetupHub.Web.Controllers
 			_logger.LogInformation("User with Id {UserId} changed login from '{OldLogin}' to " +
 				"'{NewLogin}'", user.Id, login, model.NewLogin);
 
-			return RedirectToAction("Index", "Settings", new { login = user.Login });
+			return RedirectToSettings(user.Login);
 		}
+
+		[HttpGet("UpdatePassword/{login}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		public async Task<IActionResult> UpdatePassword(string login)
+		{
+			var (authResult, _) = await CheckUserAuthorizationAsync(login);
+			if (authResult != null)
+				return authResult;
+
+			return View(new UpdatePasswordRequest());
+		}
+
+		[HttpPost("UpdatePassword/{login}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		public async Task<IActionResult> UpdatePassword(string login, UpdatePasswordRequest model)
+		{
+			SavePasswordsToTempData(model);
+			var (authResult, user) = await CheckUserAuthorizationAsync(login);
+			if (authResult != null)
+				return authResult;
+
+			if (!ModelState.IsValid)
+			{
+				this.SetFirstError();
+				return View(model);
+			}
+
+			if (ValidatePasswordChange(model, user) is IActionResult validationResult)
+				return validationResult;
+
+			user.SetPasswordHash(_userService.HashPassword(user, model.NewPassword));
+			await _userRepository.UpdateAsync(user);
+			_logger.LogInformation("User with Id {UserId} successfully changed password", user.Id);
+			ClearUpdatePasswordsFromTempData();
+
+			return RedirectToSettings(user.Login);
+		}
+
+		private async Task<(IActionResult?, User)> CheckUserAuthorizationAsync(string login)
+		{
+			var user = await _userRepository.GetByLoginAsync(login, false);
+			if (user == null)
+				return (NotFound(), null!);
+			if (user.Id != User.GetId())
+				return (StatusCode(403), user);
+
+			return (null, user);
+		}
+		private async Task<ViewResult?> ValidateLoginChangeAsync(UpdateLoginRequest request,
+			User user)
+		{
+			string oldLogin = user.Login;
+
+			if (oldLogin == request.NewLogin)
+			{
+				ModelState.AddModelError(nameof(request.NewLogin),
+					"New login cannot be the same as the current login.");
+				this.SetFirstError();
+				return View(request);
+			}
+
+			if (!_userService.VerifyPassword(user, request.Password))
+			{
+				ModelState.AddModelError(nameof(request.Password), "Invalid password.");
+				this.SetFirstError();
+				return View(request);
+			}
+
+			if (request.NewLogin != oldLogin
+				&& await _userRepository.ExistsByLoginAsync(request.NewLogin))
+			{
+				ModelState.AddModelError(nameof(request.NewLogin),
+					$"User with login '{request.NewLogin}' already exists.");
+				this.SetFirstError();
+				return View(request);
+			}
+
+			return null;
+		}
+		private ViewResult? ValidatePasswordChange(UpdatePasswordRequest request,
+			User user)
+		{
+			if (request.OldPassword == request.NewPassword)
+			{
+				ModelState.AddModelError(nameof(request.NewPassword),
+					"New password cannot be the same as the current password.");
+				this.SetFirstError();
+				return View(request);
+			}
+
+			if (!_userService.VerifyPassword(user, request.OldPassword))
+			{
+				ModelState.AddModelError(nameof(request.OldPassword), "Invalid old password.");
+				this.SetFirstError();
+				return View(request);
+			}
+
+			return null;
+		}
+
+		private void SavePasswordsToTempData(UpdatePasswordRequest request)
+		{
+			TempData[nameof(UpdatePasswordRequest.OldPassword)] = request.OldPassword ?? string.Empty;
+			TempData[nameof(UpdatePasswordRequest.NewPassword)] = request.NewPassword ?? string.Empty;
+			TempData[nameof(UpdatePasswordRequest.ConfirmPassword)] = request.ConfirmPassword ?? string.Empty;
+		}
+		private void ClearUpdatePasswordsFromTempData()
+		{
+			TempData.Remove(nameof(UpdatePasswordRequest.OldPassword));
+			TempData.Remove(nameof(UpdatePasswordRequest.NewPassword));
+			TempData.Remove(nameof(UpdatePasswordRequest.ConfirmPassword));
+		}
+		private RedirectToActionResult RedirectToSettings(string login)
+			=> RedirectToAction("Index", "Settings", new { login });
 		#endregion
 
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

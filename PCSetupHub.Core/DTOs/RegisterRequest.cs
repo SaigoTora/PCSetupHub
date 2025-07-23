@@ -1,5 +1,6 @@
-﻿using PCSetupHub.Core.Attributes;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+
+using PCSetupHub.Core.Attributes;
 
 namespace PCSetupHub.Core.DTOs
 {
@@ -18,7 +19,7 @@ namespace PCSetupHub.Core.DTOs
 		[PasswordValidation]
 		public required string Password { get; init; }
 		[Required(ErrorMessage = "Password confirmation is required.")]
-		[Compare("Password", ErrorMessage = "Passwords do not match.")]
+		[Compare(nameof(Password), ErrorMessage = "Passwords do not match.")]
 		public required string ConfirmPassword { get; init; }
 
 		[Required(ErrorMessage = "Name is required.")]

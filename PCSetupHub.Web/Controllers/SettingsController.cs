@@ -52,7 +52,7 @@ namespace PCSetupHub.Web.Controllers
 
 			if (model.Email != user.Email && await _userRepository.ExistsByEmailAsync(model.Email))
 			{
-				ModelState.AddModelError("Email", $"User with email '{model.Email}' " +
+				ModelState.AddModelError(nameof(model.Email), $"User with email '{model.Email}' " +
 					$"already exists.");
 				this.SetFirstError();
 				return View(model);

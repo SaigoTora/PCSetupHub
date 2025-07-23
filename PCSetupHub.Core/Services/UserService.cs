@@ -39,13 +39,15 @@ namespace PCSetupHub.Core.Services
 					$"'{email}' already exists.");
 
 			User user = new(login, password, name, email, description);
-			string passwordHash = new PasswordHasher<User>().HashPassword(user, password);
+			string passwordHash = HashPassword(user, password);
 			user.SetPasswordHash(passwordHash);
 
 			user = await _userRepository.AddAsync(user);
 			await _privacySettingRepository.AddAsync(new PrivacySetting(user.Id));
 			await _pcConfigurationRepository.AddAsync(new PcConfiguration(user.Id));
 		}
+		public string HashPassword(User user, string password)
+			=> new PasswordHasher<User>().HashPassword(user, password);
 		public bool VerifyPassword(User user, string password)
 		{
 			PasswordVerificationResult result = new PasswordHasher<User>()
