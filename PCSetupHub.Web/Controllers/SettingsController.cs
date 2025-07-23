@@ -44,11 +44,8 @@ namespace PCSetupHub.Web.Controllers
 				return StatusCode(403);
 			model.SetMeta(user.Login, user.AvatarUrl, user.PcConfiguration.Id);
 
-			if (!ModelState.IsValid)
-			{
-				this.SetFirstError();
-				return View(model);
-			}
+			if (await this.HandleInvalidModelStateAsync(model) is ViewResult errorResult)
+				return errorResult;
 
 			if (model.Email != user.Email && await _userRepository.ExistsByEmailAsync(model.Email))
 			{

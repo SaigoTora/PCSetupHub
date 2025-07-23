@@ -211,12 +211,9 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			model.Component.IsDefault = false;
 
-			if (!ModelState.IsValid)
-			{
-				this.SetFirstError();
-				await SetColorsAsync(model.SelectedColorsId);
-				return View(model.Component);
-			}
+			if (await this.HandleInvalidModelStateAsync(model.Component,
+				() => SetColorsAsync(model.SelectedColorsId)) is ViewResult errorResult)
+				return errorResult;
 
 			List<int> relatedComponentIds = await GetRelatedComponentIdsAsync(pcConfigurationId);
 			if (!relatedComponentIds.Any(i => i == currentComponentId))
@@ -303,12 +300,9 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			model.Component.SetId(componentId);
 
-			if (!ModelState.IsValid)
-			{
-				this.SetFirstError();
-				await SetColorsAsync(model.SelectedColorsId);
-				return View(model.Component);
-			}
+			if (await this.HandleInvalidModelStateAsync(model.Component,
+				() => SetColorsAsync(model.SelectedColorsId)) is ViewResult errorResult)
+				return errorResult;
 
 			try
 			{
@@ -360,12 +354,9 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			model.Component.IsDefault = false;
 
-			if (!ModelState.IsValid)
-			{
-				this.SetFirstError();
-				await SetColorsAsync(model.SelectedColorsId);
-				return View(model.Component);
-			}
+			if (await this.HandleInvalidModelStateAsync(model.Component,
+				() => SetColorsAsync(model.SelectedColorsId)) is ViewResult errorResult)
+				return errorResult;
 
 			try
 			{

@@ -51,11 +51,8 @@ namespace PCSetupHub.Web.Controllers
 		{
 			SavePasswordsToTempData(registerRequest);
 
-			if (!ModelState.IsValid)
-			{
-				this.SetFirstError();
-				return View();
-			}
+			if (await this.HandleInvalidModelStateAsync() is ViewResult errorResult)
+				return errorResult;
 
 			try
 			{
@@ -122,11 +119,8 @@ namespace PCSetupHub.Web.Controllers
 		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> LoginSubmit(LoginRequest loginRequest)
 		{
-			if (!ModelState.IsValid)
-			{
-				this.SetFirstError();
-				return View();
-			}
+			if (await this.HandleInvalidModelStateAsync() is ViewResult errorResult)
+				return errorResult;
 
 			try
 			{
@@ -225,11 +219,8 @@ namespace PCSetupHub.Web.Controllers
 			if (authResult != null)
 				return authResult;
 
-			if (!ModelState.IsValid)
-			{
-				this.SetFirstError();
-				return View(model);
-			}
+			if (await this.HandleInvalidModelStateAsync(model) is ViewResult errorResult)
+				return errorResult;
 
 			if (await ValidateLoginChangeAsync(model, user) is IActionResult validationResult)
 				return validationResult;
@@ -269,11 +260,8 @@ namespace PCSetupHub.Web.Controllers
 			if (authResult != null)
 				return authResult;
 
-			if (!ModelState.IsValid)
-			{
-				this.SetFirstError();
-				return View(model);
-			}
+			if (await this.HandleInvalidModelStateAsync(model) is ViewResult errorResult)
+				return errorResult;
 
 			if (ValidatePasswordChange(model, user) is IActionResult validationResult)
 				return validationResult;

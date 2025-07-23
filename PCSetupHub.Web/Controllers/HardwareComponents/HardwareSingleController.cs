@@ -166,12 +166,9 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			model.Component.IsDefault = false;
 
-			if (!ModelState.IsValid)
-			{
-				this.SetFirstError();
-				await SetColorsAsync(model.SelectedColorsId);
-				return View(model.Component);
-			}
+			if (await this.HandleInvalidModelStateAsync(model.Component,
+				() => SetColorsAsync(model.SelectedColorsId)) is ViewResult errorResult)
+				return errorResult;
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
 				PcConfigurationIncludes);
@@ -263,12 +260,9 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 			model.Component.SetId(componentId);
 
-			if (!ModelState.IsValid)
-			{
-				this.SetFirstError();
-				await SetColorsAsync(model.SelectedColorsId);
-				return View(model.Component);
-			}
+			if (await this.HandleInvalidModelStateAsync(model.Component,
+				() => SetColorsAsync(model.SelectedColorsId)) is ViewResult errorResult)
+				return errorResult;
 
 			try
 			{
