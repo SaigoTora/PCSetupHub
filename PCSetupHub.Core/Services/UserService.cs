@@ -72,12 +72,14 @@ namespace PCSetupHub.Core.Services
 				throw new AuthenticationException("Invalid password.");
 		}
 		public async Task<AuthResponse> LoginOrRegisterByGoogleIdAsync(string googleId,
-			string email, string name)
+			string email, string name, string? login = null)
 		{
 			User? user = await _userRepository.GetByGoogleIdAsync(googleId);
 			if (user == null)
 			{
-				user = new User(email, null, name, email, null);
+				login ??= email;
+
+				user = new User(login, null, name, email, null);
 				user.SetGoogleId(googleId);
 				user = await _userRepository.AddAsync(user);
 				await _privacySettingRepository.AddAsync(new PrivacySetting(user.Id));

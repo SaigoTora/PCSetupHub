@@ -207,7 +207,7 @@ namespace PCSetupHub.Web.Controllers
 			if (authResult != null)
 				return authResult;
 
-			UpdateLoginRequest loginRequest = new(user.Login);
+			UpdateLoginRequest loginRequest = new(user.Login, user.HasPassword);
 			return View(loginRequest);
 		}
 
@@ -219,6 +219,10 @@ namespace PCSetupHub.Web.Controllers
 			if (authResult != null)
 				return authResult;
 
+			model.SetMeta(user.HasPassword);
+			if (model.IsPasswordRequired)
+				ModelState.AddModelError(nameof(model.Password), "Password is required.");
+
 			if (await this.HandleInvalidModelStateAsync(model) is ViewResult errorResult)
 				return errorResult;
 
@@ -229,8 +233,7 @@ namespace PCSetupHub.Web.Controllers
 			await _userRepository.UpdateAsync(user);
 
 			bool rememberMe = User.GetRememberMe();
-			AuthResponse authResponse = await _userService.LoginAsync(model.NewLogin,
-				model.Password, rememberMe);
+			AuthResponse authResponse = await ReloginAsync(model, user, rememberMe);
 
 			DeleteTokensCookies();
 			AddTokensToCookies(authResponse, !rememberMe);
@@ -244,9 +247,12 @@ namespace PCSetupHub.Web.Controllers
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> UpdatePassword(string login)
 		{
-			var (authResult, _) = await CheckUserAuthorizationAsync(login);
+			var (authResult, user) = await CheckUserAuthorizationAsync(login);
 			if (authResult != null)
 				return authResult;
+
+			if (!user.HasPassword)
+				return RedirectToSettings(login);
 
 			return View(new UpdatePasswordRequest());
 		}
@@ -259,6 +265,9 @@ namespace PCSetupHub.Web.Controllers
 			var (authResult, user) = await CheckUserAuthorizationAsync(login);
 			if (authResult != null)
 				return authResult;
+
+			if (!user.HasPassword)
+				return RedirectToSettings(login);
 
 			if (await this.HandleInvalidModelStateAsync(model) is ViewResult errorResult)
 				return errorResult;
@@ -274,16 +283,6 @@ namespace PCSetupHub.Web.Controllers
 			return RedirectToSettings(user.Login);
 		}
 
-		private async Task<(IActionResult?, User)> CheckUserAuthorizationAsync(string login)
-		{
-			var user = await _userRepository.GetByLoginAsync(login, false);
-			if (user == null)
-				return (NotFound(), null!);
-			if (user.Id != User.GetId())
-				return (StatusCode(403), user);
-
-			return (null, user);
-		}
 		private async Task<ViewResult?> ValidateLoginChangeAsync(UpdateLoginRequest request,
 			User user)
 		{
@@ -297,7 +296,7 @@ namespace PCSetupHub.Web.Controllers
 				return View(request);
 			}
 
-			if (!_userService.VerifyPassword(user, request.Password))
+			if (request.HasPassword && !_userService.VerifyPassword(user, request.Password))
 			{
 				ModelState.AddModelError(nameof(request.Password), "Invalid password.");
 				this.SetFirstError();
@@ -336,6 +335,18 @@ namespace PCSetupHub.Web.Controllers
 			return null;
 		}
 
+		private async Task<AuthResponse> ReloginAsync(UpdateLoginRequest request, User user,
+			bool rememberMe)
+		{
+			if (request.HasPassword)
+			{
+				return await _userService.LoginAsync(request.NewLogin, request.Password,
+					rememberMe);
+			}
+
+			return await _userService.LoginOrRegisterByGoogleIdAsync(user.GoogleId!, user.Email,
+				user.Name, request.NewLogin);
+		}
 		private void SavePasswordsToTempData(UpdatePasswordRequest request)
 		{
 			TempData[nameof(UpdatePasswordRequest.OldPassword)] = request.OldPassword ?? string.Empty;
@@ -363,7 +374,65 @@ namespace PCSetupHub.Web.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
+		[HttpGet("DeleteAccount/{login}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		public async Task<IActionResult> DeleteAccount(string login)
+		{
+			var (authResult, user) = await CheckUserAuthorizationAsync(login);
+			if (authResult != null)
+				return authResult;
 
+			return View(new DeleteAccountRequest(user.HasPassword));
+		}
+
+		[HttpPost("DeleteAccount/{login}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		public async Task<IActionResult> DeleteAccount(string login, DeleteAccountRequest model)
+		{
+			var (authResult, user) = await CheckUserAuthorizationAsync(login);
+			if (authResult != null)
+				return authResult;
+
+			model.SetMeta(user.HasPassword);
+			if (model.IsPasswordRequired)
+				ModelState.AddModelError(nameof(model.Password), "Password is required.");
+
+			if (await this.HandleInvalidModelStateAsync(model) is ViewResult errorResult)
+				return errorResult;
+
+			if (!model.IsConfirmed)
+			{
+				ModelState.AddModelError(nameof(model.IsConfirmed),
+					"You must confirm that you want to delete your account.");
+				this.SetFirstError();
+				return View(model);
+			}
+
+			if (model.HasPassword && !_userService.VerifyPassword(user, model.Password))
+			{
+				ModelState.AddModelError(nameof(model.Password), "Invalid password.");
+				this.SetFirstError();
+				return View(model);
+			}
+
+			await _userRepository.DeleteAsync(user);
+			DeleteTokensCookies();
+			_logger.LogInformation("User with Id {UserId} and login '{Login}' " +
+				"successfully deleted their account", user.Id, user.Login);
+
+			return RedirectToAction("Index", "Home");
+		}
+
+		private async Task<(IActionResult?, User)> CheckUserAuthorizationAsync(string login)
+		{
+			var user = await _userRepository.GetByLoginAsync(login, false);
+			if (user == null)
+				return (NotFound(), null!);
+			if (user.Id != User.GetId())
+				return (StatusCode(403), user);
+
+			return (null, user);
+		}
 		private void AddTokensToCookies(AuthResponse authResponse, bool isSessionCookies)
 		{
 			DateTime? accessTokenExpires = isSessionCookies ?

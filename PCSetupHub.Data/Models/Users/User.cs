@@ -41,6 +41,7 @@ namespace PCSetupHub.Data.Models.Users
 		public ICollection<Message>? SentMessages { get; private set; }
 		public ICollection<Message>? ReceivedMessages { get; private set; }
 
+		public bool HasPassword => PasswordHash != null;
 		public ICollection<User>? Friends
 		{
 			get

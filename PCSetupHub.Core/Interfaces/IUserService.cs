@@ -11,7 +11,7 @@ namespace PCSetupHub.Core.Interfaces
 		public bool VerifyPassword(User user, string password);
 		public Task<AuthResponse> LoginAsync(string login, string password, bool userRememberMe);
 		public Task<AuthResponse> LoginOrRegisterByGoogleIdAsync(string googleId, string email,
-			string name);
+			string name, string? login = null);
 		public Task<bool> IsUserLoggedInAsync(string accessToken, string refreshToken);
 	}
 }

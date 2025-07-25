@@ -266,24 +266,24 @@ h1 {
     border: none;
     font-size: 1.25rem;
     padding: 0.15rem 1.75rem;
-    color: black;
-    transition: background-color 0.3s ease-in-out;
+    color: var(--color-light-text);
+    transition: background-color 0.2s ease-in-out;
 }
 
 .button-cancel {
-    background-color: rgb(248, 113, 113);
+    background-color: rgb(243, 110, 110);
 }
 
     .button-cancel:hover {
-        background-color: rgb(239, 68, 68);
+        background-color: rgb(234, 66, 66);
     }
 
 .button-save {
-    background-color: rgb(72, 196, 70);
+    background-color: rgb(70, 192, 68);
 }
 
     .button-save:hover {
-        background-color: rgb(46, 158, 44);
+        background-color: rgb(45, 154, 43);
     }
 
 
@@ -481,6 +481,7 @@ caption {
     border-radius: var(--border-radius);
     border: none;
     text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
 }
 
     .button-more:hover {
@@ -719,6 +720,20 @@ caption {
 
     .create-component-prompt a {
         color: var(--color-accent);
+    }
+
+.button-danger {
+    border-radius: var(--border-radius);
+    border: none;
+    font-size: 1.25rem;
+    padding: 0.15rem 1.75rem;
+    color: var(--color-light-text);
+    transition: background-color 0.2s ease-in-out;
+    background-color: rgb(248, 0, 0);
+}
+
+    .button-danger:hover {
+        background-color: rgb(130, 0, 0);
     }
 
 .me-2-5 {

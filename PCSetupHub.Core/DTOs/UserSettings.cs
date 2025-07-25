@@ -9,6 +9,7 @@ namespace PCSetupHub.Core.DTOs
 		public string Login { get; private set; } = string.Empty;
 		public string AvatarUrl { get; private set; } = string.Empty;
 		public int PcConfigurationId { get; private set; }
+		public bool HasPassword { get; private set; }
 
 		[Required(ErrorMessage = "Name is required.")]
 		[StringLength(64, MinimumLength = 2,
@@ -36,6 +37,7 @@ namespace PCSetupHub.Core.DTOs
 			Login = user.Login;
 			AvatarUrl = user.AvatarUrl;
 			PcConfigurationId = user.PcConfiguration.Id;
+			HasPassword = user.HasPassword;
 
 			Name = user.Name;
 			Email = user.Email;
@@ -46,11 +48,13 @@ namespace PCSetupHub.Core.DTOs
 			PcConfigAccessId = user.PrivacySetting.PcConfigAccessId;
 		}
 
-		public void SetMeta(string login, string avatarUrl, int pcConfigurationId)
+		public void SetMeta(string login, string avatarUrl, int pcConfigurationId,
+			bool hasPassword)
 		{
 			Login = login;
 			AvatarUrl = avatarUrl;
 			PcConfigurationId = pcConfigurationId;
+			HasPassword = hasPassword;
 		}
 	}
 }

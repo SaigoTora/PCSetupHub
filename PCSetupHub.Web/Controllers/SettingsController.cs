@@ -42,7 +42,7 @@ namespace PCSetupHub.Web.Controllers
 				return NotFound();
 			if (user.Id != User.GetId())
 				return StatusCode(403);
-			model.SetMeta(user.Login, user.AvatarUrl, user.PcConfiguration.Id);
+			model.SetMeta(user.Login, user.AvatarUrl, user.PcConfiguration.Id, user.HasPassword);
 
 			if (await this.HandleInvalidModelStateAsync(model) is ViewResult errorResult)
 				return errorResult;

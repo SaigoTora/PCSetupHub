@@ -2,7 +2,7 @@
 
 namespace PCSetupHub.Core.DTOs
 {
-	public class UpdateLoginRequest
+	public class UpdateLoginRequest : PasswordProtectedRequest
 	{
 		[Required(ErrorMessage = "Login is required.")]
 		[StringLength(32, MinimumLength = 3,
@@ -12,13 +12,10 @@ namespace PCSetupHub.Core.DTOs
 			"and dots (.).")]
 		public string NewLogin { get; init; } = string.Empty;
 
-		[Required(ErrorMessage = "Password is required.")]
-		[StringLength(64)]
-		public string Password { get; init; } = string.Empty;
-
 		public UpdateLoginRequest()
 		{ }
-		public UpdateLoginRequest(string login)
+		public UpdateLoginRequest(string login, bool hasPassword)
+			: base(hasPassword)
 		{
 			NewLogin = login;
 		}

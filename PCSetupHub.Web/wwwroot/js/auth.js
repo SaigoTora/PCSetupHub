@@ -36,4 +36,5 @@ if (googleButton) {
     });
 }
 
-warning.style.display = checkbox.checked ? 'none' : 'block';
+if (warning)
+    warning.style.display = checkbox.checked ? 'none' : 'block';

@@ -49,12 +49,15 @@
 	<form asp-controller="Auth" asp-action="UpdateLogin" asp-route-login="@Model.Login" method="get" class="me-4">
 		<button class="user-action-btn" title="Change login">Change Login</button>
 	</form>
-	<form asp-controller="Auth" asp-action="UpdatePassword" asp-route-login="@Model.Login" method="get">
-		<button class="user-action-btn" title="Change password">Change Password</button>
-	</form>
+	@if (Model.HasPassword)
+	{
+		<form asp-controller="Auth" asp-action="UpdatePassword" asp-route-login="@Model.Login" method="get">
+			<button class="user-action-btn" title="Change password">Change Password</button>
+		</form>
+	}
 </div>
 
-<form asp-controller="Settings" asp-action="Index" asp-route-login="@Model.Login" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
+<form asp-controller="Settings" asp-action="Index" asp-route-login="@Model.Login" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center mb-5">
 	<div class="form__group field">
 		<input type="text" class="form__field" placeholder="Name" asp-for="@Model.Name" required>
 		<label for="Name" class="form__label">Name</label>
@@ -111,16 +114,24 @@
 		</optgroup>
 	</select>
 
-	<div class="d-flex justify-content-center mb-5">
-		<a class="button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@Model.PcConfigurationId">
-			Configure PC Setup
-		</a>
-	</div>
+	<a class="button-more mb-4" asp-controller="PcSetup" asp-action="Index" asp-route-id="@Model.PcConfigurationId">
+		Configure PC Setup
+	</a>
 
 	@if (ViewData["FirstError"] != null)
 	{
 		<div class="text-danger mb-3">@ViewData["FirstError"]</div>
 	}
 
-	<button class="button-save mb-4" type="submit">Save</button>
+	<button class="button-save" type="submit">Save</button>
 </form>
+
+<div class="w-100 d-flex flex-column justify-content-center align-items-center mb-4 pt-4" method="get">
+	<form asp-controller="Auth" asp-action="Logout" method="post">
+		<button class="button-danger mb-4" type="submit">Log out</button>
+	</form>
+
+	<form asp-controller="Auth" asp-action="DeleteAccount" asp-route-login="@Model.Login" method="get">
+		<button class="button-danger mb-4 mb-" type="submit">Delete account</button>
+	</form>
+</div>
