@@ -8,7 +8,7 @@ namespace PCSetupHub.Data.Models.Users
 {
 	public class User : BaseEntity
 	{
-		private const string DEFAULT_AVATAR_URL
+		public const string DEFAULT_AVATAR_URL
 			= "https://pcsetuphub-user-images.s3.us-east-1.amazonaws.com/avatars/default.webp";
 
 		[StringLength(255)]
@@ -136,7 +136,7 @@ namespace PCSetupHub.Data.Models.Users
 			Name = name;
 			Email = email;
 			Description = description;
-			PrivacySetting = settings;
+			PrivacySetting.SetAccessLevels(settings);
 		}
 	}
 }

@@ -24,15 +24,19 @@ namespace PCSetupHub.Web.Controllers
 		private readonly ILogger<AuthController> _logger;
 		private readonly IUserService _userService;
 		private readonly IUserRepository _userRepository;
+		private readonly IImageStorageService _imageStorageService;
 		private readonly TokenSettings _accessTokenSettings;
 		private readonly TokenSettings _refreshTokenSettings;
 
 		public AuthController(ILogger<AuthController> logger, IUserService userService,
-			IUserRepository userRepository, IOptions<AuthSettings> options)
+			IUserRepository userRepository, IImageStorageService imageStorageService,
+			IOptions<AuthSettings> options)
 		{
 			_logger = logger;
 			_userService = userService;
 			_userRepository = userRepository;
+			_imageStorageService = imageStorageService;
+
 			_accessTokenSettings = options.Value.AccessToken;
 			_refreshTokenSettings = options.Value.RefreshToken;
 		}
@@ -415,7 +419,9 @@ namespace PCSetupHub.Web.Controllers
 				return View(model);
 			}
 
-			await _userRepository.DeleteAsync(user);
+			if (!user.HasDefaultAvatar())
+				await _imageStorageService.DeleteImageAsync(user.AvatarUrl);
+			await _userRepository.FullDeleteUserAsync(user.Login);
 			DeleteTokensCookies();
 			_logger.LogInformation("User with Id {UserId} and login '{Login}' " +
 				"successfully deleted their account", user.Id, user.Login);

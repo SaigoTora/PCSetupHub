@@ -32,5 +32,13 @@ namespace PCSetupHub.Data.Models.Users
 			MessagesAccessId = messagesAccessId;
 			PcConfigAccessId = pcConfigAccessId;
 		}
+
+		public void SetAccessLevels(PrivacySetting settings)
+		{
+			FollowersAccessId = settings.FollowersAccessId;
+			FollowingsAccessId = settings.FollowingsAccessId;
+			MessagesAccessId = settings.MessagesAccessId;
+			PcConfigAccessId = settings.PcConfigAccessId;
+		}
 	}
 }

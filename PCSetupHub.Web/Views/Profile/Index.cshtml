@@ -430,6 +430,46 @@
 						</div>
 					</div>
 				}
+				else
+				{
+					<div class="comment-container">
+						<div class="d-flex justify-content-start align-items-start mb-1">
+							<div class="d-flex align-items-center ms-1 me-2">
+								<img src="@PCSetupHub.Data.Models.Users.User.DEFAULT_AVATAR_URL" alt="User avatar [DELETED]"
+									 title="User Deleted" width="45" height="45"
+									 class="user-avatar" />
+							</div>
+							<div class="d-flex justify-content-between align-items-center w-100">
+								<div>
+									<span class="comment-login" title="User Deleted">
+										[DELETED]
+									</span>
+									<span class="comment-date" title="@comment.CreatedAt.ToLocalTime().ToString("dd MMMM, yyyy 'at' HH:mm:ss", new CultureInfo("en-US"))">
+										@if (DateTime.UtcNow.Year == comment.CreatedAt.Year)
+										{
+											@comment.CreatedAt.ToLocalTime().ToString("d MMMM 'at' HH:mm", new CultureInfo("en-US"))
+										}
+										else
+										{
+											@comment.CreatedAt.ToLocalTime().ToString("d MMMM, yyyy 'at' HH:mm", new CultureInfo("en-US"))
+										}
+									</span>
+								</div>
+								@if (comment.CommentatorId == userId || comment.UserId == userId)
+								{
+									<div>
+										<form asp-action="DeleteComment" asp-route-id="@comment.Id">
+											<button class="delete-comment-button" title="Delete"><i class="d-flex justify-content-center align-items-center fa fa-trash text-muted"></i></button>
+										</form>
+									</div>
+								}
+							</div>
+						</div>
+						<div class="comment-text">
+							@Html.Raw(HttpUtility.HtmlEncode(comment.Text).Replace("\n", "<br />"))
+						</div>
+					</div>
+				}
 			}
 
 			<div class="d-flex justify-content-center mt-4">

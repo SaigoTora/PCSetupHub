@@ -140,13 +140,13 @@ namespace PCSetupHub.Data
 				.HasOne(c => c.User)
 				.WithMany(u => u.ReceivedComments)
 				.HasForeignKey(c => c.UserId)
-				.OnDelete(DeleteBehavior.Cascade);
+				.OnDelete(DeleteBehavior.Restrict);
 
 			_modelBuilder.Entity<Comment>()
 				.HasOne(c => c.Commentator)
 				.WithMany(u => u.WrittenComments)
 				.HasForeignKey(c => c.CommentatorId)
-				.OnDelete(DeleteBehavior.Restrict);
+				.OnDelete(DeleteBehavior.SetNull);
 		}
 		private void SetFriendshipRelationships()
 		{
