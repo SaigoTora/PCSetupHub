@@ -12,11 +12,11 @@ namespace PCSetupHub.Data.Models.Users
 			= "https://pcsetuphub-user-images.s3.us-east-1.amazonaws.com/avatars/default.webp";
 
 		[StringLength(255)]
-		public string Login { get; private set; } = string.Empty;
+		public string Login { get; set; } = string.Empty;
 
 		[JsonIgnore]
-		public string? PasswordHash { get; private set; }
-		public string? GoogleId { get; private set; }
+		public string? PasswordHash { get; set; }
+		public string? GoogleId { get; set; }
 
 		[StringLength(64)]
 		public string Name { get; private set; } = string.Empty;
@@ -28,16 +28,16 @@ namespace PCSetupHub.Data.Models.Users
 		public string? Description { get; private set; }
 
 		[Required]
-		public string AvatarUrl { get; private set; } = DEFAULT_AVATAR_URL;
+		public string AvatarUrl { get; set; } = DEFAULT_AVATAR_URL;
 		public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
-		public PcConfiguration PcConfiguration { get; private set; } = new();
+		public PcConfiguration PcConfiguration { get; set; } = new();
 		public PrivacySetting PrivacySetting { get; private set; } = new();
 
 		public ICollection<Friendship>? ReceivedFriendRequests { get; private set; }
 		public ICollection<Friendship>? SentFriendRequests { get; private set; }
 		public ICollection<Comment>? WrittenComments { get; private set; }
-		public ICollection<Comment>? ReceivedComments { get; private set; }
+		public ICollection<Comment>? ReceivedComments { get; set; }
 		public ICollection<Message>? SentMessages { get; private set; }
 		public ICollection<Message>? ReceivedMessages { get; private set; }
 
@@ -114,22 +114,13 @@ namespace PCSetupHub.Data.Models.Users
 			Description = description;
 		}
 
-		public void SetPasswordHash(string newPasswordHash)
-			=> PasswordHash = newPasswordHash;
-		public void SetGoogleId(string googleId)
-			=> GoogleId = googleId;
-		public void SetReceivedComments(ICollection<Comment> receivedComments)
-			=> ReceivedComments = receivedComments;
-
 		public Friendship? GetReceivedRequestFrom(int userId)
 			=> ReceivedFriendRequests?.FirstOrDefault(fr => fr.InitiatorId == userId);
 		public Friendship? GetSentRequestTo(int userId)
 			=> SentFriendRequests?.FirstOrDefault(fr => fr.FriendId == userId);
 
 		public bool HasDefaultAvatar() => AvatarUrl == DEFAULT_AVATAR_URL;
-		public void SetAvatarUrl(string avatarUrl) => AvatarUrl = avatarUrl;
 
-		public void SetLogin(string login) => Login = login;
 		public void UpdateSettings(string name, string email, string? description,
 			PrivacySetting settings)
 		{

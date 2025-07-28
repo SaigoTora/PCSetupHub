@@ -22,7 +22,8 @@ namespace PCSetupHub.Web.Controllers
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Index(string login)
 		{
-			User? user = await _userRepository.GetByLoginAsync(login, false);
+			User? user = await _userRepository.GetByLoginAsync(login,
+				UserIncludes.PcConfiguration | UserIncludes.PrivacySetting);
 			if (user == null)
 				return NotFound();
 			if (user.Id != User.GetId())
@@ -37,7 +38,8 @@ namespace PCSetupHub.Web.Controllers
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Index(string login, UserSettings model)
 		{
-			User? user = await _userRepository.GetByLoginAsync(login, false);
+			User? user = await _userRepository.GetByLoginAsync(login,
+				UserIncludes.PcConfiguration | UserIncludes.PrivacySetting);
 			if (user == null)
 				return NotFound();
 			if (user.Id != User.GetId())

@@ -233,7 +233,7 @@ namespace PCSetupHub.Web.Controllers
 			if (await ValidateLoginChangeAsync(model, user) is IActionResult validationResult)
 				return validationResult;
 
-			user.SetLogin(model.NewLogin);
+			user.Login = model.NewLogin;
 			await _userRepository.UpdateAsync(user);
 
 			bool rememberMe = User.GetRememberMe();
@@ -279,7 +279,7 @@ namespace PCSetupHub.Web.Controllers
 			if (ValidatePasswordChange(model, user) is IActionResult validationResult)
 				return validationResult;
 
-			user.SetPasswordHash(_userService.HashPassword(user, model.NewPassword));
+			user.PasswordHash = _userService.HashPassword(user, model.NewPassword);
 			await _userRepository.UpdateAsync(user);
 			_logger.LogInformation("User with Id {UserId} successfully changed password", user.Id);
 			ClearUpdatePasswordsFromTempData();

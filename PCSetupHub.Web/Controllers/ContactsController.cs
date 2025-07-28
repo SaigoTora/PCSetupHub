@@ -28,7 +28,7 @@ namespace PCSetupHub.Web.Controllers
 		public async Task<IActionResult> Friends(string login, string friendSearchQuery,
 			int page = 1)
 		{
-			User? user = await _userRepository.GetByLoginAsync(login, false);
+			User? user = await _userRepository.GetByLoginAsync(login, UserIncludes.PrivacySetting);
 			if (user == null)
 				return NotFound();
 
@@ -56,7 +56,7 @@ namespace PCSetupHub.Web.Controllers
 		public async Task<IActionResult> Followers(string login, string followerSearchQuery,
 			int page = 1)
 		{
-			User? user = await _userRepository.GetByLoginAsync(login, false);
+			User? user = await _userRepository.GetByLoginAsync(login, UserIncludes.PrivacySetting);
 			if (user == null)
 				return NotFound();
 
@@ -80,7 +80,7 @@ namespace PCSetupHub.Web.Controllers
 		public async Task<IActionResult> Followings(string login, string followingSearchQuery,
 			int page = 1)
 		{
-			User? user = await _userRepository.GetByLoginAsync(login, false);
+			User? user = await _userRepository.GetByLoginAsync(login, UserIncludes.PrivacySetting);
 			if (user == null)
 				return NotFound();
 

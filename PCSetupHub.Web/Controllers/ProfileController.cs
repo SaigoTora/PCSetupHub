@@ -47,7 +47,7 @@ namespace PCSetupHub.Web.Controllers
 			ViewData["PageSize"] = COMMENT_PAGE_SIZE;
 			var comments = await _commentRepository.GetPageAsync((c => c.UserId == user.Id),
 				commentPage, COMMENT_PAGE_SIZE);
-			user.SetReceivedComments(comments);
+			user.ReceivedComments = comments;
 
 			return View(user);
 		}
@@ -256,7 +256,7 @@ namespace PCSetupHub.Web.Controllers
 				string imageUrl = await _imageStorageService.UploadImageAsync(file,
 					Core.Settings.ImageCategory.Avatar);
 
-				user.SetAvatarUrl(imageUrl);
+				user.AvatarUrl = imageUrl;
 				await _userRepository.UpdateAsync(user);
 				_logger.LogInformation("Avatar successfully updated for user with id: {Id}",
 					user.Id);

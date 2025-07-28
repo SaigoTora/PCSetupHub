@@ -40,7 +40,7 @@ namespace PCSetupHub.Core.Services
 
 			User user = new(login, password, name, email, description);
 			string passwordHash = HashPassword(user, password);
-			user.SetPasswordHash(passwordHash);
+			user.PasswordHash = passwordHash;
 
 			user = await _userRepository.AddAsync(user);
 			await _privacySettingRepository.AddAsync(new PrivacySetting(user.Id));
@@ -79,8 +79,10 @@ namespace PCSetupHub.Core.Services
 			{
 				login ??= email;
 
-				user = new User(login, null, name, email, null);
-				user.SetGoogleId(googleId);
+				user = new User(login, null, name, email, null)
+				{
+					GoogleId = googleId
+				};
 				user = await _userRepository.AddAsync(user);
 				await _privacySettingRepository.AddAsync(new PrivacySetting(user.Id));
 				await _pcConfigurationRepository.AddAsync(new PcConfiguration(user.Id));
