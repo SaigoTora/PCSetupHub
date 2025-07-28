@@ -10,7 +10,7 @@ namespace PCSetupHub.Data.Models.Users
 		public User? Receiver { get; private set; }
 		public string Text { get; private set; } = string.Empty;
 		public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
-		public bool IsRead { get; private set; } = false;
+		public bool IsRead { get; set; } = false;
 
 		public Message() { }
 		public Message(int senderId, int receiverId, string text, bool isRead = false)
@@ -20,8 +20,5 @@ namespace PCSetupHub.Data.Models.Users
 			Text = text;
 			IsRead = isRead;
 		}
-
-		public void SetAsRead()
-			=> IsRead = true;
 	}
 }

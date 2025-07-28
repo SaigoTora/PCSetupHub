@@ -30,11 +30,9 @@ namespace PCSetupHub.Data.Models.Users
 			StatusId = (int)status;
 
 			if (status == FriendshipStatusType.Accepted)
-				SetAccepted();
+				AcceptedAt = DateTime.UtcNow;
 			else
 				AcceptedAt = null;
 		}
-		public void SetAccepted()
-			=> AcceptedAt = DateTime.UtcNow;
 	}
 }

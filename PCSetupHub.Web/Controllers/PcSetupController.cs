@@ -55,7 +55,7 @@ namespace PCSetupHub.Web.Controllers
 
 			try
 			{
-				pcConfiguration.ChangeType(pcType[0]);
+				pcConfiguration.Type = pcType[0];
 				await _pcConfigRepository.UpdateAsync(pcConfiguration);
 				_logger.LogInformation("User {UserId} updated PcConfiguration {Id} " +
 					"to type '{TypeName}'", userId, id, typeName);

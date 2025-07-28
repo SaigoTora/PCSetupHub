@@ -9,11 +9,11 @@ namespace PCSetupHub.Data.Models.Hardware
 		public User? User { get; private set; }
 		public int UserId { get; private set; }
 
-		public PcType? Type { get; private set; }
-		public Processor? Processor { get; private set; }
-		public VideoCard? VideoCard { get; private set; }
-		public Motherboard? Motherboard { get; private set; }
-		public PowerSupply? PowerSupply { get; private set; }
+		public PcType? Type { get; set; }
+		public Processor? Processor { get; set; }
+		public VideoCard? VideoCard { get; set; }
+		public Motherboard? Motherboard { get; set; }
+		public PowerSupply? PowerSupply { get; set; }
 		public int? TypeId { get; private set; }
 		public int? ProcessorId { get; private set; }
 		public int? VideoCardId { get; private set; }
@@ -94,16 +94,5 @@ namespace PCSetupHub.Data.Models.Hardware
 			=> PcConfigurationSsds?.Select(x => x.Ssd).Where(ssd => ssd != null).ToArray()!;
 		public Hdd[] GetHdds()
 			=> PcConfigurationHdds?.Select(x => x.Hdd).Where(hdd => hdd != null).ToArray()!;
-
-		public void ChangeType(PcType type) => Type = type;
-		public void ChangeProcessor(Processor processor) => Processor = processor;
-		public void ChangeVideoCard(VideoCard videoCard) => VideoCard = videoCard;
-		public void ChangeMotherboard(Motherboard motherboard) => Motherboard = motherboard;
-		public void ChangePowerSupply(PowerSupply powerSupply) => PowerSupply = powerSupply;
-
-		public void ClearProcessor() => Processor = null;
-		public void ClearVideoCard() => VideoCard = null;
-		public void ClearMotherboard() => Motherboard = null;
-		public void ClearPowerSupply() => PowerSupply = null;
 	}
 }

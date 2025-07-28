@@ -6,7 +6,7 @@ namespace PCSetupHub.Data.Models.Relationships
 	public class PcConfigurationRam : BaseEntity
 	{
 		public int PcConfigurationId { get; private set; }
-		public int RamId { get; private set; }
+		public int RamId { get; set; }
 		public PcConfiguration? PcConfiguration { get; private set; }
 		public Ram? Ram { get; private set; }
 
@@ -16,7 +16,5 @@ namespace PCSetupHub.Data.Models.Relationships
 			PcConfigurationId = pcConfigurationId;
 			RamId = ramId;
 		}
-
-		public void ChangeRamId(int ramId) => RamId = ramId;
 	}
 }

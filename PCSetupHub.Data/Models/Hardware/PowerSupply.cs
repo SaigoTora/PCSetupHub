@@ -29,7 +29,7 @@ namespace PCSetupHub.Data.Models.Hardware
 			ErrorMessage = "Modular can contain Latin letters, spaces and slashes (/).")]
 		public string Modular { get; set; } = string.Empty;
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
-		public ICollection<ColorPowerSupply>? ColorPowerSupplies { get; private set; }
+		public ICollection<ColorPowerSupply>? ColorPowerSupplies { get; set; }
 		public override string DisplayName => $"{Name} {Wattage} W";
 
 		public PowerSupply() { }
@@ -42,8 +42,5 @@ namespace PCSetupHub.Data.Models.Hardware
 			Wattage = wattage;
 			Modular = modular;
 		}
-
-		public void SetColorPowerSupplies(ICollection<ColorPowerSupply> colorPowerSupplies)
-			=> ColorPowerSupplies = colorPowerSupplies;
 	}
 }

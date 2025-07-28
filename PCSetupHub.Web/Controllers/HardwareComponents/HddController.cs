@@ -47,7 +47,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (item == null)
 				return;
 
-			item.ChangeHddId(newId);
+			item.HddId = newId;
 			await _pcConfigHddRepository.UpdateAsync(item);
 		}
 		protected override async Task ClearRelationAsync(int pcConfigId, int hddId)
@@ -102,7 +102,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 				if (relationsToAdd.Count != 0 || relationsToRemove.Count != 0)
 				{
-					hdd.SetColorHdds(updatedRelations);
+					hdd.ColorHdds = updatedRelations;
 					Logger.LogInformation("Updated colors for Hdd with id {HddId}: " +
 						"added {AddedCount}, removed {RemovedCount}", hdd.Id,
 						relationsToAdd.Count, relationsToRemove.Count);

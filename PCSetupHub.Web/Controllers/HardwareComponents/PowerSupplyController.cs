@@ -36,10 +36,10 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override void ChangeComponent(PcConfiguration pcConfiguration,
 			PowerSupply powerSupply)
 		{
-			pcConfiguration.ChangePowerSupply(powerSupply);
+			pcConfiguration.PowerSupply = powerSupply;
 		}
 		protected override void ClearComponent(PcConfiguration pcConfiguration)
-			=> pcConfiguration.ClearPowerSupply();
+			=> pcConfiguration.PowerSupply = null;
 		protected override bool IsComponentInPcConfig(PcConfiguration pcConfig, int powerSupplyId)
 			=> pcConfig.PowerSupply?.Id == powerSupplyId;
 
@@ -79,7 +79,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 				if (relationsToAdd.Count != 0 || relationsToRemove.Count != 0)
 				{
-					powerSupply.SetColorPowerSupplies(updatedRelations);
+					powerSupply.ColorPowerSupplies = updatedRelations;
 					Logger.LogInformation("Updated colors for PowerSupply with id " +
 						"{PowerSupplyId}: added {AddedCount}, removed {RemovedCount}",
 						powerSupply.Id, relationsToAdd.Count, relationsToRemove.Count);

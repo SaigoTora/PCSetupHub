@@ -27,7 +27,7 @@ namespace PCSetupHub.Data.Models.Hardware
 		[Range(1, byte.MaxValue, ErrorMessage = "Memory slots must be at least 1.")]
 		public byte MemorySlots { get; set; }
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
-		public ICollection<ColorMotherboard>? ColorMotherboards { get; private set; }
+		public ICollection<ColorMotherboard>? ColorMotherboards { get; set; }
 		public override string DisplayName => $"{Name} {Socket}";
 
 		public Motherboard() { }
@@ -40,8 +40,5 @@ namespace PCSetupHub.Data.Models.Hardware
 			MaxMemory = maxMemory;
 			MemorySlots = memorySlots;
 		}
-
-		public void SetColorMotherboards(ICollection<ColorMotherboard> colorMotherboards)
-			=> ColorMotherboards = colorMotherboards;
 	}
 }

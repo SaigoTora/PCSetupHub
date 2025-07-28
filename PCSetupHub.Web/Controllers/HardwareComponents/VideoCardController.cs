@@ -35,10 +35,10 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override void ChangeComponent(PcConfiguration pcConfiguration,
 			VideoCard videoCard)
 		{
-			pcConfiguration.ChangeVideoCard(videoCard);
+			pcConfiguration.VideoCard = videoCard;
 		}
 		protected override void ClearComponent(PcConfiguration pcConfiguration)
-			=> pcConfiguration.ClearVideoCard();
+			=> pcConfiguration.VideoCard = null;
 		protected override bool IsComponentInPcConfig(PcConfiguration pcConfig, int videoCardId)
 			=> pcConfig.VideoCard?.Id == videoCardId;
 
@@ -78,7 +78,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 				if (relationsToAdd.Count != 0 || relationsToRemove.Count != 0)
 				{
-					videoCard.SetColorVideoCards(updatedRelations);
+					videoCard.ColorVideoCards = updatedRelations;
 					Logger.LogInformation("Updated colors for VideoCard with id {VideoCardId}: " +
 						"added {AddedCount}, removed {RemovedCount}", videoCard.Id,
 						relationsToAdd.Count, relationsToRemove.Count);

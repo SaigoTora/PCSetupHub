@@ -40,7 +40,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (item == null)
 				return;
 
-			item.ChangeSsdId(newId);
+			item.SsdId = newId;
 			await _pcConfigSsdRepository.UpdateAsync(item);
 		}
 		protected override async Task ClearRelationAsync(int pcConfigId, int ssdId)

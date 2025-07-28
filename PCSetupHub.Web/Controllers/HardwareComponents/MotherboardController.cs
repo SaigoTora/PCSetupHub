@@ -36,10 +36,10 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		protected override void ChangeComponent(PcConfiguration pcConfiguration,
 			Motherboard motherboard)
 		{
-			pcConfiguration.ChangeMotherboard(motherboard);
+			pcConfiguration.Motherboard = motherboard;
 		}
 		protected override void ClearComponent(PcConfiguration pcConfiguration)
-			=> pcConfiguration.ClearMotherboard();
+			=> pcConfiguration.Motherboard = null;
 		protected override bool IsComponentInPcConfig(PcConfiguration pcConfig, int motherboardId)
 			=> pcConfig.Motherboard?.Id == motherboardId;
 
@@ -79,7 +79,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 				if (relationsToAdd.Count != 0 || relationsToRemove.Count != 0)
 				{
-					motherboard.SetColorMotherboards(updatedRelations);
+					motherboard.ColorMotherboards = updatedRelations;
 					Logger.LogInformation("Updated colors for Motherboard with id " +
 						"{MotherboardId}: added {AddedCount}, removed {RemovedCount}",
 						motherboard.Id, relationsToAdd.Count, relationsToRemove.Count);

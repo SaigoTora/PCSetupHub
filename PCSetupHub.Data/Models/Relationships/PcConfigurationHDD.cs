@@ -6,7 +6,7 @@ namespace PCSetupHub.Data.Models.Relationships
 	public class PcConfigurationHdd : BaseEntity
 	{
 		public int PcConfigurationId { get; private set; }
-		public int HddId { get; private set; }
+		public int HddId { get; set; }
 		public PcConfiguration? PcConfiguration { get; private set; }
 		public Hdd? Hdd { get; private set; }
 
@@ -16,7 +16,5 @@ namespace PCSetupHub.Data.Models.Relationships
 			PcConfigurationId = pcConfigurationId;
 			HddId = hddId;
 		}
-
-		public void ChangeHddId(int hddId) => HddId = hddId;
 	}
 }

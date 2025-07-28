@@ -47,7 +47,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 			if (item == null)
 				return;
 
-			item.ChangeRamId(newId);
+			item.RamId = newId;
 			await _pcConfigRamRepository.UpdateAsync(item);
 		}
 		protected override async Task ClearRelationAsync(int pcConfigId, int ramId)
@@ -102,7 +102,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 
 				if (relationsToAdd.Count != 0 || relationsToRemove.Count != 0)
 				{
-					ram.SetColorRams(updatedRelations);
+					ram.ColorRams = updatedRelations;
 					Logger.LogInformation("Updated colors for Ram with id {RamId}: " +
 						"added {AddedCount}, removed {RemovedCount}", ram.Id,
 						relationsToAdd.Count, relationsToRemove.Count);
