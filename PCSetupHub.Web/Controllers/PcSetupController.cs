@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using PCSetupHub.Core.Extensions;
+using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Data.Models.Hardware;
+using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Base;
 using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
+using PCSetupHub.Data.Repositories.Interfaces.Users;
 
 namespace PCSetupHub.Web.Controllers
 {
@@ -14,22 +17,37 @@ namespace PCSetupHub.Web.Controllers
 		private readonly ILogger<PcSetupController> _logger;
 		private readonly IPcConfigurationRepository _pcConfigRepository;
 		private readonly IRepository<PcType> _pcTypeRepository;
+		private readonly IUserRepository _userRepository;
+		private readonly IUserAccessService _userAccessService;
 
 		public PcSetupController(ILogger<PcSetupController> logger,
-			IPcConfigurationRepository pcConfigRepository, IRepository<PcType> pcTypeRepository)
+			IPcConfigurationRepository pcConfigRepository, IRepository<PcType> pcTypeRepository,
+			IUserRepository userRepository, IUserAccessService userAccessService)
 		{
 			_logger = logger;
 			_pcConfigRepository = pcConfigRepository;
 			_pcTypeRepository = pcTypeRepository;
+			_userRepository = userRepository;
+			_userAccessService = userAccessService;
 		}
 
 		[HttpGet("PcSetup/{id}")]
 		public async Task<IActionResult> Index(int id)
 		{
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(id, true);
-
-			if (pcConfig == null)
+			if (pcConfig == null || pcConfig.User == null)
 				return NotFound();
+
+			User? user = await _userRepository.GetByLoginAsync(pcConfig.User.Login,
+				UserIncludes.PrivacySetting);
+			if (user == null)
+				return NotFound();
+
+			string currentUserLogin = User.GetLogin() ?? string.Empty;
+			bool pcConfigAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
+				user.Login, (PrivacyLevelType)user.PrivacySetting.PcConfigAccessId);
+			if (!pcConfigAccessGranted)
+				return StatusCode(403);
 
 			return View(pcConfig);
 		}

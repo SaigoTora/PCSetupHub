@@ -8,6 +8,7 @@ using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Base;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
+using PCSetupHub.Web.ViewModels;
 
 namespace PCSetupHub.Web.Controllers
 {
@@ -15,16 +16,19 @@ namespace PCSetupHub.Web.Controllers
 	{
 		private readonly ILogger<ProfileController> _logger;
 		private readonly IUserRepository _userRepository;
+		private readonly IUserAccessService _userAccessService;
 		private readonly IRepository<Friendship> _friendshipRepository;
 		private readonly IRepository<Comment> _commentRepository;
 		private readonly IImageStorageService _imageStorageService;
 
 		public ProfileController(ILogger<ProfileController> logger,
-			IUserRepository userRepository, IRepository<Friendship> friendshipRepository,
-			IRepository<Comment> commentRepository, IImageStorageService s3FileService)
+			IUserRepository userRepository, IUserAccessService userAccessService,
+			IRepository<Friendship> friendshipRepository, IRepository<Comment> commentRepository,
+			IImageStorageService s3FileService)
 		{
 			_logger = logger;
 			_userRepository = userRepository;
+			_userAccessService = userAccessService;
 			_friendshipRepository = friendshipRepository;
 			_commentRepository = commentRepository;
 			_imageStorageService = s3FileService;
@@ -49,7 +53,26 @@ namespace PCSetupHub.Web.Controllers
 				commentPage, COMMENT_PAGE_SIZE);
 			user.ReceivedComments = comments;
 
-			return View(user);
+			ProfileViewModel viewModel = await CreateProfileViewModelAsync(user);
+
+			return View(viewModel);
+		}
+
+		private async Task<ProfileViewModel> CreateProfileViewModelAsync(User user)
+		{
+			string currentUserLogin = User.GetLogin() ?? string.Empty;
+			async Task<bool> hasAccess(int accessId)
+			{
+				return await _userAccessService.HasAccessAsync(currentUserLogin, user.Login,
+					(PrivacyLevelType)accessId);
+			}
+
+			PrivacySetting settings = user.PrivacySetting;
+			return new ProfileViewModel(user,
+				await hasAccess(settings.FollowersAccessId),
+				await hasAccess(settings.FollowingsAccessId),
+				await hasAccess(settings.MessagesAccessId),
+				await hasAccess(settings.PcConfigAccessId));
 		}
 
 		[HttpPost("UpdateStatus/{id}")]

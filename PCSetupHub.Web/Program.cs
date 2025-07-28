@@ -69,6 +69,7 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 	services.AddScoped<IHardwareComponentRepository<Ram>, RamRepository>();
 
 	services.AddScoped<IUserService, UserService>();
+	services.AddScoped<IUserAccessService, UserAccessService>();
 	services.AddScoped<IImageStorageService, ImageStorageService>();
 
 	services.Configure<AwsSettings>(configuration.GetSection("AwsSettings"));

@@ -4,6 +4,8 @@ using System.Linq.Expressions;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
 using PCSetupHub.Web.ViewModels;
+using PCSetupHub.Core.Interfaces;
+using PCSetupHub.Core.Extensions;
 
 namespace PCSetupHub.Web.Controllers
 {
@@ -14,13 +16,16 @@ namespace PCSetupHub.Web.Controllers
 
 		private readonly ILogger<ContactsController> _logger;
 		private readonly IUserRepository _userRepository;
+		private readonly IUserAccessService _userAccessService;
 		private readonly IFriendshipRepository _friendshipRepository;
 
 		public ContactsController(ILogger<ContactsController> logger,
-			IUserRepository userRepository, IFriendshipRepository friendshipRepository)
+			IUserRepository userRepository, IUserAccessService userAccessService,
+			IFriendshipRepository friendshipRepository)
 		{
 			_logger = logger;
 			_userRepository = userRepository;
+			_userAccessService = userAccessService;
 			_friendshipRepository = friendshipRepository;
 		}
 
@@ -46,8 +51,14 @@ namespace PCSetupHub.Web.Controllers
 					contacts.Add(friendship.Initiator);
 			}
 
+			string currentUserLogin = User.GetLogin() ?? string.Empty;
+			bool followersAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
+				login, (PrivacyLevelType)user.PrivacySetting.FollowersAccessId);
+			bool followingsAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
+				login, (PrivacyLevelType)user.PrivacySetting.FollowingsAccessId);
 			ContactsViewModel model = new(contacts, login, friendSearchQuery, page, totalItems,
-				nameof(Friends), CONTACTS_PAGE_SIZE, nameof(friendSearchQuery));
+				nameof(Friends), CONTACTS_PAGE_SIZE, nameof(friendSearchQuery),
+				followersAccessGranted, followingsAccessGranted);
 
 			return View(model);
 		}
@@ -60,6 +71,14 @@ namespace PCSetupHub.Web.Controllers
 			if (user == null)
 				return NotFound();
 
+			string currentUserLogin = User.GetLogin() ?? string.Empty;
+			bool followersAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
+				login, (PrivacyLevelType)user.PrivacySetting.FollowersAccessId);
+			if (!followersAccessGranted)
+				return StatusCode(403);
+			bool followingsAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
+				login, (PrivacyLevelType)user.PrivacySetting.FollowingsAccessId);
+
 			int totalItems = await _friendshipRepository.CountFollowersAsync(user.Id,
 				followerSearchQuery);
 			var friendships = await _friendshipRepository.GetFollowersPageAsync(user.Id,
@@ -71,7 +90,8 @@ namespace PCSetupHub.Web.Controllers
 					contacts.Add(friendship.Initiator);
 
 			ContactsViewModel model = new(contacts, login, followerSearchQuery, page, totalItems,
-				nameof(Followers), CONTACTS_PAGE_SIZE, nameof(followerSearchQuery));
+				nameof(Followers), CONTACTS_PAGE_SIZE, nameof(followerSearchQuery),
+				followersAccessGranted, followingsAccessGranted);
 
 			return View(model);
 		}
@@ -84,6 +104,14 @@ namespace PCSetupHub.Web.Controllers
 			if (user == null)
 				return NotFound();
 
+			string currentUserLogin = User.GetLogin() ?? string.Empty;
+			bool followingsAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
+				login, (PrivacyLevelType)user.PrivacySetting.FollowingsAccessId);
+			if (!followingsAccessGranted)
+				return StatusCode(403);
+			bool followersAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
+				login, (PrivacyLevelType)user.PrivacySetting.FollowersAccessId);
+
 			int totalItems = await _friendshipRepository.CountFollowingsAsync(user.Id,
 				followingSearchQuery);
 			var friendships = await _friendshipRepository.GetFollowingsPageAsync(user.Id,
@@ -95,7 +123,8 @@ namespace PCSetupHub.Web.Controllers
 					contacts.Add(friendship.Friend);
 
 			ContactsViewModel model = new(contacts, login, followingSearchQuery, page, totalItems,
-				nameof(Followings), CONTACTS_PAGE_SIZE, nameof(followingSearchQuery));
+				nameof(Followings), CONTACTS_PAGE_SIZE, nameof(followingSearchQuery),
+				followersAccessGranted, followingsAccessGranted);
 
 			return View(model);
 		}

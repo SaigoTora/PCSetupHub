@@ -7,10 +7,10 @@
 @using PCSetupHub.Web.ViewModels
 
 
-@model User
+@model ProfileViewModel
 
 @{
-	ViewData["Title"] = $"{Model.Login}";
+	ViewData["Title"] = $"{Model.User.Login}";
 	<link rel="stylesheet" href="~/css/comment.css" />
 
 	<!-- Cropper CSS and JS-->
@@ -20,8 +20,8 @@
 
 	string? userLogin = User.GetLogin();
 	int? userId = User.GetId();
-	bool canEditAvatar = (Model.Id == userId);
-	PcConfiguration? pcConfig = Model.PcConfiguration;
+	bool canEditAvatar = (Model.User.Id == userId);
+	PcConfiguration? pcConfig = Model.User.PcConfiguration;
 	var rams = pcConfig?.GetRams();
 	var ssds = pcConfig?.GetSsds();
 	var hdds = pcConfig?.GetHdds();
@@ -39,17 +39,17 @@
 
 <section>
 	<section class="d-inline">
-		<img id="avatar-preview" src="@Model.AvatarUrl" alt="User avatar @Model.Name"
+		<img id="avatar-preview" src="@Model.User.AvatarUrl" alt="User avatar @Model.User.Name"
 			 title="@(canEditAvatar ? "Change avatar" : "")" width="110" height="110"
 			 class="user-avatar me-3 mb-3 @(canEditAvatar ? "cursor-pointer" : "")"
-			 data-login="@Model.Login" @(canEditAvatar ? "data-can-edit='true'" : "") />
+			 data-login="@Model.User.Login" @(canEditAvatar ? "data-can-edit='true'" : "") />
 
 		<input type="file" id="avatar-input" accept="image/*" style="display: none;" />
 	</section>
 
 	<section class="mb-4 d-inline-flex justify-content-center">
-		<span class="user-login me-4 text-white" translate="no">@Model.Login</span>
-		@if (userLogin != null && userLogin == Model.Login)
+		<span class="user-login me-4 text-white" translate="no">@Model.User.Login</span>
+		@if (userLogin != null && userLogin == Model.User.Login)
 		{
 			<form asp-controller="Settings" asp-action="Index" asp-route-login="@userLogin" method="get">
 				<button class="user-action-btn me-2">Settings</button>
@@ -57,7 +57,7 @@
 		}
 		else if (userId.HasValue)
 		{
-			Friendship? friendship = Model.GetReceivedRequestFrom(userId.Value);
+			Friendship? friendship = Model.User.GetReceivedRequestFrom(userId.Value);
 			if (friendship != null)
 			{
 				switch ((FriendshipStatusType)friendship.StatusId)
@@ -81,7 +81,7 @@
 			}
 			else
 			{
-				friendship = Model.GetSentRequestTo(userId.Value);
+				friendship = Model.User.GetSentRequestTo(userId.Value);
 				if (friendship != null)
 				{
 					FriendshipStatusType status = (FriendshipStatusType)friendship.StatusId;
@@ -108,13 +108,13 @@
 				}
 				else
 				{
-					<form class="d-inline-block me-2" asp-controller="Profile" asp-action="SendFriendRequest" asp-route-id="@Model.Id" method="post">
+					<form class="d-inline-block me-2" asp-controller="Profile" asp-action="SendFriendRequest" asp-route-id="@Model.User.Id" method="post">
 						<button class="user-action-btn friend-status-select-highlighted">Follow</button>
 					</form>
 				}
 			}
 		}
-		@if (userId != Model.Id)
+		@if (userId != Model.User.Id && Model.MessageVisibility)
 		{
 			<button class="user-action-btn">Message</button>
 		}
@@ -133,243 +133,280 @@
 	</section>
 
 	<section class="mb-4">
-		@if (Model.Friends != null)
+		@if (Model.User.Friends != null)
 		{
-			if (Model.Friends.Count == 1)
+			if (Model.User.Friends.Count == 1)
 			{
-				<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> friend</span></a>
+				<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> friend</span></a>
 			}
 			else
 			{
-				<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Friends.Count<span class="ms-1 text-muted"> friends</span></a>
+				<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Friends.Count<span class="ms-1 text-muted"> friends</span></a>
 			}
 		}
-		@if (Model.Followers != null)
+		@if (Model.User.Followers != null)
 		{
-			if (Model.Followers.Count == 1)
+			if (Model.User.Followers.Count == 1)
 			{
-				<a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> follower</span></a>
+				if (Model.FollowersVisibility)
+				{
+					<a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> follower</span></a>
+				}
+				else
+				{
+					<span class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> follower</span></span>
+				}
 			}
 			else
 			{
-				<a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Followers.Count<span class="ms-1 text-muted"> followers</span></a>
+				if (Model.FollowersVisibility)
+				{
+					<a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Followers.Count<span class="ms-1 text-muted"> followers</span></a>
+				}
+				else
+				{
+					<span class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Followers.Count<span class="ms-1 text-muted"> followers</span></span>
+				}
 			}
 		}
-		@if (Model.Followings != null)
+		@if (Model.User.Followings != null)
 		{
-			if (Model.Followings.Count == 1)
+			if (Model.User.Followings.Count == 1)
 			{
-				<a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> following</span></a>
+				if (Model.FollowingsVisibility)
+				{
+					<a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> following</span></a>
+				}
+				else
+				{
+					<span class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> following</span></span>
+				}
 			}
 			else
 			{
-				<a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.Followings.Count<span class="ms-1 text-muted"> followings</span></a>
+				if (Model.FollowingsVisibility)
+				{
+					<a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Followings.Count<span class="ms-1 text-muted"> followings</span></a>
+				}
+				else
+				{
+					<span class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Followings.Count<span class="ms-1 text-muted"> followings</span></span>
+				}
 			}
 		}
 	</section>
 </section>
 
 <section class="mb-2">
-	<span class="d-block mb-1 user-name text-white">@Model.Name</span>
-	<span class="user-description">@Model.Description</span>
+	<span class="d-block mb-1 user-name text-white">@Model.User.Name</span>
+	<span class="user-description">@Model.User.Description</span>
 </section>
 
 <hr />
 
 @if (pcConfig != null)
 {
-	<section class="pc-config-section">
-		@if (pcConfig.Type != null)
+	<section class="pc-cPcConfigVisibilityn">
+		@if (Model.PcConfigVisibility)
 		{
-			<div class="mb-2 text-end">
-				@if (pcConfig.Type.Name == "Desktop")
-				{
-					<i class="fa fa-display fs-6 me-1"></i>
-				}
-				else if (pcConfig.Type.Name == "Laptop")
-				{
-					<i class="fa fa-laptop fs-6 me-1"></i>
-				}
-				<span>@pcConfig.Type.Name</span>
-			</div>
-		}
-		@if (pcConfig.HasAnyComponents)
-		{
-			<table class="table-responsive table-sm w-100 pc-components-table mb-2">
-				<thead>
-					<tr>
-						<th>Type</th>
-						<th>Name</th>
-						<th>Price</th>
-					</tr>
-				</thead>
-				<tbody>
-					@if (pcConfig.Processor != null)
-					{
-						<tr>
-							<td><span>Processor</span></td>
-							<td>
-								<span id=@($"openModal-{typeof(Processor).Name}-{pcConfig.Processor.Id}") class="pc-component-name" translate="no">
-									@pcConfig.Processor.DisplayName
-								</span>
-								@await Html.PartialAsync("PcComponents/_ComponentModalPartial", pcConfig.Processor)
-							</td>
-
-							@Html.RenderPriceInTable(pcConfig.Processor.Price)
-						</tr>
-					}
-					@if (pcConfig.VideoCard != null)
-					{
-						<tr>
-							<td><span>Video Сard</span></td>
-							<td>
-								<span id=@($"openModal-{typeof(VideoCard).Name}-{pcConfig.VideoCard.Id}") class="pc-component-name" translate="no">
-									@pcConfig.VideoCard.DisplayName
-								</span>
-								@await Html.PartialAsync("PcComponents/_ComponentModalPartial", pcConfig.VideoCard)
-							</td>
-							@Html.RenderPriceInTable(pcConfig.VideoCard.Price)
-						</tr>
-					}
-					@if (pcConfig.Motherboard != null)
-					{
-						<tr>
-							<td><span>Motherboard</span></td>
-							<td>
-								<span id=@($"openModal-{typeof(Motherboard).Name}-{pcConfig.Motherboard.Id}") class="pc-component-name" translate="no">
-									@pcConfig.Motherboard.DisplayName
-								</span>
-								@await Html.PartialAsync("PcComponents/_ComponentModalPartial", pcConfig.Motherboard)
-							</td>
-							@Html.RenderPriceInTable(pcConfig.Motherboard.Price)
-						</tr>
-					}
-					@if (pcConfig.PowerSupply != null)
-					{
-						<tr>
-							<td><span>Power Supply</span></td>
-							<td>
-								<span id=@($"openModal-{typeof(PowerSupply).Name}-{pcConfig.PowerSupply.Id}") class="pc-component-name" translate="no">
-									@pcConfig.PowerSupply.DisplayName
-								</span>
-								@await Html.PartialAsync("PcComponents/_ComponentModalPartial", pcConfig.PowerSupply)
-							</td>
-							@Html.RenderPriceInTable(pcConfig.PowerSupply.Price)
-						</tr>
-					}
-					@if (rams != null && rams.Length != 0)
-					{
-						for (int i = 0; i < rams.Length; i++)
-						{
-							<tr>
-								@if (rams.Length == 1)
-								{
-									<td><span>RAM</span></td>
-								}
-								else
-								{
-									<td><span>RAM <sup>@(i + 1)</sup></span></td>
-								}
-								<td>
-									<span id=@($"openModal-{typeof(Ram).Name}-{rams[i]?.Id}") class="pc-component-name" translate="no">
-										@rams[i]?.DisplayName
-									</span>
-									@await Html.PartialAsync("PcComponents/_ComponentModalPartial", rams[i])
-								</td>
-								@Html.RenderPriceInTable(rams[i]?.Price)
-							</tr>
-						}
-					}
-					@if (ssds != null && ssds.Length != 0)
-					{
-						for (int i = 0; i < ssds.Length; i++)
-						{
-							<tr>
-								@if (ssds.Length == 1)
-								{
-									<td><span>SSD</span></td>
-								}
-								else
-								{
-									<td><span>SSD <sup>@(i + 1)</sup></span></td>
-								}
-								<td>
-									<span id=@($"openModal-{typeof(Ssd).Name}-{ssds[i]?.Id}") class="pc-component-name" translate="no">
-										@ssds[i]?.DisplayName
-									</span>
-									@await Html.PartialAsync("PcComponents/_ComponentModalPartial", ssds[i])
-								</td>
-								@Html.RenderPriceInTable(ssds[i]?.Price)
-							</tr>
-						}
-					}
-					@if (hdds != null && hdds.Length != 0)
-					{
-						for (int i = 0; i < hdds.Length; i++)
-						{
-							<tr>
-								@if (hdds.Length == 1)
-								{
-									<td><span>HDD</span></td>
-								}
-								else
-								{
-									<td><span>HDD <sup>@(i + 1)</sup></span></td>
-								}
-								<td>
-									<span id=@($"openModal-{typeof(Hdd).Name}-{hdds[i]?.Id}") class="pc-component-name" translate="no">
-										@hdds[i]?.DisplayName
-									</span>
-									@await Html.PartialAsync("PcComponents/_ComponentModalPartial", hdds[i])
-								</td>
-								@Html.RenderPriceInTable(hdds[i]?.Price)
-							</tr>
-						}
-					}
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan="2">
-							Total
-							@if (!pcConfig.AreAllComponentsDefault)
-							{
-								<i class="ps-1 fs-5 fa fa-circle-exclamation text-warning" title="Some components were entered by a user and may be inaccurate."></i>
-							}
-						</td>
-						@Html.RenderPriceInTable(pcConfig.TotalPrice)
-					</tr>
-				</tfoot>
-			</table>
-		}
-		else
-		{
-			@if (Model.Id == userId)
+			if (pcConfig.Type != null)
 			{
-				<div class="text-center text-muted mb-3">
-					You haven't selected any components for your configuration yet. You can do this by clicking the <b>button below</b>.
+				<div class="mb-2 text-end">
+					@if (pcConfig.Type.Name == "Desktop")
+					{
+						<i class="fa fa-display fs-6 me-1"></i>
+					}
+					else if (pcConfig.Type.Name == "Laptop")
+					{
+						<i class="fa fa-laptop fs-6 me-1"></i>
+					}
+					<span>@pcConfig.Type.Name</span>
 				</div>
+			}
+			@if (pcConfig.HasAnyComponents)
+			{
+				<table class="table-responsive table-sm w-100 pc-components-table mb-2">
+					<thead>
+						<tr>
+							<th>Type</th>
+							<th>Name</th>
+							<th>Price</th>
+						</tr>
+					</thead>
+					<tbody>
+						@if (pcConfig.Processor != null)
+						{
+							<tr>
+								<td><span>Processor</span></td>
+								<td>
+									<span id=@($"openModal-{typeof(Processor).Name}-{pcConfig.Processor.Id}") class="pc-component-name" translate="no">
+										@pcConfig.Processor.DisplayName
+									</span>
+									@await Html.PartialAsync("PcComponents/_ComponentModalPartial", pcConfig.Processor)
+								</td>
+
+								@Html.RenderPriceInTable(pcConfig.Processor.Price)
+							</tr>
+						}
+						@if (pcConfig.VideoCard != null)
+						{
+							<tr>
+								<td><span>Video Сard</span></td>
+								<td>
+									<span id=@($"openModal-{typeof(VideoCard).Name}-{pcConfig.VideoCard.Id}") class="pc-component-name" translate="no">
+										@pcConfig.VideoCard.DisplayName
+									</span>
+									@await Html.PartialAsync("PcComponents/_ComponentModalPartial", pcConfig.VideoCard)
+								</td>
+								@Html.RenderPriceInTable(pcConfig.VideoCard.Price)
+							</tr>
+						}
+						@if (pcConfig.Motherboard != null)
+						{
+							<tr>
+								<td><span>Motherboard</span></td>
+								<td>
+									<span id=@($"openModal-{typeof(Motherboard).Name}-{pcConfig.Motherboard.Id}") class="pc-component-name" translate="no">
+										@pcConfig.Motherboard.DisplayName
+									</span>
+									@await Html.PartialAsync("PcComponents/_ComponentModalPartial", pcConfig.Motherboard)
+								</td>
+								@Html.RenderPriceInTable(pcConfig.Motherboard.Price)
+							</tr>
+						}
+						@if (pcConfig.PowerSupply != null)
+						{
+							<tr>
+								<td><span>Power Supply</span></td>
+								<td>
+									<span id=@($"openModal-{typeof(PowerSupply).Name}-{pcConfig.PowerSupply.Id}") class="pc-component-name" translate="no">
+										@pcConfig.PowerSupply.DisplayName
+									</span>
+									@await Html.PartialAsync("PcComponents/_ComponentModalPartial", pcConfig.PowerSupply)
+								</td>
+								@Html.RenderPriceInTable(pcConfig.PowerSupply.Price)
+							</tr>
+						}
+						@if (rams != null && rams.Length != 0)
+						{
+							for (int i = 0; i < rams.Length; i++)
+							{
+								<tr>
+									@if (rams.Length == 1)
+									{
+										<td><span>RAM</span></td>
+									}
+									else
+									{
+										<td><span>RAM <sup>@(i + 1)</sup></span></td>
+									}
+									<td>
+										<span id=@($"openModal-{typeof(Ram).Name}-{rams[i]?.Id}") class="pc-component-name" translate="no">
+											@rams[i]?.DisplayName
+										</span>
+										@await Html.PartialAsync("PcComponents/_ComponentModalPartial", rams[i])
+									</td>
+									@Html.RenderPriceInTable(rams[i]?.Price)
+								</tr>
+							}
+						}
+						@if (ssds != null && ssds.Length != 0)
+						{
+							for (int i = 0; i < ssds.Length; i++)
+							{
+								<tr>
+									@if (ssds.Length == 1)
+									{
+										<td><span>SSD</span></td>
+									}
+									else
+									{
+										<td><span>SSD <sup>@(i + 1)</sup></span></td>
+									}
+									<td>
+										<span id=@($"openModal-{typeof(Ssd).Name}-{ssds[i]?.Id}") class="pc-component-name" translate="no">
+											@ssds[i]?.DisplayName
+										</span>
+										@await Html.PartialAsync("PcComponents/_ComponentModalPartial", ssds[i])
+									</td>
+									@Html.RenderPriceInTable(ssds[i]?.Price)
+								</tr>
+							}
+						}
+						@if (hdds != null && hdds.Length != 0)
+						{
+							for (int i = 0; i < hdds.Length; i++)
+							{
+								<tr>
+									@if (hdds.Length == 1)
+									{
+										<td><span>HDD</span></td>
+									}
+									else
+									{
+										<td><span>HDD <sup>@(i + 1)</sup></span></td>
+									}
+									<td>
+										<span id=@($"openModal-{typeof(Hdd).Name}-{hdds[i]?.Id}") class="pc-component-name" translate="no">
+											@hdds[i]?.DisplayName
+										</span>
+										@await Html.PartialAsync("PcComponents/_ComponentModalPartial", hdds[i])
+									</td>
+									@Html.RenderPriceInTable(hdds[i]?.Price)
+								</tr>
+							}
+						}
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="2">
+								Total
+								@if (!pcConfig.AreAllComponentsDefault)
+								{
+									<i class="ps-1 fs-5 fa fa-circle-exclamation text-warning" title="Some components were entered by a user and may be inaccurate."></i>
+								}
+							</td>
+							@Html.RenderPriceInTable(pcConfig.TotalPrice)
+						</tr>
+					</tfoot>
+				</table>
 			}
 			else
 			{
-				<div class="text-center text-muted mb-3">
-					This user hasn't selected any components for their configuration yet.
+				@if (Model.User.Id == userId)
+				{
+					<div class="text-center text-muted mb-3">
+						You haven't selected any components for your configuration yet. You can do this by clicking the <b>button below</b>.
+					</div>
+				}
+				else
+				{
+					<div class="text-center text-muted mb-3">
+						This user hasn't selected any components for their configuration yet.
+					</div>
+				}
+			}
+			@if (Model.User.Id == userId)
+			{
+				<div class="d-flex justify-content-center">
+					<a class="button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
+						Configure
+					</a>
+				</div>
+			}
+			else if (pcConfig.HasAnyComponents)
+			{
+				<div class="d-flex justify-content-center">
+					<a class="button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
+						More
+					</a>
 				</div>
 			}
 		}
-		@if (Model.Id == userId)
+		else
 		{
-			<div class="d-flex justify-content-center">
-				<a class="button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
-					Configure
-				</a>
-			</div>
-		}
-		else if (pcConfig.HasAnyComponents)
-		{
-			<div class="d-flex justify-content-center">
-				<a class="button-more" asp-controller="PcSetup" asp-action="Index" asp-route-id="@pcConfig.Id">
-					More
-				</a>
+			<div class="text-center text-muted mb-3">
+				This user has restricted access to viewing their PC configuration.
 			</div>
 		}
 	</section>
@@ -377,18 +414,18 @@
 
 <section>
 	<h5 class="mb-2">Comments</h5>
-	<form class="ps-2 pe-2 mb-4" asp-action="CreateComment" asp-route-profileId="@Model.Id">
+	<form class="ps-2 pe-2 mb-4" asp-action="CreateComment" asp-route-profileId="@Model.User.Id">
 		<textarea id="comment-input" class="comment-input" placeholder="Add a comment" name="commentText" type="text" autocomplete="off" title="" required oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
 		<div class="d-flex justify-content-end">
 			<button id="submit-comment-button" class="submit-comment-button" type="submit" title="Post Comment">Comment</button>
 		</div>
 	</form>
 
-	@if (Model.ReceivedComments != null)
+	@if (Model.User.ReceivedComments != null)
 	{
-		@if (Model.ReceivedComments.Count > 0)
+		@if (Model.User.ReceivedComments.Count > 0)
 		{
-			foreach (Comment comment in Model.ReceivedComments)
+			foreach (Comment comment in Model.User.ReceivedComments)
 			{
 				if (comment.Commentator != null)
 				{
