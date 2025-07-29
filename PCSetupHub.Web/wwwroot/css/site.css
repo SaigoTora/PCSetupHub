@@ -183,6 +183,7 @@ main {
 }
 
 .nav-menu-item {
+    max-width: calc(var(--nav-menu-width) - 11%);
     font-size: 1.2rem;
     text-align: center;
     border-radius: var(--border-radius);
@@ -768,6 +769,10 @@ footer {
         width: var(--nav-menu-item-size);
         height: 52px;
         justify-content: center;
+    }
+
+    .nav-menu-item.preserve-text {
+        display: none;
     }
 
     .nav-menu {

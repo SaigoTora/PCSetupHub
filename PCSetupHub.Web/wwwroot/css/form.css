@@ -295,6 +295,11 @@ option {
         user-select: none;
     }
 
+.privacy-setting-select {
+    width: 40%;
+    font-size: 1.1rem;
+}
+
 @media (max-width: 1264px) {
     .form__group {
         width: 60%;
@@ -302,6 +307,10 @@ option {
 
     select {
         width: 40%;
+    }
+
+    .privacy-setting-select {
+        width: 50%;
     }
 }
 
@@ -317,6 +326,10 @@ option {
     .description-input {
         width: 100%;
     }
+
+    .privacy-setting-select {
+        width: 75%;
+    }
 }
 
 @media(max-width: 640px) {
@@ -326,5 +339,9 @@ option {
 
     select {
         width: 85%;
+    }
+
+    .privacy-setting-select {
+        width: 95%;
     }
 }

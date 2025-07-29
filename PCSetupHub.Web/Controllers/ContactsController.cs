@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 
+using PCSetupHub.Core.Extensions;
+using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
 using PCSetupHub.Web.ViewModels;
-using PCSetupHub.Core.Interfaces;
-using PCSetupHub.Core.Extensions;
 
 namespace PCSetupHub.Web.Controllers
 {
@@ -29,7 +31,8 @@ namespace PCSetupHub.Web.Controllers
 			_friendshipRepository = friendshipRepository;
 		}
 
-		[HttpGet("Friends/{login}")]
+		[HttpGet("Friends/{login?}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Friends(string login, string friendSearchQuery,
 			int page = 1)
 		{
@@ -62,7 +65,8 @@ namespace PCSetupHub.Web.Controllers
 			return View(model);
 		}
 
-		[HttpGet("Followers/{login}")]
+		[HttpGet("Followers/{login?}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Followers(string login, string followerSearchQuery,
 			int page = 1)
 		{
@@ -91,7 +95,8 @@ namespace PCSetupHub.Web.Controllers
 			return View(model);
 		}
 
-		[HttpGet("Followings/{login}")]
+		[HttpGet("Followings/{login?}")]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Followings(string login, string followingSearchQuery,
 			int page = 1)
 		{
@@ -136,6 +141,7 @@ namespace PCSetupHub.Web.Controllers
 				await hasAccess(settings.FollowingsAccessId));
 		}
 
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Search(string contactSearchQuery, int page = 1)
 		{
 			Expression<Func<User, bool>> filter = u

@@ -73,10 +73,9 @@
 			<ul class="nav nav-pills flex-column">
 				@if (User.Identity != null && User.Identity.IsAuthenticated)
 				{
-					<li class="nav-item nav-menu-item">
-						<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Auth" asp-action="Logout">
-							<i class="fa-solid fa-right-from-bracket text-danger nav-menu-icon"></i>
-							<span class="d-inline nav-link nav-menu-text text-danger">Exit</span>
+					<li class="nav-item nav-menu-item preserve-text">
+						<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Settings" asp-action="Index" asp-route-login="@userLogin">
+							<span class="d-inline nav-link nav-menu-text text-truncate ps-2">@@@userLogin</span>
 						</a>
 					</li>
 				}
