@@ -6,20 +6,23 @@
 }
 
 <ul class="nav contacts-tabs-container">
-	<li class="contacts-tab-item">
+	<li class="contacts-tab-item me-auto">
 		<a class="contacts-nav-link contacts-back-nav-link" asp-controller="Profile" asp-action="Index" asp-route-login="@Model.Login">Back</a>
 	</li>
-	<li class="contacts-tab-item me-1 ms-auto">
-		<a class="contacts-nav-link @(Model.ActionName == "Friends" ? "active" : "")" asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.Login" asp-route-friendSearchQuery="@Model.SearchQuery">Friends</a>
-	</li>
+	@if (Model.ContactsPrivacy != null && Model.ContactsPrivacy.AreFriendsVisible)
+	{
+		<li class="contacts-tab-item me-1">
+			<a class="contacts-nav-link @(Model.ActionName == "Friends" ? "active" : "")" asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.Login" asp-route-friendSearchQuery="@Model.SearchQuery">Friends</a>
+		</li>
+	}
 
-	@if (Model.FollowersVisibility)
+	@if (Model.ContactsPrivacy != null && Model.ContactsPrivacy.AreFollowersVisible)
 	{
 		<li class="contacts-tab-item me-1">
 			<a class="contacts-nav-link @(Model.ActionName == "Followers" ? "active" : "")" asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.Login" asp-route-followerSearchQuery="@Model.SearchQuery">Followers</a>
 		</li>
 	}
-	@if (Model.FollowingsVisibility)
+	@if (Model.ContactsPrivacy != null && Model.ContactsPrivacy.AreFollowingsVisible)
 	{
 		<li class="contacts-tab-item">
 			<a class="contacts-nav-link @(Model.ActionName == "Followings" ? "active" : "")" asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.Login" asp-route-followingSearchQuery="@Model.SearchQuery">Followings</a>

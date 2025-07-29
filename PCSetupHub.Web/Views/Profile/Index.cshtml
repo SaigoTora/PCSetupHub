@@ -114,7 +114,7 @@
 				}
 			}
 		}
-		@if (userId != Model.User.Id && Model.MessageVisibility)
+		@if (userId != Model.User.Id && Model.AreMessageVisible)
 		{
 			<button class="user-action-btn">Message</button>
 		}
@@ -137,18 +137,32 @@
 		{
 			if (Model.User.Friends.Count == 1)
 			{
-				<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> friend</span></a>
+				if (Model.ContactsPrivacy.AreFriendsVisible)
+				{
+					<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> friend</span></a>
+				}
+				else
+				{
+					<span class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> friend</span></span>
+				}
 			}
 			else
 			{
-				<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Friends.Count<span class="ms-1 text-muted"> friends</span></a>
+				if (Model.ContactsPrivacy.AreFriendsVisible)
+				{
+					<a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Friends.Count<span class="ms-1 text-muted"> friends</span></a>
+				}
+				else
+				{
+					<span class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Friends.Count<span class="ms-1 text-muted"> friends</span></span>
+				}
 			}
 		}
 		@if (Model.User.Followers != null)
 		{
 			if (Model.User.Followers.Count == 1)
 			{
-				if (Model.FollowersVisibility)
+				if (Model.ContactsPrivacy.AreFollowersVisible)
 				{
 					<a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> follower</span></a>
 				}
@@ -159,7 +173,7 @@
 			}
 			else
 			{
-				if (Model.FollowersVisibility)
+				if (Model.ContactsPrivacy.AreFollowersVisible)
 				{
 					<a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Followers.Count<span class="ms-1 text-muted"> followers</span></a>
 				}
@@ -173,7 +187,7 @@
 		{
 			if (Model.User.Followings.Count == 1)
 			{
-				if (Model.FollowingsVisibility)
+				if (Model.ContactsPrivacy.AreFollowingsVisible)
 				{
 					<a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> following</span></a>
 				}
@@ -184,7 +198,7 @@
 			}
 			else
 			{
-				if (Model.FollowingsVisibility)
+				if (Model.ContactsPrivacy.AreFollowingsVisible)
 				{
 					<a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Followings.Count<span class="ms-1 text-muted"> followings</span></a>
 				}
@@ -206,8 +220,8 @@
 
 @if (pcConfig != null)
 {
-	<section class="pc-cPcConfigVisibilityn">
-		@if (Model.PcConfigVisibility)
+	<section class="pc-config-section">
+		@if (Model.ArePcConfigVisible)
 		{
 			if (pcConfig.Type != null)
 			{
@@ -413,13 +427,20 @@
 }
 
 <section>
-	<h5 class="mb-2">Comments</h5>
-	<form class="ps-2 pe-2 mb-4" asp-action="CreateComment" asp-route-profileId="@Model.User.Id">
-		<textarea id="comment-input" class="comment-input" placeholder="Add a comment" name="commentText" type="text" autocomplete="off" title="" required oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
-		<div class="d-flex justify-content-end">
-			<button id="submit-comment-button" class="submit-comment-button" type="submit" title="Post Comment">Comment</button>
-		</div>
-	</form>
+	@if (Model.IsCommentWritingAllowed)
+	{
+		<h5 class="mb-2">Comments</h5>
+		<form class="ps-2 pe-2 mb-4" asp-action="CreateComment" asp-route-login="@Model.User.Login">
+			<textarea id="comment-input" class="comment-input" placeholder="Add a comment" name="commentText" type="text" autocomplete="off" title="" required oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+			<div class="d-flex justify-content-end">
+				<button id="submit-comment-button" class="submit-comment-button" type="submit" title="Post Comment">Comment</button>
+			</div>
+		</form>
+	}
+	else
+	{
+		<h5 class="mb-3">Comments</h5>
+	}
 
 	@if (Model.User.ReceivedComments != null)
 	{
@@ -525,9 +546,14 @@
 <script>
 	const input = document.getElementById('comment-input');
 	const button = document.getElementById('submit-comment-button');
-	button.style.display = 'none';
 
-	input.addEventListener('input', () => {
-	  button.style.display = input.value.trim().length > 0 ? 'inline-block' : 'none';
-	});
+	if (button) {
+	  button.style.display = 'none';
+	}
+
+	if (input) {
+	  input.addEventListener('input', () => {
+		button.style.display = input.value.trim().length > 0 ? 'inline-block' : 'none';
+	  });
+	}
 </script>

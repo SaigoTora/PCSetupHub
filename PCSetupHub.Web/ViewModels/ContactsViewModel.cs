@@ -6,9 +6,7 @@ namespace PCSetupHub.Web.ViewModels
 	{
 		public ICollection<User>? Contacts { get; private set; }
 		public string Login { get; private set; } = string.Empty;
-
-		public bool FollowersVisibility { get; private set; }
-		public bool FollowingsVisibility { get; private set; }
+		public ContactsPrivacyViewModel? ContactsPrivacy { get; private set; }
 
 		public ContactsViewModel()
 			: base()
@@ -20,14 +18,13 @@ namespace PCSetupHub.Web.ViewModels
 			Contacts = contacts;
 			Login = login;
 		}
-		public ContactsViewModel(ICollection<User> contacts, string login, string? searchQuery,
-			int page, int totalItems, string actionName, int pageSize, string searchQueryName,
-			bool followersVisibility, bool followingsVisibility)
+		public ContactsViewModel(ICollection<User> contacts, string login,
+			ContactsPrivacyViewModel contactsPrivacy, string? searchQuery, int page,
+			int totalItems, string actionName, int pageSize, string searchQueryName)
 			: this(contacts, login, searchQuery, page, totalItems, actionName, pageSize,
 				  searchQueryName)
 		{
-			FollowersVisibility = followersVisibility;
-			FollowingsVisibility = followingsVisibility;
+			ContactsPrivacy = contactsPrivacy;
 		}
 	}
 }

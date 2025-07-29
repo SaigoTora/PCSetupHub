@@ -5,20 +5,20 @@ namespace PCSetupHub.Web.ViewModels
 	public class ProfileViewModel
 	{
 		public User User { get; private set; }
+		public ContactsPrivacyViewModel ContactsPrivacy { get; private set; }
 
-		public bool FollowersVisibility { get; private set; }
-		public bool FollowingsVisibility { get; private set; }
-		public bool MessageVisibility { get; private set; }
-		public bool PcConfigVisibility { get; private set; }
+		public bool AreMessageVisible { get; private set; }
+		public bool ArePcConfigVisible { get; private set; }
+		public bool IsCommentWritingAllowed { get; private set; }
 
-		public ProfileViewModel(User user, bool followersVisibility, bool followingsVisibility,
-			bool messageVisibility, bool pcConfigVisibility)
+		public ProfileViewModel(User user, ContactsPrivacyViewModel contactsPrivacy,
+			bool areMessageVisible, bool arePcConfigVisible, bool isCommentWritingAllowed)
 		{
 			User = user;
-			FollowersVisibility = followersVisibility;
-			FollowingsVisibility = followingsVisibility;
-			MessageVisibility = messageVisibility;
-			PcConfigVisibility = pcConfigVisibility;
+			ContactsPrivacy = contactsPrivacy;
+			AreMessageVisible = areMessageVisible;
+			ArePcConfigVisible = arePcConfigVisible;
+			IsCommentWritingAllowed = isCommentWritingAllowed;
 		}
 	}
 }

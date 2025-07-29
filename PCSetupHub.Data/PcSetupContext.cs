@@ -120,7 +120,7 @@ namespace PCSetupHub.Data
 			SetCommentRelationships();
 			SetFriendshipRelationships();
 			SetMessageRelationships();
-			SetUserRelationships();
+			SetPrivacySettingRelationships();
 
 			SetPcConfigurationRelationships();
 			SetPcConfigurationHddRelationships();
@@ -182,13 +182,19 @@ namespace PCSetupHub.Data
 				.HasForeignKey(m => m.ReceiverId)
 				.OnDelete(DeleteBehavior.Restrict);
 		}
-		private void SetUserRelationships()
+		private void SetPrivacySettingRelationships()
 		{
 			_modelBuilder.Entity<User>()
 				.HasOne(u => u.PrivacySetting)
 				.WithOne(ps => ps.User)
 				.HasForeignKey<PrivacySetting>(ps => ps.UserId)
 				.OnDelete(DeleteBehavior.Cascade);
+
+			_modelBuilder.Entity<PrivacySetting>()
+				.HasOne(ps => ps.FriendsAccess)
+				.WithMany(pl => pl.FriendsAccessSettings)
+				.HasForeignKey(ps => ps.FriendsAccessId)
+				.OnDelete(DeleteBehavior.Restrict);
 
 			_modelBuilder.Entity<PrivacySetting>()
 				.HasOne(ps => ps.FollowersAccess)
@@ -212,6 +218,12 @@ namespace PCSetupHub.Data
 				.HasOne(ps => ps.PcConfigAccess)
 				.WithMany(pl => pl.PcConfigAccessSettings)
 				.HasForeignKey(ps => ps.PcConfigAccessId)
+				.OnDelete(DeleteBehavior.Restrict);
+
+			_modelBuilder.Entity<PrivacySetting>()
+				.HasOne(ps => ps.CommentWritingAccess)
+				.WithMany(pl => pl.CommentWritingAccessSettings)
+				.HasForeignKey(ps => ps.CommentWritingAccessId)
 				.OnDelete(DeleteBehavior.Restrict);
 		}
 

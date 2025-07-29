@@ -68,11 +68,15 @@ namespace PCSetupHub.Web.Controllers
 			}
 
 			PrivacySetting settings = user.PrivacySetting;
-			return new ProfileViewModel(user,
+			ContactsPrivacyViewModel contactsPrivacy = new(
+				await hasAccess(settings.FriendsAccessId),
 				await hasAccess(settings.FollowersAccessId),
-				await hasAccess(settings.FollowingsAccessId),
+				await hasAccess(settings.FollowingsAccessId));
+
+			return new ProfileViewModel(user, contactsPrivacy,
 				await hasAccess(settings.MessagesAccessId),
-				await hasAccess(settings.PcConfigAccessId));
+				await hasAccess(settings.PcConfigAccessId),
+				await hasAccess(settings.CommentWritingAccessId));
 		}
 
 		[HttpPost("UpdateStatus/{id}")]
@@ -173,15 +177,15 @@ namespace PCSetupHub.Web.Controllers
 			return RedirectToProfile(user.Login);
 		}
 
-		[HttpPost("CreateComment/{profileId}")]
+		[HttpPost("CreateComment/{login}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		[EnableRateLimiting("LimitPerUser")]
-		public async Task<IActionResult> CreateComment(int profileId, string commentText)
+		public async Task<IActionResult> CreateComment(string login, string commentText)
 		{
 			if (string.IsNullOrWhiteSpace(commentText))
 				return BadRequest();
 
-			User? user = await _userRepository.GetOneAsync(profileId);
+			User? user = await _userRepository.GetByLoginAsync(login, UserIncludes.PrivacySetting);
 			if (user == null)
 				return NotFound();
 
@@ -189,9 +193,15 @@ namespace PCSetupHub.Web.Controllers
 			if (!userId.HasValue)
 				return Unauthorized();
 
+			string currentUserLogin = User.GetLogin() ?? string.Empty;
+			bool commentAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
+				login, (PrivacyLevelType)user.PrivacySetting.CommentWritingAccessId);
+			if (!commentAccessGranted)
+				return StatusCode(403);
+
 			try
 			{
-				Comment comment = new(profileId, userId.Value, commentText);
+				Comment comment = new(user.Id, userId.Value, commentText);
 				Comment sanitizedComment = await _commentRepository.AddAsync(comment);
 				sanitizedComment.ClearUser();
 				sanitizedComment.ClearCommentator();
@@ -201,7 +211,7 @@ namespace PCSetupHub.Web.Controllers
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Failed to create comment for profile {ProfileId} by user " +
-					"{UserId}", profileId, userId);
+					"{UserId}", user.Id, userId);
 				throw;
 			}
 

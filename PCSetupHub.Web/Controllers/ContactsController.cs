@@ -37,6 +37,10 @@ namespace PCSetupHub.Web.Controllers
 			if (user == null)
 				return NotFound();
 
+			var contactsPrivacy = await CreateContactsPrivacyViewModelAsync(user);
+			if (!contactsPrivacy.AreFriendsVisible)
+				return StatusCode(403);
+
 			int totalItems = await _friendshipRepository.CountFriendsAsync(user.Id,
 				friendSearchQuery);
 			var friendships = await _friendshipRepository.GetFriendsPageAsync(user.Id,
@@ -51,14 +55,9 @@ namespace PCSetupHub.Web.Controllers
 					contacts.Add(friendship.Initiator);
 			}
 
-			string currentUserLogin = User.GetLogin() ?? string.Empty;
-			bool followersAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
-				login, (PrivacyLevelType)user.PrivacySetting.FollowersAccessId);
-			bool followingsAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
-				login, (PrivacyLevelType)user.PrivacySetting.FollowingsAccessId);
-			ContactsViewModel model = new(contacts, login, friendSearchQuery, page, totalItems,
-				nameof(Friends), CONTACTS_PAGE_SIZE, nameof(friendSearchQuery),
-				followersAccessGranted, followingsAccessGranted);
+			ContactsViewModel model = new(contacts, login, contactsPrivacy,
+				friendSearchQuery, page, totalItems, nameof(Friends), CONTACTS_PAGE_SIZE,
+				nameof(friendSearchQuery));
 
 			return View(model);
 		}
@@ -71,13 +70,9 @@ namespace PCSetupHub.Web.Controllers
 			if (user == null)
 				return NotFound();
 
-			string currentUserLogin = User.GetLogin() ?? string.Empty;
-			bool followersAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
-				login, (PrivacyLevelType)user.PrivacySetting.FollowersAccessId);
-			if (!followersAccessGranted)
+			var contactsPrivacy = await CreateContactsPrivacyViewModelAsync(user);
+			if (!contactsPrivacy.AreFollowersVisible)
 				return StatusCode(403);
-			bool followingsAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
-				login, (PrivacyLevelType)user.PrivacySetting.FollowingsAccessId);
 
 			int totalItems = await _friendshipRepository.CountFollowersAsync(user.Id,
 				followerSearchQuery);
@@ -89,9 +84,9 @@ namespace PCSetupHub.Web.Controllers
 				if (friendship.FriendId == user.Id && friendship.Initiator != null)
 					contacts.Add(friendship.Initiator);
 
-			ContactsViewModel model = new(contacts, login, followerSearchQuery, page, totalItems,
-				nameof(Followers), CONTACTS_PAGE_SIZE, nameof(followerSearchQuery),
-				followersAccessGranted, followingsAccessGranted);
+			ContactsViewModel model = new(contacts, login, contactsPrivacy,
+				followerSearchQuery, page, totalItems, nameof(Followers), CONTACTS_PAGE_SIZE,
+				nameof(followerSearchQuery));
 
 			return View(model);
 		}
@@ -104,13 +99,9 @@ namespace PCSetupHub.Web.Controllers
 			if (user == null)
 				return NotFound();
 
-			string currentUserLogin = User.GetLogin() ?? string.Empty;
-			bool followingsAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
-				login, (PrivacyLevelType)user.PrivacySetting.FollowingsAccessId);
-			if (!followingsAccessGranted)
+			var contactsPrivacy = await CreateContactsPrivacyViewModelAsync(user);
+			if (!contactsPrivacy.AreFollowingsVisible)
 				return StatusCode(403);
-			bool followersAccessGranted = await _userAccessService.HasAccessAsync(currentUserLogin,
-				login, (PrivacyLevelType)user.PrivacySetting.FollowersAccessId);
 
 			int totalItems = await _friendshipRepository.CountFollowingsAsync(user.Id,
 				followingSearchQuery);
@@ -122,11 +113,27 @@ namespace PCSetupHub.Web.Controllers
 				if (friendship.InitiatorId == user.Id && friendship.Friend != null)
 					contacts.Add(friendship.Friend);
 
-			ContactsViewModel model = new(contacts, login, followingSearchQuery, page, totalItems,
-				nameof(Followings), CONTACTS_PAGE_SIZE, nameof(followingSearchQuery),
-				followersAccessGranted, followingsAccessGranted);
+			ContactsViewModel model = new(contacts, login, contactsPrivacy,
+				followingSearchQuery, page, totalItems, nameof(Followings), CONTACTS_PAGE_SIZE,
+				nameof(followingSearchQuery));
 
 			return View(model);
+		}
+
+		private async Task<ContactsPrivacyViewModel> CreateContactsPrivacyViewModelAsync(User user)
+		{
+			string currentUserLogin = User.GetLogin() ?? string.Empty;
+			async Task<bool> hasAccess(int accessId)
+			{
+				return await _userAccessService.HasAccessAsync(currentUserLogin, user.Login,
+					(PrivacyLevelType)accessId);
+			}
+
+			PrivacySetting settings = user.PrivacySetting;
+			return new ContactsPrivacyViewModel(
+				await hasAccess(settings.FriendsAccessId),
+				await hasAccess(settings.FollowersAccessId),
+				await hasAccess(settings.FollowingsAccessId));
 		}
 
 		public async Task<IActionResult> Search(string contactSearchQuery, int page = 1)

@@ -57,8 +57,9 @@ namespace PCSetupHub.Web.Controllers
 				return View(model);
 			}
 
-			PrivacySetting privacySettings = new(model.FollowersAccessId, model.FollowingsAccessId,
-				model.MessagesAccessId, model.PcConfigAccessId);
+			PrivacySetting privacySettings = new(model.FriendsAccessId, model.FollowersAccessId,
+				model.FollowingsAccessId, model.MessagesAccessId, model.PcConfigAccessId,
+				model.CommentWritingAccessId);
 			user.UpdateSettings(model.Name, model.Email, model.Description, privacySettings);
 
 			await _userRepository.UpdateAsync(user);

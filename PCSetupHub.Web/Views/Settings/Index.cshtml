@@ -74,6 +74,16 @@
 			  oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">
 	</textarea>
 
+	<label class="mb-2" asp-for="@Model.FriendsAccessId">Who can see my friends?</label>
+	<select class="mb-4" asp-for="@Model.FriendsAccessId" required>
+		<optgroup label="Friends visibility">
+			@foreach (var levelKvp in privacyLevels)
+			{
+				<option value="@levelKvp.Key">@levelKvp.Value</option>
+			}
+		</optgroup>
+	</select>
+
 	<label class="mb-2" asp-for="@Model.FollowersAccessId">Who can see my followers?</label>
 	<select class="mb-4" asp-for="@Model.FollowersAccessId" required>
 		<optgroup label="Followers visibility">
@@ -86,7 +96,7 @@
 
 	<label class="mb-2" asp-for="@Model.FollowingsAccessId">Who can see my followings?</label>
 	<select class="mb-4" asp-for="@Model.FollowingsAccessId" required>
-		<optgroup label="Following visibility">
+		<optgroup label="Followings visibility">
 			@foreach (var levelKvp in privacyLevels)
 			{
 				<option value="@levelKvp.Key">@levelKvp.Value</option>
@@ -105,8 +115,18 @@
 	</select>
 
 	<label class="mb-2" asp-for="@Model.PcConfigAccessId">Who can view my PC setup?</label>
-	<select class="mb-5" asp-for="@Model.PcConfigAccessId" required>
+	<select class="mb-4" asp-for="@Model.PcConfigAccessId" required>
 		<optgroup label="PC setup visibility">
+			@foreach (var levelKvp in privacyLevels)
+			{
+				<option value="@levelKvp.Key">@levelKvp.Value</option>
+			}
+		</optgroup>
+	</select>
+
+	<label class="mb-2" asp-for="@Model.CommentWritingAccessId">Who can write comments on my profile?</label>
+	<select class="mb-5" asp-for="@Model.CommentWritingAccessId" required>
+		<optgroup label="Comments from">
 			@foreach (var levelKvp in privacyLevels)
 			{
 				<option value="@levelKvp.Key">@levelKvp.Value</option>

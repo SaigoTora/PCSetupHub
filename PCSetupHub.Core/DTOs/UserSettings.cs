@@ -25,10 +25,12 @@ namespace PCSetupHub.Core.DTOs
 		[StringLength(150)]
 		public string? Description { get; init; }
 
+		public int FriendsAccessId { get; init; } = (int)PrivacyLevelType.Everyone;
 		public int FollowersAccessId { get; init; } = (int)PrivacyLevelType.Everyone;
 		public int FollowingsAccessId { get; init; } = (int)PrivacyLevelType.Everyone;
 		public int MessagesAccessId { get; init; } = (int)PrivacyLevelType.Everyone;
 		public int PcConfigAccessId { get; init; } = (int)PrivacyLevelType.Everyone;
+		public int CommentWritingAccessId { get; init; } = (int)PrivacyLevelType.Everyone;
 
 		public UserSettings()
 		{ }
@@ -42,10 +44,12 @@ namespace PCSetupHub.Core.DTOs
 			Name = user.Name;
 			Email = user.Email;
 			Description = user.Description;
+			FriendsAccessId = user.PrivacySetting.FriendsAccessId;
 			FollowersAccessId = user.PrivacySetting.FollowersAccessId;
 			FollowingsAccessId = user.PrivacySetting.FollowingsAccessId;
 			MessagesAccessId = user.PrivacySetting.MessagesAccessId;
 			PcConfigAccessId = user.PrivacySetting.PcConfigAccessId;
+			CommentWritingAccessId = user.PrivacySetting.CommentWritingAccessId;
 		}
 
 		public void SetMeta(string login, string avatarUrl, int pcConfigurationId,
