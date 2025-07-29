@@ -41,7 +41,9 @@ namespace PCSetupHub.Web.Controllers
 			if (string.IsNullOrWhiteSpace(login))
 				return BadRequest();
 
-			User? user = await _userRepository.GetByLoginAsync(login, true);
+			UserIncludes includes = UserIncludes.PrivacySetting | UserIncludes.Friendships
+				| UserIncludes.PcConfigurationFull;
+			User? user = await _userRepository.GetByLoginAsync(login, includes);
 			if (user == null)
 				return NotFound();
 
@@ -271,7 +273,7 @@ namespace PCSetupHub.Web.Controllers
 			if (string.IsNullOrWhiteSpace(login))
 				return BadRequest();
 
-			User? user = await _userRepository.GetByLoginAsync(login, false);
+			User? user = await _userRepository.GetByLoginAsync(login, UserIncludes.None);
 			if (user == null)
 				return NotFound();
 			if (user.Id != User.GetId())

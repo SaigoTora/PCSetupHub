@@ -19,19 +19,6 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 			_pcConfigRepository = pcConfigRepository;
 		}
 		#region Read
-		public async Task<User?> GetByLoginAsync(string login, bool includeDetails)
-		{
-			if (includeDetails)
-			{
-				return await GetByLoginAsync(login,
-					UserIncludes.PrivacySetting |
-					UserIncludes.PcConfigurationFull |
-					UserIncludes.Friendships |
-					UserIncludes.Messages);
-			}
-
-			return await GetByLoginAsync(login, UserIncludes.None);
-		}
 		public async Task<User?> GetByLoginAsync(string login, UserIncludes includes,
 			bool asNoTracking = false)
 		{
@@ -47,6 +34,9 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 				.AsSplitQuery()
 				.FirstOrDefaultAsync(u => u.Login == login);
 
+			if (!includes.HasFlag(UserIncludes.Password) && user != null)
+				user.PasswordHash = null;
+
 			if (includes.HasFlag(UserIncludes.PcConfigurationFull) && user != null)
 			{
 				PcConfiguration? pcConfig = await _pcConfigRepository
@@ -59,6 +49,21 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 				query = query.AsNoTracking();
 
 			return user;
+		}
+		private async Task<User?> GetByLoginAsync(string login, bool includeDetails,
+			bool asNoTracking = false)
+		{
+			if (includeDetails)
+			{
+				return await GetByLoginAsync(login,
+					UserIncludes.Password |
+					UserIncludes.PrivacySetting |
+					UserIncludes.PcConfigurationFull |
+					UserIncludes.Friendships |
+					UserIncludes.Messages, asNoTracking);
+			}
+
+			return await GetByLoginAsync(login, UserIncludes.None, asNoTracking);
 		}
 		public async Task<User?> GetByGoogleIdAsync(string googleId)
 			=> await Context.Users.FirstOrDefaultAsync(u => u.GoogleId == googleId);
