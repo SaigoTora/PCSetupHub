@@ -56,6 +56,9 @@ namespace PCSetupHub.Web.Controllers
 			user.ReceivedComments = comments;
 
 			ProfileViewModel viewModel = await CreateProfileViewModelAsync(user);
+			if (!viewModel.ArePcConfigVisible)
+				viewModel.User.PcConfiguration = new();
+			viewModel.User.ClearUsersFromFriendships();
 
 			return View(viewModel);
 		}

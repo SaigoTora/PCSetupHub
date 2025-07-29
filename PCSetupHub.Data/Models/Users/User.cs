@@ -129,5 +129,15 @@ namespace PCSetupHub.Data.Models.Users
 			Description = description;
 			PrivacySetting.SetAccessLevels(settings);
 		}
+		public void ClearUsersFromFriendships()
+		{
+			if (ReceivedFriendRequests != null)
+				foreach (Friendship friendship in ReceivedFriendRequests)
+					friendship.ResetUsers();
+
+			if (SentFriendRequests != null)
+				foreach (Friendship friendship in SentFriendRequests)
+					friendship.ResetUsers();
+		}
 	}
 }
