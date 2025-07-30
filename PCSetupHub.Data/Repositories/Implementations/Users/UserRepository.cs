@@ -20,10 +20,13 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 		}
 		#region Read
 		public async Task<User?> GetByLoginAsync(string login, UserIncludes includes,
-			bool asNoTracking = false)
+			bool asNoTracking = true)
 		{
 			var query = Context.Users
 				.AsQueryable();
+
+			if (asNoTracking)
+				query = query.AsNoTracking();
 
 			ApplyPrivacySettingInclude(ref query, includes);
 			ApplyPcConfigurationInclude(ref query, includes);
@@ -45,13 +48,11 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 					user.PcConfiguration = pcConfig;
 			}
 
-			if (asNoTracking)
-				query = query.AsNoTracking();
 
 			return user;
 		}
 		private async Task<User?> GetByLoginAsync(string login, bool includeDetails,
-			bool asNoTracking = false)
+			bool asNoTracking = true)
 		{
 			if (includeDetails)
 			{
@@ -112,7 +113,7 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 		#region Delete
 		public async Task<bool> FullDeleteUserAsync(string login)
 		{
-			User? user = await GetByLoginAsync(login, true);
+			User? user = await GetByLoginAsync(login, true, false);
 
 			if (user == null)
 				return false;
@@ -122,7 +123,7 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 			DeleteFriendships(user);
 			DeleteMessages(user);
 
-			await DeleteAsync(user.Id);
+			await DeleteAsync(user);
 
 			return true;
 		}

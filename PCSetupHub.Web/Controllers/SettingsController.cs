@@ -41,7 +41,7 @@ namespace PCSetupHub.Web.Controllers
 		{
 			UserIncludes includes = UserIncludes.Password | UserIncludes.PrivacySetting
 				| UserIncludes.PcConfiguration;
-			User? user = await _userRepository.GetByLoginAsync(login, includes);
+			User? user = await _userRepository.GetByLoginAsync(login, includes, false);
 			if (user == null)
 				return NotFound();
 			if (user.Id != User.GetId())
@@ -62,8 +62,8 @@ namespace PCSetupHub.Web.Controllers
 			PrivacySetting privacySettings = new(model.FriendsAccessId, model.FollowersAccessId,
 				model.FollowingsAccessId, model.MessagesAccessId, model.PcConfigAccessId,
 				model.CommentWritingAccessId);
-			user.UpdateSettings(model.Name, model.Email, model.Description, privacySettings);
 
+			user.UpdateSettings(model.Name, model.Email, model.Description, privacySettings);
 			await _userRepository.UpdateAsync(user);
 
 			return RedirectToAction("Index", new { login = user.Login });

@@ -14,7 +14,7 @@ namespace PCSetupHub.Data.Repositories.Interfaces.Users
 		/// <param name="asNoTracking">Whether to disable entity tracking.</param>
 		/// <returns>The matching user if found; otherwise, null.</returns>
 		public Task<User?> GetByLoginAsync(string login, UserIncludes includes,
-			bool asNoTracking = false);
+			bool asNoTracking = true);
 
 		/// <summary>
 		/// Retrieves a user by their Google ID.

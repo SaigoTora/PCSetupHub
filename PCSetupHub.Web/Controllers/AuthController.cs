@@ -431,7 +431,7 @@ namespace PCSetupHub.Web.Controllers
 
 		private async Task<(IActionResult?, User)> CheckUserAuthorizationAsync(string login)
 		{
-			var user = await _userRepository.GetByLoginAsync(login, UserIncludes.Password);
+			var user = await _userRepository.GetByLoginAsync(login, UserIncludes.Password, false);
 			if (user == null)
 				return (NotFound(), null!);
 			if (user.Id != User.GetId())
