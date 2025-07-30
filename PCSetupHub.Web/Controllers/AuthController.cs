@@ -42,6 +42,7 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		#region Registration
+		[HttpGet]
 		public async Task<IActionResult> Register()
 		{
 			if (await IsUserLoggedInAsync())
@@ -49,6 +50,7 @@ namespace PCSetupHub.Web.Controllers
 
 			return View();
 		}
+
 		[HttpPost]
 		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> Register(RegisterRequest registerRequest)
@@ -111,6 +113,7 @@ namespace PCSetupHub.Web.Controllers
 		#endregion
 
 		#region Login
+		[HttpGet]
 		public async Task<IActionResult> Login(LoginRequest loginRequest)
 		{
 			if (await IsUserLoggedInAsync())
@@ -147,6 +150,7 @@ namespace PCSetupHub.Web.Controllers
 		#endregion
 
 		#region Google login
+		[HttpGet]
 		[EnableRateLimiting("LimitPerUser")]
 		public IActionResult GoogleLogin()
 		{
@@ -155,6 +159,8 @@ namespace PCSetupHub.Web.Controllers
 
 			return Challenge(properties, GoogleDefaults.AuthenticationScheme);
 		}
+
+		[HttpGet]
 		public async Task<IActionResult> GoogleResponse()
 		{
 			const string DEFAULT_NAME = "User";
@@ -367,6 +373,7 @@ namespace PCSetupHub.Web.Controllers
 			=> RedirectToAction("Index", "Settings", new { login });
 		#endregion
 
+		[HttpGet]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Logout()
 		{

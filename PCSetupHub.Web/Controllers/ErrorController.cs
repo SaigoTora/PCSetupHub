@@ -4,6 +4,7 @@ namespace PCSetupHub.Web.Controllers
 {
 	public class ErrorController : Controller
 	{
+		[HttpGet]
 		[Route("Error/{statusCode}")]
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Index(int statusCode)

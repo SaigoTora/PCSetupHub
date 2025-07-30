@@ -141,6 +141,7 @@ namespace PCSetupHub.Web.Controllers
 				await hasAccess(settings.FollowingsAccessId));
 		}
 
+		[HttpGet]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Search(string contactSearchQuery, int page = 1)
 		{

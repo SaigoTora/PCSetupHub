@@ -57,6 +57,8 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 	await services.AddAuthAsync(configuration);
 	await services.AddExternalAuthProvidersAsync(configuration);
 	services.AddAWSService<IAmazonS3>();
+	services.AddEndpointsApiExplorer();
+	services.AddSwaggerGen();
 
 	services.AddScoped<IUserRepository, UserRepository>();
 	services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
@@ -97,6 +99,11 @@ static void ConfigureMiddleware(WebApplication app)
 		app.UseExceptionHandler("/Error/Index");
 		app.UseStatusCodePagesWithReExecute("/Error/{0}");
 		app.UseHsts();
+	}
+	else
+	{
+		app.UseSwagger();
+		app.UseSwaggerUI();
 	}
 
 	app.UseHttpsRedirection();

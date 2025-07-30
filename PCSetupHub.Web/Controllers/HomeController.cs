@@ -10,8 +10,10 @@ namespace PCSetupHub.Web.Controllers
 		{
 			_logger = logger;
 		}
-
+		[HttpGet]
 		public IActionResult Index() => View();
+		
+		[HttpGet]
 		public IActionResult Privacy() => View();
 	}
 }
