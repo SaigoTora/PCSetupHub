@@ -31,6 +31,11 @@ namespace PCSetupHub.Data
 
 		private static readonly Dictionary<string, Color> existingColors = [];
 
+		/// <summary>
+		/// Initializes the database if it has not been created and seeds it with initial data.
+		/// </summary>
+		/// <param name="context">The database context to use for initialization and seeding.</param>
+		/// <param name="registerFunc">The delegate used to register users during seeding.</param>
 		public static void Initialize(PcSetupContext context, RegisterUserDelegate registerFunc)
 		{
 			context.Database.EnsureCreated();

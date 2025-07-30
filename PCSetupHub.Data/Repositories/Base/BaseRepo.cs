@@ -19,6 +19,7 @@ namespace PCSetupHub.Data.Repositories.Base
 			_table = _context.Set<T>();
 		}
 
+		#region Create
 		public async Task<T> AddAsync(T entity)
 		{
 			await _table.AddAsync(entity);
@@ -31,7 +32,9 @@ namespace PCSetupHub.Data.Repositories.Base
 			await _context.SaveChangesAsync();
 			return [.. entities];
 		}
+		#endregion
 
+		#region Delete
 		public async Task<bool> DeleteAsync(int id)
 		{
 			var entity = await _table.FindAsync(id);
@@ -47,9 +50,12 @@ namespace PCSetupHub.Data.Repositories.Base
 			_table.Remove(entity);
 			return await _context.SaveChangesAsync() > 0;
 		}
+		#endregion
 
+		#region Read
 		public async Task<T?> GetOneAsync(int id) => await _table.FindAsync(id);
 		public async Task<List<T>> GetAllAsync() => await _table.ToListAsync();
+
 		public async Task<List<T>> GetAllAsync<TSortField>(Expression<Func<T, TSortField>> orderBy,
 			bool ascending)
 		{
@@ -85,7 +91,9 @@ namespace PCSetupHub.Data.Repositories.Base
 
 			return await _table.CountAsync(where);
 		}
+		#endregion
 
+		#region Update
 		public async Task<int> UpdateAsync(T entity)
 		{
 			_table.Update(entity);
@@ -96,6 +104,7 @@ namespace PCSetupHub.Data.Repositories.Base
 			_table.UpdateRange(entities);
 			return await _context.SaveChangesAsync();
 		}
+		#endregion
 
 		public async Task<List<T>> ExecuteQueryAsync(string sql)
 			=> await _table.FromSqlRaw(sql).ToListAsync();

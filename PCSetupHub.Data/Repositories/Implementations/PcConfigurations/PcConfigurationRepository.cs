@@ -25,7 +25,6 @@ namespace PCSetupHub.Data.Repositories.Implementations.PcConfigurations
 
 			return await GetByIdAsync(id, PcConfigurationIncludes.None);
 		}
-
 		public async Task<PcConfiguration?> GetByIdAsync(int id, PcConfigurationIncludes includes,
 			bool asNoTracking = false)
 		{
