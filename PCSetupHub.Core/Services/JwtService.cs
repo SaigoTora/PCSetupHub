@@ -26,6 +26,29 @@ namespace PCSetupHub.Core.Services
 			_userRepository = userRepository;
 		}
 
+		/// <summary>
+		/// Returns token validation parameters using the specified key.
+		/// </summary>
+		/// <param name="key">The secret key used to validate the token signature.</param>
+		/// <returns>The token validation parameters.</returns>
+		public static TokenValidationParameters GetTokenValidationParameters(string key)
+		{
+			return new TokenValidationParameters
+			{
+				ValidateIssuer = false,
+				ValidateAudience = false,
+				ValidateLifetime = true,
+				ValidateIssuerSigningKey = true,
+				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+			};
+		}
+
+		/// <summary>
+		/// Validates the provided refresh and access tokens, and refreshes them if necessary.
+		/// </summary>
+		/// <param name="accessToken">The access token to validate.</param>
+		/// <param name="refreshToken">The refresh token to validate and use for refreshing.</param>
+		/// <returns>A tuple indicating whether the refresh token is valid and new tokens if needed.</returns>
 		public async Task<(bool isRefreshTokenValid, AuthResponse newTokens)>
 			ValidateAndRefreshTokensAsync(string accessToken, string refreshToken)
 		{
@@ -60,6 +83,30 @@ namespace PCSetupHub.Core.Services
 			catch
 			{ return (false, new AuthResponse(null, null)); }
 		}
+
+		/// <summary>
+		/// Generates a new access token for the given user with optional "remember me" flag.
+		/// </summary>
+		/// <param name="user">The user for whom the token is generated.</param>
+		/// <param name="userRememberMe">Whether to include the remember-me flag in the token.</param>
+		/// <returns>The generated access token as a string.</returns>
+		public async Task<string> GenerateAccessTokenAsync(User? user, bool userRememberMe)
+		{
+			string key = await _tokenKeyService.GetAccessTokenKeyAsync();
+			return GenerateToken(_options.Value.AccessToken, key, user, userRememberMe);
+		}
+
+		/// <summary>
+		/// Generates a new refresh token.
+		/// </summary>
+		/// <returns>The generated refresh token as a string.</returns>
+		public async Task<string> GenerateRefreshTokenAsync()
+		{
+			string key = await _tokenKeyService.GetRefreshTokenKeyAsync();
+			return GenerateToken(_options.Value.RefreshToken, key);
+		}
+
+
 		private async Task<AuthResponse> RefreshTokensAsync(JwtSecurityTokenHandler tokenHandler,
 			string accessToken)
 		{
@@ -74,28 +121,6 @@ namespace PCSetupHub.Core.Services
 			string newAccessToken = await GenerateAccessTokenAsync(user, userRememberMe);
 			string newRefreshToken = await GenerateRefreshTokenAsync();
 			return new AuthResponse(newAccessToken, newRefreshToken);
-		}
-		public static TokenValidationParameters GetTokenValidationParameters(string key)
-		{
-			return new TokenValidationParameters
-			{
-				ValidateIssuer = false,
-				ValidateAudience = false,
-				ValidateLifetime = true,
-				ValidateIssuerSigningKey = true,
-				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
-			};
-		}
-
-		public async Task<string> GenerateAccessTokenAsync(User? user, bool userRememberMe)
-		{
-			string key = await _tokenKeyService.GetAccessTokenKeyAsync();
-			return GenerateToken(_options.Value.AccessToken, key, user, userRememberMe);
-		}
-		public async Task<string> GenerateRefreshTokenAsync()
-		{
-			string key = await _tokenKeyService.GetRefreshTokenKeyAsync();
-			return GenerateToken(_options.Value.RefreshToken, key);
 		}
 		private static string GenerateToken(TokenSettings tokenSettings, string key,
 			User? user = null, bool userRememberMe = false)
