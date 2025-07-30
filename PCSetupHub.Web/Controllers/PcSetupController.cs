@@ -57,7 +57,7 @@ namespace PCSetupHub.Web.Controllers
 		public async Task<IActionResult> UpdateType(int id, string typeName)
 		{
 			PcConfiguration? pcConfiguration
-				= await _pcConfigRepository.GetByIdAsync(id, false);
+				= await _pcConfigRepository.GetByIdAsync(id, false, false);
 
 			if (pcConfiguration == null)
 				return NotFound();

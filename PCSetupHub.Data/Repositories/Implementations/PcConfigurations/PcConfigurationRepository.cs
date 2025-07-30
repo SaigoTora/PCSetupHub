@@ -9,7 +9,8 @@ namespace PCSetupHub.Data.Repositories.Implementations.PcConfigurations
 	public class PcConfigurationRepository(PcSetupContext context)
 		: BaseRepo<PcConfiguration>(context), IPcConfigurationRepository
 	{
-		public async Task<PcConfiguration?> GetByIdAsync(int id, bool includeComponents)
+		public async Task<PcConfiguration?> GetByIdAsync(int id, bool includeComponents,
+			bool asNoTracking = true)
 		{
 			if (includeComponents)
 			{
@@ -20,13 +21,13 @@ namespace PCSetupHub.Data.Repositories.Implementations.PcConfigurations
 					PcConfigurationIncludes.PowerSupply |
 					PcConfigurationIncludes.Ssds |
 					PcConfigurationIncludes.Rams |
-					PcConfigurationIncludes.Hdds);
+					PcConfigurationIncludes.Hdds, asNoTracking);
 			}
 
-			return await GetByIdAsync(id, PcConfigurationIncludes.None);
+			return await GetByIdAsync(id, PcConfigurationIncludes.None, asNoTracking);
 		}
 		public async Task<PcConfiguration?> GetByIdAsync(int id, PcConfigurationIncludes includes,
-			bool asNoTracking = false)
+			bool asNoTracking = true)
 		{
 			var query = Context.PcConfigurations
 				.Include(pc => pc.Type)

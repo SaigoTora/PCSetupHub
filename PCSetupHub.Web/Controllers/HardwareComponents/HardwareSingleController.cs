@@ -76,7 +76,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				return StatusCode(403);
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				PcConfigurationIncludes);
+				PcConfigurationIncludes, false);
 			if (pcConfig == null)
 				return NotFound();
 
@@ -114,7 +114,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				return StatusCode(403);
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				PcConfigurationIncludes);
+				PcConfigurationIncludes, false);
 			if (pcConfig == null)
 				return NotFound();
 
@@ -171,7 +171,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				return errorResult;
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				PcConfigurationIncludes);
+				PcConfigurationIncludes, false);
 			if (pcConfig == null)
 				return NotFound();
 
@@ -207,7 +207,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				return StatusCode(403);
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				PcConfigurationIncludes);
+				PcConfigurationIncludes, false);
 			if (pcConfig == null)
 				return NotFound();
 
@@ -247,7 +247,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 				return StatusCode(403);
 
 			PcConfiguration? pcConfig = await _pcConfigRepository.GetByIdAsync(pcConfigurationId,
-				PcConfigurationIncludes, true);
+				PcConfigurationIncludes);
 			if (pcConfig == null)
 				return NotFound();
 			if (!IsComponentInPcConfig(pcConfig, componentId))

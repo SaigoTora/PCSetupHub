@@ -48,7 +48,6 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 					user.PcConfiguration = pcConfig;
 			}
 
-
 			return user;
 		}
 		private async Task<User?> GetByLoginAsync(string login, bool includeDetails,
