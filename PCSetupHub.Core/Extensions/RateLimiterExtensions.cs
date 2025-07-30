@@ -6,6 +6,12 @@ namespace PCSetupHub.Core.Extensions
 {
 	public static class RateLimiterExtensions
 	{
+		/// <summary>
+		/// Adds and configures rate limiting policies for the application.
+		/// Each policy can limit requests based on criteria like client IP and time windows.
+		/// Also sets up a response to redirect clients when their requests are rejected due to rate limits.
+		/// </summary>
+		/// <param name="services">The service collection to configure.</param>
 		public static void ConfigureRateLimiter(this IServiceCollection services)
 		{
 			services.AddRateLimiter(options =>

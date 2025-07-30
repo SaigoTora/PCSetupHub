@@ -15,6 +15,12 @@ namespace PCSetupHub.Core.Extensions
 {
 	public static class AuthExtensions
 	{
+		/// <summary>
+		/// Adds external authentication providers (e.g., Google) to the service collection.
+		/// </summary>
+		/// <param name="services">The service collection to configure.</param>
+		/// <param name="configuration">The application configuration.</param>
+		/// <returns>The updated service collection.</returns>
 		public static async Task<IServiceCollection> AddExternalAuthProvidersAsync(
 			this IServiceCollection services, IConfiguration configuration)
 		{
@@ -39,6 +45,14 @@ namespace PCSetupHub.Core.Extensions
 			});
 			return services;
 		}
+
+		/// <summary>
+		/// Configures JWT authentication and authorization services, including token settings validation.
+		/// </summary>
+		/// <param name="serviceCollection">The service collection to configure.</param>
+		/// <param name="configuration">The application configuration.</param>
+		/// <returns>The updated service collection.</returns>
+		/// <exception cref="InvalidOperationException">Thrown when authentication settings are not configured properly.</exception>
 		public async static Task<IServiceCollection> AddAuthAsync(
 			this IServiceCollection serviceCollection, IConfiguration configuration)
 		{
