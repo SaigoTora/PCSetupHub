@@ -14,7 +14,12 @@ namespace PCSetupHub.Core.Services
 	{
 		private readonly IAmazonS3 _s3Client;
 		private readonly string _bucketName;
-		private static readonly string[] _allowedExtensions = [".png", ".jpg", ".jpeg", ".webp"];
+		private static readonly string[] _allowedExtensions = [
+			".jpg", ".jpeg", ".png", ".webp", ".gif",
+			".bmp", ".ico", ".svg", ".tiff", ".tif",
+			".heic", ".heif", ".jfif"
+		];
+
 		private static readonly Dictionary<ImageCategory, string> _categoryPaths = new()
 		{
 			[ImageCategory.Avatar] = "avatars/"
