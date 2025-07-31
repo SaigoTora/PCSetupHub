@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Interfaces;
@@ -53,6 +54,7 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost("UpdateType/{id}")]
+		[EnableRateLimiting("PcConfiguration")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> UpdateType(int id, string typeName)
 		{

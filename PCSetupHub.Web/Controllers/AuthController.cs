@@ -52,7 +52,7 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost]
-		[EnableRateLimiting("LimitPerUser")]
+		[EnableRateLimiting("AccountCritical")]
 		public async Task<IActionResult> Register(RegisterRequest registerRequest)
 		{
 			SavePasswordsToTempData(registerRequest);
@@ -123,7 +123,7 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost, ActionName("Login")]
-		[EnableRateLimiting("LimitPerUser")]
+		[EnableRateLimiting("AccountCritical")]
 		public async Task<IActionResult> LoginSubmit(LoginRequest loginRequest)
 		{
 			if (await this.HandleInvalidModelStateAsync() is ViewResult errorResult)
@@ -222,6 +222,7 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost("UpdateLogin/{login}")]
+		[EnableRateLimiting("AccountCritical")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> UpdateLogin(string login, UpdateLoginRequest model)
 		{
@@ -268,6 +269,7 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost("UpdatePassword/{login}")]
+		[EnableRateLimiting("AccountCritical")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> UpdatePassword(string login, UpdatePasswordRequest model)
 		{
@@ -397,6 +399,7 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost("DeleteAccount/{login}")]
+		[EnableRateLimiting("AccountCritical")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> DeleteAccount(string login, DeleteAccountRequest model)
 		{

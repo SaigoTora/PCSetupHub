@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Data.Models.Attributes;
@@ -64,6 +65,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Select/{pcConfigurationId}/{currentComponentId}/{componentId}")]
+		[EnableRateLimiting("PcConfiguration")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Select(int pcConfigurationId, int currentComponentId,
 			int componentId)
@@ -102,6 +104,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Clear/{pcConfigurationId}/{componentId}")]
+		[EnableRateLimiting("PcConfiguration")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Clear(int pcConfigurationId, int componentId)
 		{
@@ -156,6 +159,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Select/{pcConfigurationId}/{componentId}")]
+		[EnableRateLimiting("PcConfiguration")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Select(int pcConfigurationId, int componentId)
 		{
@@ -199,6 +203,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Create/{pcConfigurationId}/{currentComponentId}")]
+		[EnableRateLimiting("PcConfiguration")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Create(int pcConfigurationId, int currentComponentId,
 			PcComponentFormViewModel<TComponent> model)
@@ -245,6 +250,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Delete/{pcConfigurationId}/{componentId}")]
+		[EnableRateLimiting("PcConfiguration")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Delete(int pcConfigurationId, int componentId)
 		{
@@ -282,6 +288,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Edit/{pcConfigurationId}/{componentId}")]
+		[EnableRateLimiting("PcConfiguration")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Edit(int pcConfigurationId, int componentId,
 			PcComponentFormViewModel<TComponent> model)
@@ -339,6 +346,7 @@ namespace PCSetupHub.Web.Controllers.HardwareComponents
 		}
 
 		[HttpPost("Create/{pcConfigurationId}")]
+		[EnableRateLimiting("PcConfiguration")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Create(int pcConfigurationId,
 			PcComponentFormViewModel<TComponent> model)

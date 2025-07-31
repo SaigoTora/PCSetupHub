@@ -85,8 +85,8 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost("UpdateStatus/{id}")]
+		[EnableRateLimiting("Friendship")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> UpdateFriendshipStatus(int id, int newStatusId)
 		{
 			Friendship? friendship = await _friendshipRepository.GetOneAsync(id);
@@ -119,8 +119,8 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost("SendFriendRequest/{id}")]
+		[EnableRateLimiting("Friendship")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> SendFriendRequest(int id)
 		{
 			int? initiatorId = User.GetId();
@@ -150,8 +150,8 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost("DeleteFriendship/{id}")]
+		[EnableRateLimiting("Friendship")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> DeleteFriendship(int id)
 		{
 			Friendship? friendship = await _friendshipRepository.GetOneAsync(id);
@@ -183,8 +183,8 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost("CreateComment/{login}")]
+		[EnableRateLimiting("Comments")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> CreateComment(string login, string commentText)
 		{
 			if (string.IsNullOrWhiteSpace(commentText))
@@ -224,8 +224,8 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost("DeleteComment/{id}")]
+		[EnableRateLimiting("Comments")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> DeleteComment(int id)
 		{
 			int? userId = User.GetId();
@@ -269,8 +269,8 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost("Profile/UploadAvatar/{login?}")]
+		[EnableRateLimiting("UploadAvatar")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-		[EnableRateLimiting("LimitPerUser")]
 		public async Task<IActionResult> UploadAvatar(string login, IFormFile file)
 		{
 			if (string.IsNullOrWhiteSpace(login))

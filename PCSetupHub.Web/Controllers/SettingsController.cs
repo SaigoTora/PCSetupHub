@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 using PCSetupHub.Core.DTOs;
 using PCSetupHub.Core.Extensions;
@@ -36,6 +37,7 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost("Settings/{login?}")]
+		[EnableRateLimiting("ApplySettings")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Index(string login, UserSettings model)
 		{
