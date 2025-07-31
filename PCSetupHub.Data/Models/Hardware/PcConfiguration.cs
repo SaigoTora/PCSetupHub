@@ -6,7 +6,7 @@ namespace PCSetupHub.Data.Models.Hardware
 {
 	public class PcConfiguration : BaseEntity
 	{
-		public User? User { get; private set; }
+		public User? User { get; set; }
 		public int UserId { get; private set; }
 
 		public PcType? Type { get; set; }

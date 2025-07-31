@@ -65,7 +65,7 @@ namespace PCSetupHub.Web.Controllers
 				return NotFound();
 
 			int userId = User.GetId() ?? -1;
-			if (pcConfiguration.User != null && pcConfiguration.User.Id != userId)
+			if (pcConfiguration.User != null && pcConfiguration.UserId != userId)
 				return StatusCode(403);
 
 			// There should be no more than 1 element since the Name field is unique

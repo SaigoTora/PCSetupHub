@@ -34,13 +34,10 @@ namespace PCSetupHub.Web.Controllers
 			_imageStorageService = s3FileService;
 		}
 
-		[HttpGet("Profile/{login?}")]
+		[HttpGet("Profile/{login}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Index(string login, int commentPage = 1)
 		{
-			if (string.IsNullOrWhiteSpace(login))
-				return BadRequest();
-
 			UserIncludes includes = UserIncludes.PrivacySetting | UserIncludes.Friendships
 				| UserIncludes.PcConfigurationFull;
 			User? user = await _userRepository.GetByLoginAsync(login, includes, false);
@@ -268,14 +265,11 @@ namespace PCSetupHub.Web.Controllers
 			return RedirectToProfile(profileOwner.Login);
 		}
 
-		[HttpPost("Profile/UploadAvatar/{login?}")]
+		[HttpPost("Profile/UploadAvatar/{login}")]
 		[EnableRateLimiting("UploadAvatar")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> UploadAvatar(string login, IFormFile file)
 		{
-			if (string.IsNullOrWhiteSpace(login))
-				return BadRequest();
-
 			User? user = await _userRepository.GetByLoginAsync(login, UserIncludes.Password, false);
 			if (user == null)
 				return NotFound();

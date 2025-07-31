@@ -19,7 +19,7 @@ namespace PCSetupHub.Web.Controllers
 			_userRepository = userRepository;
 		}
 
-		[HttpGet("Settings/{login?}")]
+		[HttpGet("Settings/{login}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Index(string login)
 		{
@@ -36,7 +36,7 @@ namespace PCSetupHub.Web.Controllers
 			return View(userSettings);
 		}
 
-		[HttpPost("Settings/{login?}")]
+		[HttpPost("Settings/{login}")]
 		[EnableRateLimiting("ApplySettings")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Index(string login, UserSettings model)

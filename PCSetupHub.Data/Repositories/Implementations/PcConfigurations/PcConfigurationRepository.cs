@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 using PCSetupHub.Data.Models.Hardware;
+using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Base;
 using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
 
@@ -15,6 +16,7 @@ namespace PCSetupHub.Data.Repositories.Implementations.PcConfigurations
 			if (includeComponents)
 			{
 				return await GetByIdAsync(id,
+					PcConfigurationIncludes.UserLogin |
 					PcConfigurationIncludes.Processor |
 					PcConfigurationIncludes.VideoCard |
 					PcConfigurationIncludes.Motherboard |
@@ -31,7 +33,6 @@ namespace PCSetupHub.Data.Repositories.Implementations.PcConfigurations
 		{
 			var query = Context.PcConfigurations
 				.Include(pc => pc.Type)
-				.Include(pc => pc.User)
 				.AsQueryable();
 
 			ApplyProcessorInclude(ref query, includes);
@@ -45,7 +46,24 @@ namespace PCSetupHub.Data.Repositories.Implementations.PcConfigurations
 			if (asNoTracking)
 				query = query.AsNoTracking();
 
-			return await query.AsSplitQuery().FirstOrDefaultAsync(pc => pc.Id == id);
+			PcConfiguration? pcConfig = await query
+				.AsSplitQuery()
+				.FirstOrDefaultAsync(pc => pc.Id == id);
+
+			if (includes.HasFlag(PcConfigurationIncludes.UserLogin) && pcConfig != null)
+			{
+				User? user = await Context.Users
+					.AsNoTracking()
+					.FirstOrDefaultAsync(u => u.Id == pcConfig.UserId);
+
+				int userId = user?.Id ?? 0;
+				user = new User() { Login = user?.Login ?? "" };
+				user.SetId(userId);
+
+				pcConfig.User = user;
+			}
+
+			return pcConfig;
 		}
 
 		private static void ApplyProcessorInclude(ref IQueryable<PcConfiguration> query,

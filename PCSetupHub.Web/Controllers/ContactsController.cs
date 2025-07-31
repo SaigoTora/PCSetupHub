@@ -31,7 +31,7 @@ namespace PCSetupHub.Web.Controllers
 			_friendshipRepository = friendshipRepository;
 		}
 
-		[HttpGet("Friends/{login?}")]
+		[HttpGet("Friends/{login}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Friends(string login, string friendSearchQuery,
 			int page = 1)
@@ -65,7 +65,7 @@ namespace PCSetupHub.Web.Controllers
 			return View(model);
 		}
 
-		[HttpGet("Followers/{login?}")]
+		[HttpGet("Followers/{login}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Followers(string login, string followerSearchQuery,
 			int page = 1)
@@ -95,7 +95,7 @@ namespace PCSetupHub.Web.Controllers
 			return View(model);
 		}
 
-		[HttpGet("Followings/{login?}")]
+		[HttpGet("Followings/{login}")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Followings(string login, string followingSearchQuery,
 			int page = 1)
