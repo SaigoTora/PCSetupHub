@@ -74,15 +74,6 @@ button.accept-policy {
     line-height: inherit;
 }
 
-.footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    white-space: nowrap;
-    line-height: 60px;
-}
-
-
 *,
 ::before,
 ::after {
@@ -154,8 +145,9 @@ header {
 }
 
 main {
-    padding: 1.5rem 1rem 3rem 1rem;
+    padding: 1.5rem 1rem 1.5rem 1rem;
     width: 75%;
+    height: 100%;
     background-color: rgba(52, 152, 219, 0.005);
 }
 
@@ -745,10 +737,24 @@ caption {
     margin-bottom: 0.75rem;
 }
 
-footer {
-    margin-left: var(--nav-menu-width);
-    width: calc(100% - var(--nav-menu-width)) !important;
+.text-accent {
+    color: var(--color-accent);
+}
+
+.footer {
+    border-top: 1px solid var(--color-nav-menu-border);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    padding-top: 1rem;
+    width: 100%;
     text-align: center;
+    font-size: 0.92rem;
+}
+
+.footer-link {
+    text-decoration: none;
+    font-weight: bold;
+    color: var(--color-text-muted);
 }
 
 @media (max-width: 1264px) {
@@ -787,12 +793,6 @@ footer {
 
     .radio-button-container {
         width: 60%;
-    }
-
-    footer {
-        margin-left: var(--nav-menu-small-width);
-        width: calc(100% - var(--nav-menu-small-width)) !important;
-        text-align: center;
     }
 }
 

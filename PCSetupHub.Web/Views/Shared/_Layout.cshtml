@@ -92,14 +92,26 @@
 
 		</nav>
 	</header>
-	<div class="container d-flex justify-content-center">
+	<div class="container d-flex justify-content-between align-items-center flex-column">
 		<main role="main">
 			@RenderBody()
 		</main>
+		<footer class="footer">
+			<div class="mb-2">
+				<span class="me-2">
+					© 2025 PCSetupHub — a learning project about PC components and setups.
+				</span>
+				<span>
+					Created by <a href="https://github.com/SaigoTora" class="footer-link" target="_blank" rel="noopener">SaigoTora</a>. All rights <a class="footer-link" asp-controller="Home" asp-action="Privacy">reserved</a>.
+				</span>
+			</div>
+			<div>
+				<a href="https://github.com/SaigoTora/PCSetupHub" class="footer-link" target="_blank" rel="noopener"><span class="text-accent">PC</span> <span class="text-light">Setup Hub</span></a>
+			</div>
+		</footer>
+
+
 	</div>
-	<footer class="footer">
-		&copy; 2025 - PC Setup Hub - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
-	</footer>
 
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
