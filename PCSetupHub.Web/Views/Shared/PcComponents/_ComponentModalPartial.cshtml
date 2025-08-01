@@ -250,10 +250,24 @@
 							}
 					}
 				</table>
-
 			</div>
-			<div class="modal-footer">
-				<button type="button" class="button-ok mx-auto ps-5 pe-5" data-bs-dismiss="modal">ОК</button>
+			<div class="modal-footer flex-column">
+				<button type="button" class="button-ok mx-auto ps-5 pe-5 mb-2-5" data-bs-dismiss="modal">ОК</button>
+
+				<div class="w-100 d-flex justify-content-evenly align-items-center">
+					<a href="@Model.PcPartPickerLink" target="_blank" rel="noopener" title="PCPartPicker" class="me-2-5" style="text-decoration: none;">
+						<img src="~/Images/pcpartpicker-logo.png" alt="PCPartPicker" height="25" />
+					</a>
+					<a href="@Model.AmazonLink" target="_blank" rel="noopener" title="Amazon" class="me-2-5" style="text-decoration: none;">
+						<img src="~/Images/amazon-logo.png" alt="Amazon" height="25" />
+					</a>
+					<a href="@Model.EbayLink" target="_blank" rel="noopener" title="Ebay" class="me-2" style="text-decoration: none;">
+						<img src="~/Images/ebay-logo.png" alt="Ebay" height="25" />
+					</a>
+					<a href="@Model.BandHLink" target="_blank" rel="noopener" title="B&H Photo Video" style="text-decoration: none;">
+						<img src="~/Images/b&h-logo.png" alt="B&H Photo Video" height="25" />
+					</a>
+				</div>
 			</div>
 		</div>
 	</div>

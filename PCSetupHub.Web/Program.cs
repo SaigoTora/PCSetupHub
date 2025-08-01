@@ -107,6 +107,7 @@ static void ConfigureMiddleware(WebApplication app)
 	}
 
 	app.UseHttpsRedirection();
+	app.UseStaticFiles();
 	app.UseRouting();
 
 	app.UseMiddleware<TokenRefreshMiddleware>();
@@ -121,8 +122,6 @@ static void ConfigureMiddleware(WebApplication app)
 	app.UseRateLimiter();
 	app.UseAuthentication();
 	app.UseAuthorization();
-
-	app.MapStaticAssets();
 
 	app.MapControllerRoute(
 		name: "default",

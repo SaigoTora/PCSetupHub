@@ -23,6 +23,11 @@ namespace PCSetupHub.Data.Models.Hardware
 		public bool IsDefault { get; set; }
 		public virtual string DisplayName => Name;
 
+		public string PcPartPickerLink => $"https://pcpartpicker.com/search/?q={DisplayName}";
+		public string AmazonLink => $"https://www.amazon.com/s?k={DisplayName}";
+		public string EbayLink => $"https://www.ebay.com/sch/i.html?_nkw={DisplayName}";
+		public string BandHLink => $"https://www.bhphotovideo.com/c/search?Ntt={DisplayName}";
+
 		public HardwareComponent() { }
 		public HardwareComponent(string name, double? price, bool isDefault)
 		{
