@@ -64,6 +64,7 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 	services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
 	services.AddScoped(typeof(IRepository<>), typeof(BaseRepo<>));
 	services.AddScoped<IFriendshipRepository, FriendshipRepository>();
+	services.AddScoped<IMessageRepository, MessageRepository>();
 	services.AddScoped<IHardwareComponentRepository<VideoCard>, VideoCardRepository>();
 	services.AddScoped<IHardwareComponentRepository<Motherboard>, MotherboardRepository>();
 	services.AddScoped<IHardwareComponentRepository<PowerSupply>, PowerSupplyRepository>();
