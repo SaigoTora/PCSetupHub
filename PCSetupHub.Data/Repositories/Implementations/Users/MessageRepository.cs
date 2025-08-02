@@ -24,7 +24,8 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 				.Where(m => previewIds.Contains(m.Id))
 				.Include(m => m.Sender)
 				.Include(m => m.Receiver)
-				.OrderByDescending(m => m.CreatedAt)
+				.OrderBy(m => m.IsRead)
+				.ThenByDescending(m => m.CreatedAt)
 				.ToListAsync();
 
 			return previews;

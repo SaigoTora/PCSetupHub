@@ -1,0 +1,42 @@
+﻿.message-container {
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+}
+
+    .message-container:hover {
+        background-color: var(--color-dark-background-hover);
+    }
+
+.message-link {
+    color: var(--color-light-text);
+    text-decoration: none;
+}
+
+.preview-user-login {
+    font-size: 1.15rem;
+    font-weight: bold;
+}
+
+.preview-message-datetime {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.preview-new-message-icon {
+    font-size: 0.5rem;
+    color: var(--color-secondary-accent);
+}
+
+.message-read {
+    color: var(--color-text-muted);
+}
+
+.message-unread {
+    color: var(--color-secondary-accent);
+}
+
+.preview-message-text {
+    font-size: 1rem;
+    padding-left: 0.5rem;
+    max-width: 80%;
+}

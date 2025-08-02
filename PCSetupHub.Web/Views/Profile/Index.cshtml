@@ -39,7 +39,7 @@
 
 <section>
 	<section class="d-inline">
-		<img id="avatar-preview" src="@Model.User.AvatarUrl" alt="User avatar @Model.User.Name"
+		<img id="avatar-preview" src="@Model.User.AvatarUrl" alt="User avatar @Model.User.Login"
 			 title="@(canEditAvatar ? "Change avatar" : "")" width="110" height="110"
 			 class="user-avatar me-3 mb-3 @(canEditAvatar ? "cursor-pointer" : "")"
 			 data-login="@Model.User.Login" @(canEditAvatar ? "data-can-edit='true'" : "") />
@@ -453,7 +453,7 @@
 					<div class="comment-container">
 						<div class="d-flex justify-content-start align-items-start mb-1">
 							<div class="d-flex align-items-center ms-1 me-2">
-								<img src="@comment.Commentator.AvatarUrl" alt="User avatar @comment.Commentator.Name"
+								<img src="@comment.Commentator.AvatarUrl" alt="User avatar @comment.Commentator.Login"
 									 title="@comment.Commentator.Login" width="45" height="45"
 									 class="user-avatar" />
 							</div>
