@@ -17,6 +17,7 @@ using PCSetupHub.Data.Repositories.Implementations.PcConfigurations;
 using PCSetupHub.Data.Repositories.Implementations.Users;
 using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
+using PCSetupHub.Web.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -76,6 +77,7 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 	services.AddScoped<IImageStorageService, ImageStorageService>();
 
 	services.Configure<AwsSettings>(configuration.GetSection("AwsSettings"));
+	services.AddSignalR();
 }
 static void CreateDbIfNotExists(IHost host, ILogger<Program> logger)
 {
@@ -128,4 +130,6 @@ static void ConfigureMiddleware(WebApplication app)
 		name: "default",
 		pattern: "{controller=Home}/{action=Index}/{id?}")
 		.WithStaticAssets();
+
+	app.MapHub<ChatHub>("/chat");
 }
