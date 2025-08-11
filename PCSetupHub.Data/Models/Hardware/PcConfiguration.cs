@@ -78,9 +78,10 @@ namespace PCSetupHub.Data.Models.Hardware
 		{
 			UserId = userId;
 		}
-		public PcConfiguration(int? typeId, int? processorId, int? videoCardId,
+		public PcConfiguration(int userId, int? typeId, int? processorId, int? videoCardId,
 			int? motherboardId, int? powerSupplyId)
 		{
+			UserId = userId;
 			TypeId = typeId;
 			ProcessorId = processorId;
 			VideoCardId = videoCardId;

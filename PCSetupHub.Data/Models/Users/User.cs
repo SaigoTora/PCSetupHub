@@ -31,8 +31,8 @@ namespace PCSetupHub.Data.Models.Users
 		public string AvatarUrl { get; set; } = DEFAULT_AVATAR_URL;
 		public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
-		public PcConfiguration PcConfiguration { get; set; } = new();
-		public PrivacySetting PrivacySetting { get; private set; } = new();
+		public PcConfiguration PcConfiguration { get; set; } = null!;
+		public PrivacySetting PrivacySetting { get; private set; } = null!;
 
 		public ICollection<Friendship>? ReceivedFriendRequests { get; private set; }
 		public ICollection<Friendship>? SentFriendRequests { get; private set; }

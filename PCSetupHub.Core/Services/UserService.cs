@@ -30,11 +30,11 @@ namespace PCSetupHub.Core.Services
 		}
 
 		public async Task RegisterAsync(string login, string password, string name, string email,
-			string? description, bool checkUniqueness = true)
+			string? description, bool isSeeding = false)
 		{
-			if (checkUniqueness && await _userRepository.ExistsByLoginAsync(login))
+			if (!isSeeding && await _userRepository.ExistsByLoginAsync(login))
 				throw new UserAlreadyExistsException($"User with login '{login}' already exists.");
-			if (checkUniqueness && await _userRepository.ExistsByEmailAsync(email))
+			if (!isSeeding && await _userRepository.ExistsByEmailAsync(email))
 				throw new EmailAlreadyExistsException($"User with email " +
 					$"'{email}' already exists.");
 
@@ -44,7 +44,8 @@ namespace PCSetupHub.Core.Services
 
 			user = await _userRepository.AddAsync(user);
 			await _privacySettingRepository.AddAsync(new PrivacySetting(user.Id));
-			await _pcConfigurationRepository.AddAsync(new PcConfiguration(user.Id));
+			if (!isSeeding)
+				await _pcConfigurationRepository.AddAsync(new PcConfiguration(user.Id));
 		}
 		public string HashPassword(User user, string password)
 			=> new PasswordHasher<User>().HashPassword(user, password);

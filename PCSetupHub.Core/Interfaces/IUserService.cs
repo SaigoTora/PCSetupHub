@@ -13,10 +13,11 @@ namespace PCSetupHub.Core.Interfaces
 		/// <param name="name">The user's full name.</param>
 		/// <param name="email">The user's email address.</param>
 		/// <param name="description">Optional description for the user.</param>
-		/// <param name="checkLoginUniqueness">If true, checks for login and email uniqueness before registering.</param>
+		/// <param name="isSeeding">If true, skips uniqueness checks for login and email during registration 
+		/// (used when seeding data).</param>
 		/// <returns>A task representing the asynchronous operation.</returns>
 		public Task RegisterAsync(string login, string password, string name, string email,
-			string? description, bool checkLoginUniqueness = true);
+			string? description, bool isSeeding = false);
 
 		/// <summary>
 		/// Hashes the provided password for the specified user.

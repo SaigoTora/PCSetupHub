@@ -19,7 +19,7 @@ namespace PCSetupHub.Data
 		string name,
 		string email,
 		string? description,
-		bool checkLoginUniqueness
+		bool isSeeding
 		);
 
 
@@ -59,8 +59,8 @@ namespace PCSetupHub.Data
 		private static void SeedDatabase()
 		{
 			SeedStaticData();
-			SeedPcConfigurationData();
 			SeedUserData();
+			SeedPcConfigurationData();
 		}
 
 		#region Seed static data
@@ -260,57 +260,6 @@ namespace PCSetupHub.Data
 		}
 		#endregion
 
-		#region Seed PC configuration data
-		private static void SeedPcConfigurationData()
-		{
-			SeedPcConfigurations();
-			SeedPcConfigurationHdds();
-			SeedPcConfigurationRams();
-			SeedPcConfigurationSsds();
-		}
-
-		private static void SeedPcConfigurations()
-		{
-			_context?.PcConfigurations.AddRange(
-				new PcConfiguration(null, null, null, null, null),
-				new PcConfiguration(null, null, null, null, null),
-				new PcConfiguration(null, 54, 940, null, null),
-				new PcConfiguration(1, 32, 276, 505, 280),
-				new PcConfiguration(1, 41, 24, 725, 1651));
-
-			_context?.SaveChanges();
-		}
-		private static void SeedPcConfigurationHdds()
-		{
-			_context?.PcConfigurationHdds.AddRange(
-				new PcConfigurationHdd(3, 219),
-				new PcConfigurationHdd(3, 334),
-				new PcConfigurationHdd(5, 214));
-
-			_context?.SaveChanges();
-		}
-		private static void SeedPcConfigurationRams()
-		{
-			_context?.PcConfigurationRams.AddRange(
-				new PcConfigurationRam(2, 5251),
-				new PcConfigurationRam(3, 1136),
-				new PcConfigurationRam(3, 3879),
-				new PcConfigurationRam(5, 2165));
-
-			_context?.SaveChanges();
-		}
-		private static void SeedPcConfigurationSsds()
-		{
-			_context?.PcConfigurationSsds.AddRange(
-				new PcConfigurationSsd(2, 3965),
-				new PcConfigurationSsd(2, 2673),
-				new PcConfigurationSsd(3, 850),
-				new PcConfigurationSsd(5, 1755));
-
-			_context?.SaveChanges();
-		}
-		#endregion
-
 		#region Seed user data
 		private static void SeedUserData()
 		{
@@ -330,15 +279,15 @@ namespace PCSetupHub.Data
 				"and chasing top-tier performance.";
 
 			_registerFunc!("max_power", "StrongPass567!", "Maxim",
-				"max_power@gmail.com", firstDescription, false);
+				"max_power@gmail.com", firstDescription, true);
 			_registerFunc!("anna_dev", "AnnaPass123!", "Anna",
-				"anna_dev@gmail.com", null, false);
+				"anna_dev@gmail.com", null, true);
 			_registerFunc!("alex_gamer", "Pass1234!", "Alexander",
-				"alex_gamer@gmail.com", secondDescription, false);
+				"alex_gamer@gmail.com", secondDescription, true);
 			_registerFunc!("kate_player", "KateGamer456!", "Kate",
-				"kate_player@gmail.com", null, false);
+				"kate_player@gmail.com", null, true);
 			_registerFunc!("niko_coder", "Secure789!", "Nikolay",
-				"niko_coder@gmail.com", thirdDescription, false);
+				"niko_coder@gmail.com", thirdDescription, true);
 		}
 		private static void SeedComments()
 		{
@@ -390,6 +339,57 @@ namespace PCSetupHub.Data
 				new Message(5, 4, "Hey! Pretty good, just finished work.", true),
 				new Message(5, 4, "You?", true),
 				new Message(4, 5, "Same here. Today I'll go to a cafe with my family.", true));
+
+			_context?.SaveChanges();
+		}
+		#endregion
+
+		#region Seed PC configuration data
+		private static void SeedPcConfigurationData()
+		{
+			SeedPcConfigurations();
+			SeedPcConfigurationHdds();
+			SeedPcConfigurationRams();
+			SeedPcConfigurationSsds();
+		}
+
+		private static void SeedPcConfigurations()
+		{
+			_context?.PcConfigurations.AddRange(
+				new PcConfiguration(1, null, null, null, null, null),
+				new PcConfiguration(2, null, null, null, null, null),
+				new PcConfiguration(3, null, 54, 940, null, null),
+				new PcConfiguration(4, 1, 32, 276, 505, 280),
+				new PcConfiguration(5, 1, 41, 24, 725, 1651));
+
+			_context?.SaveChanges();
+		}
+		private static void SeedPcConfigurationHdds()
+		{
+			_context?.PcConfigurationHdds.AddRange(
+				new PcConfigurationHdd(3, 219),
+				new PcConfigurationHdd(3, 334),
+				new PcConfigurationHdd(5, 214));
+
+			_context?.SaveChanges();
+		}
+		private static void SeedPcConfigurationRams()
+		{
+			_context?.PcConfigurationRams.AddRange(
+				new PcConfigurationRam(2, 5251),
+				new PcConfigurationRam(3, 1136),
+				new PcConfigurationRam(3, 3879),
+				new PcConfigurationRam(5, 2165));
+
+			_context?.SaveChanges();
+		}
+		private static void SeedPcConfigurationSsds()
+		{
+			_context?.PcConfigurationSsds.AddRange(
+				new PcConfigurationSsd(2, 3965),
+				new PcConfigurationSsd(2, 2673),
+				new PcConfigurationSsd(3, 850),
+				new PcConfigurationSsd(5, 1755));
 
 			_context?.SaveChanges();
 		}
