@@ -1,121 +1,121 @@
 ﻿@using PCSetupHub.Data.Models.Users
 
 @{
-	string? userLogin = User.GetLogin();
+    string? userLogin = User.GetLogin();
 }
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - PC Setup Hub</title>
-	<script type="importmap"></script>
-	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PC Setup Hub</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="d-flex">
-	<header>
-		<nav class="d-flex flex-column vh-100 nav-menu">
-			<div class="brand-container">
-				<a class="text-decoration-none" asp-controller="Home" asp-action="Index">
-					<img class="d-none logo-icon"
-						 src="~/Images/logo.png"
-						 alt="Logo"
-						 width="50px"
-						 height="50px" />
-					<span translate="no" class="navbar-brand nav-link"><span translate="no" class="navbar-brand-accent">PC</span> Setup Hub</span>
-				</a>
-			</div>
+    <header>
+        <nav class="d-flex flex-column vh-100 nav-menu">
+            <div class="brand-container">
+                <a class="text-decoration-none" asp-controller="Home" asp-action="Index">
+                    <img class="d-none logo-icon"
+                         src="~/Images/logo.png"
+                         alt="Logo"
+                         width="50px"
+                         height="50px" />
+                    <span translate="no" class="navbar-brand nav-link"><span translate="no" class="navbar-brand-accent">PC</span> Setup Hub</span>
+                </a>
+            </div>
 
-			<ul class="nav nav-pills flex-column h-100">
-				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Home" asp-action="Index">
-						<i class="fa-solid fa-house nav-menu-icon"></i>
-						<span class="d-inline nav-link nav-menu-text">Home</span>
-					</a>
-				</li>
-				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none"
-					   asp-controller="Profile" asp-action="Index" asp-route-login="@userLogin">
-						<i class="fa-solid fa-user nav-menu-icon"></i>
-						<span class="d-inline nav-link nav-menu-text">Profile</span>
-					</a>
-				</li>
-				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Messages" asp-action="Index" asp-route-login="@userLogin">
-						<i class="fa-solid fa-message nav-menu-icon"></i>
-						<span class="d-inline nav-link nav-menu-text">Messages</span>
-					</a>
-				</li>
-				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Contacts" asp-action="Friends" asp-route-login="@userLogin">
-						<i class="fa-solid fa-user-group nav-menu-icon"></i>
-						<span class="d-inline nav-link nav-menu-text">Friends</span>
-					</a>
-				</li>
-				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none"
-					   asp-controller="Contacts" asp-action="Search">
-						<i class="fa-solid fa-search nav-menu-icon"></i>
-						<span class="d-inline nav-link nav-menu-text">Search</span>
-					</a>
-				</li>
-				<li class="nav-item nav-menu-item">
-					<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Settings" asp-action="Index" asp-route-login="@userLogin">
-						<i class="fa-solid fa-gear nav-menu-icon"></i>
-						<span class="d-inline nav-link nav-menu-text">Settings</span>
-					</a>
-				</li>
-			</ul>
+            <ul class="nav nav-pills flex-column h-100">
+                <li class="nav-item nav-menu-item">
+                    <a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Home" asp-action="Index">
+                        <i class="fa-solid fa-house nav-menu-icon"></i>
+                        <span class="d-inline nav-link nav-menu-text">Home</span>
+                    </a>
+                </li>
+                <li class="nav-item nav-menu-item">
+                    <a class="d-flex align-items-center w-100 text-decoration-none"
+                       asp-controller="Profile" asp-action="Index" asp-route-login="@userLogin">
+                        <i class="fa-solid fa-user nav-menu-icon"></i>
+                        <span class="d-inline nav-link nav-menu-text">Profile</span>
+                    </a>
+                </li>
+                <li class="nav-item nav-menu-item">
+                    <a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Messages" asp-action="Index" asp-route-login="@userLogin">
+                        <i class="fa-solid fa-message nav-menu-icon"></i>
+                        <span class="d-inline nav-link nav-menu-text">Messages</span>
+                    </a>
+                </li>
+                <li class="nav-item nav-menu-item">
+                    <a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Contacts" asp-action="Friends" asp-route-login="@userLogin">
+                        <i class="fa-solid fa-user-group nav-menu-icon"></i>
+                        <span class="d-inline nav-link nav-menu-text">Friends</span>
+                    </a>
+                </li>
+                <li class="nav-item nav-menu-item">
+                    <a class="d-flex align-items-center w-100 text-decoration-none"
+                       asp-controller="Contacts" asp-action="Search">
+                        <i class="fa-solid fa-search nav-menu-icon"></i>
+                        <span class="d-inline nav-link nav-menu-text">Search</span>
+                    </a>
+                </li>
+                <li class="nav-item nav-menu-item">
+                    <a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Settings" asp-action="Index" asp-route-login="@userLogin">
+                        <i class="fa-solid fa-gear nav-menu-icon"></i>
+                        <span class="d-inline nav-link nav-menu-text">Settings</span>
+                    </a>
+                </li>
+            </ul>
 
-			<ul class="nav nav-pills flex-column">
-				@if (User.Identity != null && User.Identity.IsAuthenticated)
-				{
-					<li class="nav-item nav-menu-item preserve-text">
-						<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Settings" asp-action="Index" asp-route-login="@userLogin">
-							<span class="d-inline nav-link nav-menu-text text-truncate ps-2">@@@userLogin</span>
-						</a>
-					</li>
-				}
-				else
-				{
-					<li class="nav-item nav-menu-item login-menu-item">
-						<a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Auth" asp-action="Login">
-							<i class="fa-solid fa-sign-in-alt nav-menu-icon"></i>
-							<span class="d-inline nav-link nav-menu-text">Login</span>
-						</a>
-					</li>
-				}
-			</ul>
+            <ul class="nav nav-pills flex-column">
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item nav-menu-item preserve-text">
+                        <a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Settings" asp-action="Index" asp-route-login="@userLogin">
+                            <span class="d-inline nav-link nav-menu-text text-truncate ps-2">@@@userLogin</span>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item nav-menu-item login-menu-item">
+                        <a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Auth" asp-action="Login">
+                            <i class="fa-solid fa-sign-in-alt nav-menu-icon"></i>
+                            <span class="d-inline nav-link nav-menu-text">Login</span>
+                        </a>
+                    </li>
+                }
+            </ul>
 
-		</nav>
-	</header>
-	<div class="container d-flex justify-content-between align-items-center flex-column">
-		<main role="main">
-			@RenderBody()
-		</main>
-		<footer class="footer">
-			<div class="mb-2">
-				<span class="me-2">
-					© 2025 PCSetupHub — a learning project about PC components and setups.
-				</span>
-				<span>
-					Created by <a href="https://github.com/SaigoTora" class="footer-link" target="_blank" rel="noopener">SaigoTora</a>. All rights <a class="footer-link" asp-controller="Home" asp-action="Privacy">reserved</a>.
-				</span>
-			</div>
-			<div>
-				<a href="https://github.com/SaigoTora/PCSetupHub" class="footer-link" target="_blank" rel="noopener"><span class="text-accent">PC</span> <span class="text-light">Setup Hub</span></a>
-			</div>
-		</footer>
+        </nav>
+    </header>
+    <div class="container d-flex justify-content-between align-items-center flex-column">
+        <main role="main">
+            @RenderBody()
+        </main>
+        <footer class="footer">
+            <div class="mb-2">
+                <span class="me-2">
+                    © 2025 PCSetupHub — a learning project about PC components and setups.
+                </span>
+                <span>
+                    Created by <a href="https://github.com/SaigoTora" class="footer-link" target="_blank" rel="noopener">SaigoTora</a>. All rights <a class="footer-link" asp-controller="Home" asp-action="Privacy">reserved</a>.
+                </span>
+            </div>
+            <div>
+                <a href="https://github.com/SaigoTora/PCSetupHub" class="footer-link" target="_blank" rel="noopener"><span class="text-accent">PC</span> <span class="text-light">Setup Hub</span></a>
+            </div>
+        </footer>
 
 
-	</div>
+    </div>
 
-	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="~/js/site.js" asp-append-version="true"></script>
-	@await RenderSectionAsync("Scripts", required: false)
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

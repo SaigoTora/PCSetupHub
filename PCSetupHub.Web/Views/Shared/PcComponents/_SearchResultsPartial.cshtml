@@ -1,70 +1,68 @@
-﻿@using PCSetupHub.Web.ViewModels
-
-@model SearchComponentViewModel
+﻿@model SearchComponentViewModel
 
 @{
-	<link rel="stylesheet" href="~/css/modal.css" />
+    <link rel="stylesheet" href="~/css/modal.css" />
 }
 
 <div class="d-flex align-items-center justify-content-between">
-	@if (Model.TotalItems == 0)
-	{
-		<div class="search-result-count">
-			No results found
-		</div>
-	}
-	else if (Model.TotalItems == 1)
-	{
-		<div></div>
-		<div class="search-result-count">
-			Found 1 result
-		</div>
-	}
-	else
-	{
-		<div class="page-result-count">
-			@if (Model.TotalPages > 1)
-			{
-				@:Page @Model.Page of @Model.TotalPages
-			}
-		</div>
+    @if (Model.TotalItems == 0)
+    {
+        <div class="search-result-count">
+            No results found
+        </div>
+    }
+    else if (Model.TotalItems == 1)
+    {
+        <div></div>
+        <div class="search-result-count">
+            Found 1 result
+        </div>
+    }
+    else
+    {
+        <div class="page-result-count">
+            @if (Model.TotalPages > 1)
+            {
+                @:Page @Model.Page of @Model.TotalPages
+            }
+        </div>
 
-		<div class="search-result-count">
-			Found @Model.TotalItems results
-		</div>
-	}
+        <div class="search-result-count">
+            Found @Model.TotalItems results
+        </div>
+    }
 </div>
 
 @if (Model.Components != null && Model.Components.Count > 0)
 {
-	<table class="mb-5 table-responsive w-100 search-components-table">
-		@for (int i = 0; i < Model.Components.Count; i++)
-		{
-			<tr>
-				<td class="p-2"><span class="user-select-none">@(i + 1)</span></td>
-				<td class="p-2">
-					<span id=@($"openModal-{Model.Components[i].GetType().Name}-{Model.Components[i].Id}") class="pc-component-name" translate="no">
-						@Model.Components[i].DisplayName
-					</span>
-					@await Html.PartialAsync("PcComponents/_ComponentModalPartial", Model.Components[i])
-				</td>
-				<td>
-					<form asp-controller="@Model.ControllerName" asp-action="Select" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-currentComponentId="@Model.CurrentComponentId" asp-route-componentId="@Model.Components[i].Id" method="post">
-						@if (Model.Components[i].Id == Model.CurrentComponentId || (Model.SelectedComponentIds != null && Model.SelectedComponentIds.Any(id => id == Model.Components[i].Id)))
-						{
-							<button class="select-component-button" type="submit" disabled>Selected</button>
-						}
-						else
-						{
-							<button class="select-component-button" type="submit">Select</button>
-						}
-					</form>
-				</td>
-			</tr>
-		}
-	</table>
+    <table class="mb-5 table-responsive w-100 search-components-table">
+        @for (int i = 0; i < Model.Components.Count; i++)
+        {
+            <tr>
+                <td class="p-2"><span class="user-select-none">@(i + 1)</span></td>
+                <td class="p-2">
+                    <span id=@($"openModal-{Model.Components[i].GetType().Name}-{Model.Components[i].Id}") class="pc-component-name" translate="no">
+                        @Model.Components[i].DisplayName
+                    </span>
+                    @await Html.PartialAsync("PcComponents/_ComponentModalPartial", Model.Components[i])
+                </td>
+                <td>
+                    <form asp-controller="@Model.ControllerName" asp-action="Select" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-currentComponentId="@Model.CurrentComponentId" asp-route-componentId="@Model.Components[i].Id" method="post">
+                        @if (Model.Components[i].Id == Model.CurrentComponentId || (Model.SelectedComponentIds != null && Model.SelectedComponentIds.Any(id => id == Model.Components[i].Id)))
+                        {
+                            <button class="select-component-button" type="submit" disabled>Selected</button>
+                        }
+                        else
+                        {
+                            <button class="select-component-button" type="submit">Select</button>
+                        }
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
 }
 
 <div class="d-flex justify-content-center">
-	@await Html.PartialAsync("_PageNavigator", Model)
+    @await Html.PartialAsync("_PageNavigator", Model)
 </div>

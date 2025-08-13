@@ -1,77 +1,76 @@
 ﻿@using PCSetupHub.Data.Models.Hardware
-@using PCSetupHub.Web.ViewModels
 
 @model PcComponentFormViewModel<Motherboard>
 
 @{
-	<link rel="stylesheet" href="~/css/form.css" />
+    <link rel="stylesheet" href="~/css/form.css" />
 
-	string actionName = Model.Mode switch
-	{
-		FormMode.Create => "Create",
-		FormMode.Edit => "Edit",
-		_ => throw new InvalidOperationException("Unsupported form mode")
-	};
+    string actionName = Model.Mode switch
+    {
+        FormMode.Create => "Create",
+        FormMode.Edit => "Edit",
+        _ => throw new InvalidOperationException("Unsupported form mode")
+    };
 
-	int? componentId = null;
-	if (Model.Mode == FormMode.Edit)
-		componentId = Model.Component?.Id;
+    int? componentId = null;
+    if (Model.Mode == FormMode.Edit)
+        componentId = Model.Component?.Id;
 
-	var selectedColorIds = Model.Component?.ColorMotherboards?
-		.Select(cm => cm.ColorId)
-		.ToList() ?? new List<int>();
+    var selectedColorIds = Model.Component?.ColorMotherboards?
+        .Select(cm => cm.ColorId)
+        .ToList() ?? new List<int>();
 
-	if (ViewData["SelectedColorsId"] is IEnumerable<int> additionalIds)
-		selectedColorIds.AddRange(additionalIds);
+    if (ViewData["SelectedColorsId"] is IEnumerable<int> additionalIds)
+        selectedColorIds.AddRange(additionalIds);
 }
 
 @if (Model.Component != null)
 {
-	<form asp-action="@actionName" asp-route-componentId="@componentId" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
-		<div class="form__group field">
-			<input type="text" class="form__field" placeholder="Name" asp-for="Component.Name" required autocomplete="off">
-			<label for="Name" class="form__label">Name</label>
-		</div>
+    <form asp-action="@actionName" asp-route-componentId="@componentId" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
+        <div class="form__group field">
+            <input type="text" class="form__field" placeholder="Name" asp-for="Component.Name" required autocomplete="off">
+            <label for="Name" class="form__label">Name</label>
+        </div>
 
-		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="Price" asp-for="Component.Price" min="0.01" step="0.01">
-			<label for="Price" class="form__label">Price ($)</label>
-		</div>
+        <div class="form__group field">
+            <input type="number" class="form__field" placeholder="Price" asp-for="Component.Price" min="0.01" step="0.01">
+            <label for="Price" class="form__label">Price ($)</label>
+        </div>
 
-		<div class="form__group field">
-			<input type="text" class="form__field" placeholder="Socket" asp-for="Component.Socket" required>
-			<label for="Socket" class="form__label">Socket</label>
-		</div>
+        <div class="form__group field">
+            <input type="text" class="form__field" placeholder="Socket" asp-for="Component.Socket" required>
+            <label for="Socket" class="form__label">Socket</label>
+        </div>
 
-		<select class="mb-3" asp-for="Component.FormFactor" required>
-			<optgroup label="Form factor">
-				<option value="@null" hidden>Select form factor</option>
-				<option value="Thin Mini ITX">Thin Mini ITX</option>
-				<option value="Mini ITX">Mini ITX</option>
-				<option value="Mini DTX">Mini DTX</option>
-				<option value="Flex ATX">Flex ATX</option>
-				<option value="Micro ATX">Micro ATX</option>
-				<option value="ATX">ATX</option>
-				<option value="EATX">EATX</option>
-				<option value="SSI CEB">SSI CEB</option>
-				<option value="SSI EEB">SSI EEB</option>
-				<option value="XL ATX">XL ATX</option>
-				<option value="HPTX">HPTX</option>
-			</optgroup>
-		</select>
+        <select class="mb-3" asp-for="Component.FormFactor" required>
+            <optgroup label="Form factor">
+                <option value="@null" hidden>Select form factor</option>
+                <option value="Thin Mini ITX">Thin Mini ITX</option>
+                <option value="Mini ITX">Mini ITX</option>
+                <option value="Mini DTX">Mini DTX</option>
+                <option value="Flex ATX">Flex ATX</option>
+                <option value="Micro ATX">Micro ATX</option>
+                <option value="ATX">ATX</option>
+                <option value="EATX">EATX</option>
+                <option value="SSI CEB">SSI CEB</option>
+                <option value="SSI EEB">SSI EEB</option>
+                <option value="XL ATX">XL ATX</option>
+                <option value="HPTX">HPTX</option>
+            </optgroup>
+        </select>
 
-		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="MaxMemory" asp-for="Component.MaxMemory" min="2" required value="@(Model.Component.MaxMemory == default ? "" : Model.Component.MaxMemory.ToString())" />
-			<label for="MaxMemory" class="form__label">Max memory (GB)</label>
-		</div>
+        <div class="form__group field">
+            <input type="number" class="form__field" placeholder="MaxMemory" asp-for="Component.MaxMemory" min="2" required value="@(Model.Component.MaxMemory == default ? "" : Model.Component.MaxMemory.ToString())" />
+            <label for="MaxMemory" class="form__label">Max memory (GB)</label>
+        </div>
 
-		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="MemorySlots" asp-for="Component.MemorySlots" min="1" required value="@(Model.Component.MemorySlots == default ? "" : Model.Component.MemorySlots.ToString())" />
-			<label for="MemorySlots" class="form__label">Memory slots</label>
-		</div>
+        <div class="form__group field">
+            <input type="number" class="form__field" placeholder="MemorySlots" asp-for="Component.MemorySlots" min="1" required value="@(Model.Component.MemorySlots == default ? "" : Model.Component.MemorySlots.ToString())" />
+            <label for="MemorySlots" class="form__label">Memory slots</label>
+        </div>
 
-		@await Html.PartialAsync("PcComponents/Forms/_ColorForm", selectedColorIds)
+        @await Html.PartialAsync("PcComponents/Forms/_ColorForm", selectedColorIds)
 
-		@await Html.PartialAsync("PcComponents/Forms/_FormSubmitSection", Model.Mode)
-	</form>
+        @await Html.PartialAsync("PcComponents/Forms/_FormSubmitSection", Model.Mode)
+    </form>
 }

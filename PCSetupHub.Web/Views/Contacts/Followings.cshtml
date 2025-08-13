@@ -1,26 +1,24 @@
-﻿@using PCSetupHub.Web.ViewModels
-
-@model ContactsViewModel
+﻿@model ContactsViewModel
 
 @{
-	ViewData["Title"] = "Followings";
+    ViewData["Title"] = "Followings";
 }
 
 @await Html.PartialAsync("Users/_ContactsTabs", Model)
 
 <form class="mb-2" asp-controller="Contacts" asp-action="Followings" method="get">
-	<div class="searchbar-container">
-		<div class="search-bar">
-			<div class="input-container">
-				<input class="search-input"
-					   placeholder="Search..."
-					   type="search"
-					   name="@Model.SearchQueryName"
-					   value="@Model.SearchQuery" />
-			</div>
-		</div>
-		<button type="submit" class="search-button"><i class="fa fa-search"></i></button>
-	</div>
+    <div class="searchbar-container">
+        <div class="search-bar">
+            <div class="input-container">
+                <input class="search-input"
+                       placeholder="Search..."
+                       type="search"
+                       name="@Model.SearchQueryName"
+                       value="@Model.SearchQuery" />
+            </div>
+        </div>
+        <button type="submit" class="search-button"><i class="fa fa-search"></i></button>
+    </div>
 </form>
 
 @await Html.PartialAsync("Users/_UsersInfo", Model)

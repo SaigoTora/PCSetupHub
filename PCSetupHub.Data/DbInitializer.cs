@@ -279,15 +279,15 @@ namespace PCSetupHub.Data
 				"and chasing top-tier performance.";
 
 			_registerFunc!("max_power", "StrongPass567!", "Maxim",
-				"max_power@gmail.com", firstDescription, true);
+				"max_power@gmail.com", firstDescription, true).GetAwaiter().GetResult();
 			_registerFunc!("anna_dev", "AnnaPass123!", "Anna",
-				"anna_dev@gmail.com", null, true);
+				"anna_dev@gmail.com", null, true).GetAwaiter().GetResult();
 			_registerFunc!("alex_gamer", "Pass1234!", "Alexander",
-				"alex_gamer@gmail.com", secondDescription, true);
+				"alex_gamer@gmail.com", secondDescription, true).GetAwaiter().GetResult();
 			_registerFunc!("kate_player", "KateGamer456!", "Kate",
-				"kate_player@gmail.com", null, true);
+				"kate_player@gmail.com", null, true).GetAwaiter().GetResult();
 			_registerFunc!("niko_coder", "Secure789!", "Nikolay",
-				"niko_coder@gmail.com", thirdDescription, true);
+				"niko_coder@gmail.com", thirdDescription, true).GetAwaiter().GetResult();
 		}
 		private static void SeedComments()
 		{

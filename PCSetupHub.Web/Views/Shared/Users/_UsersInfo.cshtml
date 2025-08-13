@@ -1,62 +1,60 @@
-﻿@using PCSetupHub.Web.ViewModels
-
-@model ContactsViewModel
+﻿@model ContactsViewModel
 @{
-	<link rel="stylesheet" href="~/css/contact.css" />
+    <link rel="stylesheet" href="~/css/contact.css" />
 }
 
 
 @if (Model.Contacts != null)
 {
-	<div class="d-flex align-items-center justify-content-between">
-		@if (Model.TotalItems == 0)
-		{
-			<div class="search-result-count">
-				No results found
-			</div>
-		}
-		else if (Model.TotalItems == 1)
-		{
-			<div></div>
-			<div class="search-result-count">
-				Found 1 result
-			</div>
-		}
-		else
-		{
-			<div class="page-result-count">
-				@if (Model.TotalPages > 1)
-				{
-					@:Page @Model.Page of @Model.TotalPages
-				}
-			</div>
+    <div class="d-flex align-items-center justify-content-between">
+        @if (Model.TotalItems == 0)
+        {
+            <div class="search-result-count">
+                No results found
+            </div>
+        }
+        else if (Model.TotalItems == 1)
+        {
+            <div></div>
+            <div class="search-result-count">
+                Found 1 result
+            </div>
+        }
+        else
+        {
+            <div class="page-result-count">
+                @if (Model.TotalPages > 1)
+                {
+                    @:Page @Model.Page of @Model.TotalPages
+                }
+            </div>
 
-			<div class="search-result-count">
-				Found @Model.TotalItems results
-			</div>
-		}
-	</div>
+            <div class="search-result-count">
+                Found @Model.TotalItems results
+            </div>
+        }
+    </div>
 
-	foreach (var user in Model.Contacts)
-	{
-		<div class="user-container mb-1">
-			<a class="user-link" asp-controller="Profile" asp-action="Index" asp-route-login="@user.Login">
-				<div class="d-flex justify-content-start align-items-start">
-					<div class="d-flex align-items-center me-2-5">
-						<img src="@user.AvatarUrl" alt="User avatar @user.Login"
-							 title="@user.Login" width="65" height="65"
-							 class="user-avatar" />
-					</div>
-					<div>
-						<div class="user-login mb-1">@user.Login</div>
-						<div class="user-name">@user.Name</div>
-					</div>
-				</div>
-			</a>
-		</div>
-	}
+    foreach (var user in Model.Contacts)
+    {
+        <div class="user-container mb-1">
+            <a class="user-link" asp-controller="Profile" asp-action="Index" asp-route-login="@user.Login">
+                <div class="d-flex justify-content-start align-items-start">
+                    <div class="d-flex align-items-center me-2-5">
+                        <img src="@user.AvatarUrl" alt="User avatar @user.Login"
+                             title="@user.Login" width="65" height="65"
+                             class="user-avatar" />
+                    </div>
+                    <div>
+                        <div class="user-login mb-1">@user.Login</div>
+                        <div class="user-name">@user.Name</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
 
-	<div class="d-flex justify-content-center mt-4">
-		@await Html.PartialAsync("_PageNavigator", Model)
-	</div>
+    <div class="d-flex justify-content-center mt-4">
+        @await Html.PartialAsync("_PageNavigator", Model)
+    </div>
 }

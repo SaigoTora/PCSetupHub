@@ -3,51 +3,51 @@
 @model RegisterRequest
 
 @{
-	ViewData["Title"] = "Register";
-	Layout = "_AuthLayout";
+    ViewData["Title"] = "Register";
+    Layout = "_AuthLayout";
 }
 
 <form asp-controller="Auth" asp-action="Register" method="post">
-	<h2>Register</h2>
+    <h2>Register</h2>
 
-	<div class="input-field">
-		<input asp-for="Login" type="text" required />
-		<label asp-for="Login">Login:</label>
-	</div>
+    <div class="input-field">
+        <input asp-for="Login" type="text" required />
+        <label asp-for="Login">Login:</label>
+    </div>
 
-	<div class="input-field">
-		<input asp-for="Password" type="password" value="@TempData[nameof(RegisterRequest.Password)]" required autocomplete="off" />
-		<label asp-for="Password">Password:</label>
-		<button type="button" id="toggle-password" title="Show password" tabindex="-1">
-			<i class="fas fa-eye"></i>
-		</button>
-	</div>
+    <div class="input-field">
+        <input asp-for="Password" type="password" value="@TempData[nameof(RegisterRequest.Password)]" required autocomplete="off" />
+        <label asp-for="Password">Password:</label>
+        <button type="button" id="toggle-password" title="Show password" tabindex="-1">
+            <i class="fas fa-eye"></i>
+        </button>
+    </div>
 
-	<div class="input-field">
-		<input asp-for="ConfirmPassword" type="password" value="@TempData[nameof(RegisterRequest.ConfirmPassword)]" required autocomplete="off" />
-		<label asp-for="ConfirmPassword">Confirm Password:</label>
-	</div>
+    <div class="input-field">
+        <input asp-for="ConfirmPassword" type="password" value="@TempData[nameof(RegisterRequest.ConfirmPassword)]" required autocomplete="off" />
+        <label asp-for="ConfirmPassword">Confirm Password:</label>
+    </div>
 
-	<div class="input-field">
-		<input asp-for="Name" type="text" required />
-		<label asp-for="Name">Name:</label>
-	</div>
+    <div class="input-field">
+        <input asp-for="Name" type="text" required />
+        <label asp-for="Name">Name:</label>
+    </div>
 
-	<div class="input-field mb-5">
-		<input asp-for="Email" type="text" required />
-		<label asp-for="Email">Email:</label>
-	</div>
+    <div class="input-field mb-5">
+        <input asp-for="Email" type="text" required />
+        <label asp-for="Email">Email:</label>
+    </div>
 
-	@if (ViewData["FirstError"] != null)
-	{
-		<span class="text-danger mb-3">@ViewData["FirstError"]</span>
-	}
+    @if (ViewData["FirstError"] != null)
+    {
+        <span class="text-danger mb-3">@ViewData["FirstError"]</span>
+    }
 
-	<button type="submit">Register</button>
+    <button type="submit">Register</button>
 
-	<div class="register">
-		<p>Already have an account? <a asp-controller="Auth" asp-action="Login">Login</a></p>
-	</div>
+    <div class="register">
+        <p>Already have an account? <a asp-controller="Auth" asp-action="Login">Login</a></p>
+    </div>
 </form>
 
 <script src="~/js/auth.js"></script>

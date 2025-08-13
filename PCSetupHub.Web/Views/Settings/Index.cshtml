@@ -4,155 +4,155 @@
 @model UserSettings
 
 @{
-	ViewData["Title"] = "Settings";
+    ViewData["Title"] = "Settings";
 
-	<link rel="stylesheet" href="~/css/form.css" />
+    <link rel="stylesheet" href="~/css/form.css" />
 
-	<!-- Cropper CSS and JS-->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.css" integrity="sha512-C4k/QrN4udgZnXStNFS5osxdhVECWyhMsK1pnlk+LkC7yJGCqoYxW4mH3/ZXLweODyzolwdWSqmmadudSHMRLA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha512-6lplKUSl86rUVprDIjiW8DuOniNX8UDoRATqZSds/7t6zCQZfaCe3e5zcGaQwxa8Kpn5RTM9Fvl3X2lLV4grPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	<script src="~/js/avatar-cropper.js"></script>
+    <!-- Cropper CSS and JS-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.css" integrity="sha512-C4k/QrN4udgZnXStNFS5osxdhVECWyhMsK1pnlk+LkC7yJGCqoYxW4mH3/ZXLweODyzolwdWSqmmadudSHMRLA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha512-6lplKUSl86rUVprDIjiW8DuOniNX8UDoRATqZSds/7t6zCQZfaCe3e5zcGaQwxa8Kpn5RTM9Fvl3X2lLV4grPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="~/js/avatar-cropper.js"></script>
 
 
-	Dictionary<int, string> privacyLevels = new()
-			{
-				[(int)PrivacyLevelType.Everyone] = "Everyone",
-				[(int)PrivacyLevelType.FriendsFollowersFollowings] = "Friends, followers and followings",
-				[(int)PrivacyLevelType.FriendsAndFollowings] = "Friends and followings",
-				[(int)PrivacyLevelType.FriendsOnly] = "Friends only",
-			};
+    Dictionary<int, string> privacyLevels = new()
+    {
+        [(int)PrivacyLevelType.Everyone] = "Everyone",
+        [(int)PrivacyLevelType.FriendsFollowersFollowings] = "Friends, followers and followings",
+        [(int)PrivacyLevelType.FriendsAndFollowings] = "Friends and followings",
+        [(int)PrivacyLevelType.FriendsOnly] = "Friends only",
+    };
 }
 
 <div class="d-flex flex-column align-items-center mb-4">
-	<span class="user-login mb-2">@@@Model.Login</span>
-	<img id="avatar-preview" src="@Model.AvatarUrl" alt="User avatar @Model.Name"
-		 title="Change avatar" width="180" height="180"
-		 class="user-avatar mb-2 cursor-pointer"
-		 data-login="@Model.Login" data-can-edit='true' />
-	<button id="button-change-avatar" class="user-action-btn" title="Change avatar">Change</button>
+    <span class="user-login mb-2">@@@Model.Login</span>
+    <img id="avatar-preview" src="@Model.AvatarUrl" alt="User avatar @Model.Name"
+         title="Change avatar" width="180" height="180"
+         class="user-avatar mb-2 cursor-pointer"
+         data-login="@Model.Login" data-can-edit='true' />
+    <button id="button-change-avatar" class="user-action-btn" title="Change avatar">Change</button>
 </div>
 
 <input type="file" id="avatar-input" accept="image/*" style="display: none;" />
 
 <section>
-	<div id="avatar-cropper-section">
-		<div class="avatar-cropper-wrapper">
-			<img id="cropper-image" src="#" alt="Image for cropping" />
-		</div>
-		<div class="d-flex align-content-center justify-content-end gap-3 mt-2 mb-5">
-			<button id="cancel-avatar-btn" class="button-cancel" type="button">Cancel</button>
-			<button id="save-avatar-btn" class="button-save" type="button">Save</button>
-		</div>
-	</div>
+    <div id="avatar-cropper-section">
+        <div class="avatar-cropper-wrapper">
+            <img id="cropper-image" src="#" alt="Image for cropping" />
+        </div>
+        <div class="d-flex align-content-center justify-content-end gap-3 mt-2 mb-5">
+            <button id="cancel-avatar-btn" class="button-cancel" type="button">Cancel</button>
+            <button id="save-avatar-btn" class="button-save" type="button">Save</button>
+        </div>
+    </div>
 </section>
 
 <div class="w-100 mb-4 d-flex justify-content-center align-items-center">
-	<form asp-controller="Auth" asp-action="UpdateLogin" asp-route-login="@Model.Login" method="get" class="me-4">
-		<button class="user-action-btn" title="Change login">Change Login</button>
-	</form>
-	@if (Model.HasPassword)
-	{
-		<form asp-controller="Auth" asp-action="UpdatePassword" asp-route-login="@Model.Login" method="get">
-			<button class="user-action-btn" title="Change password">Change Password</button>
-		</form>
-	}
+    <form asp-controller="Auth" asp-action="UpdateLogin" asp-route-login="@Model.Login" method="get" class="me-4">
+        <button class="user-action-btn" title="Change login">Change Login</button>
+    </form>
+    @if (Model.HasPassword)
+    {
+        <form asp-controller="Auth" asp-action="UpdatePassword" asp-route-login="@Model.Login" method="get">
+            <button class="user-action-btn" title="Change password">Change Password</button>
+        </form>
+    }
 </div>
 
 <form asp-controller="Settings" asp-action="Index" asp-route-login="@Model.Login" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center mb-5">
-	<div class="form__group field">
-		<input type="text" class="form__field" placeholder="Name" asp-for="@Model.Name" required>
-		<label for="Name" class="form__label">Name</label>
-	</div>
+    <div class="form__group field">
+        <input type="text" class="form__field" placeholder="Name" asp-for="@Model.Name" required>
+        <label for="Name" class="form__label">Name</label>
+    </div>
 
-	<div class="form__group field">
-		<input type="text" class="form__field" placeholder="Email" asp-for="@Model.Email" required>
-		<label for="Email" class="form__label">Email</label>
-	</div>
+    <div class="form__group field">
+        <input type="text" class="form__field" placeholder="Email" asp-for="@Model.Email" required>
+        <label for="Email" class="form__label">Email</label>
+    </div>
 
-	<label asp-for="@Model.Description" class="description-title">Description</label>
-	<textarea class="description-input mb-5" placeholder="Write something..." type="text" asp-for="@Model.Description" autocomplete="off" title=""
-			  onkeydown="if(event.key==='Enter'){event.preventDefault();}"
-			  oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">
-	</textarea>
+    <label asp-for="@Model.Description" class="description-title">Description</label>
+    <textarea class="description-input mb-5" placeholder="Write something..." type="text" asp-for="@Model.Description" autocomplete="off" title=""
+              onkeydown="if(event.key==='Enter'){event.preventDefault();}"
+              oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">
+ </textarea>
 
-	<label class="mb-2" asp-for="@Model.FriendsAccessId">Who can see my friends?</label>
-	<select class="privacy-setting-select mb-4" asp-for="@Model.FriendsAccessId" required>
-		<optgroup label="Friends visibility">
-			@foreach (var levelKvp in privacyLevels)
-			{
-				<option value="@levelKvp.Key">@levelKvp.Value</option>
-			}
-		</optgroup>
-	</select>
+    <label class="mb-2" asp-for="@Model.FriendsAccessId">Who can see my friends?</label>
+    <select class="privacy-setting-select mb-4" asp-for="@Model.FriendsAccessId" required>
+        <optgroup label="Friends visibility">
+            @foreach (var levelKvp in privacyLevels)
+            {
+                <option value="@levelKvp.Key">@levelKvp.Value</option>
+            }
+        </optgroup>
+    </select>
 
-	<label class="mb-2" asp-for="@Model.FollowersAccessId">Who can see my followers?</label>
-	<select class="privacy-setting-select mb-4" asp-for="@Model.FollowersAccessId" required>
-		<optgroup label="Followers visibility">
-			@foreach (var levelKvp in privacyLevels)
-			{
-				<option value="@levelKvp.Key">@levelKvp.Value</option>
-			}
-		</optgroup>
-	</select>
+    <label class="mb-2" asp-for="@Model.FollowersAccessId">Who can see my followers?</label>
+    <select class="privacy-setting-select mb-4" asp-for="@Model.FollowersAccessId" required>
+        <optgroup label="Followers visibility">
+            @foreach (var levelKvp in privacyLevels)
+            {
+                <option value="@levelKvp.Key">@levelKvp.Value</option>
+            }
+        </optgroup>
+    </select>
 
-	<label class="mb-2" asp-for="@Model.FollowingsAccessId">Who can see my followings?</label>
-	<select class="privacy-setting-select mb-4" asp-for="@Model.FollowingsAccessId" required>
-		<optgroup label="Followings visibility">
-			@foreach (var levelKvp in privacyLevels)
-			{
-				<option value="@levelKvp.Key">@levelKvp.Value</option>
-			}
-		</optgroup>
-	</select>
+    <label class="mb-2" asp-for="@Model.FollowingsAccessId">Who can see my followings?</label>
+    <select class="privacy-setting-select mb-4" asp-for="@Model.FollowingsAccessId" required>
+        <optgroup label="Followings visibility">
+            @foreach (var levelKvp in privacyLevels)
+            {
+                <option value="@levelKvp.Key">@levelKvp.Value</option>
+            }
+        </optgroup>
+    </select>
 
-	<label class="mb-2" asp-for="@Model.MessagesAccessId">Who can message me?</label>
-	<select class="privacy-setting-select mb-4" asp-for="@Model.MessagesAccessId" required>
-		<optgroup label="Messages from">
-			@foreach (var levelKvp in privacyLevels)
-			{
-				<option value="@levelKvp.Key">@levelKvp.Value</option>
-			}
-		</optgroup>
-	</select>
+    <label class="mb-2" asp-for="@Model.MessagesAccessId">Who can message me?</label>
+    <select class="privacy-setting-select mb-4" asp-for="@Model.MessagesAccessId" required>
+        <optgroup label="Messages from">
+            @foreach (var levelKvp in privacyLevels)
+            {
+                <option value="@levelKvp.Key">@levelKvp.Value</option>
+            }
+        </optgroup>
+    </select>
 
-	<label class="mb-2" asp-for="@Model.PcConfigAccessId">Who can view my PC setup?</label>
-	<select class="privacy-setting-select mb-4" asp-for="@Model.PcConfigAccessId" required>
-		<optgroup label="PC setup visibility">
-			@foreach (var levelKvp in privacyLevels)
-			{
-				<option value="@levelKvp.Key">@levelKvp.Value</option>
-			}
-		</optgroup>
-	</select>
+    <label class="mb-2" asp-for="@Model.PcConfigAccessId">Who can view my PC setup?</label>
+    <select class="privacy-setting-select mb-4" asp-for="@Model.PcConfigAccessId" required>
+        <optgroup label="PC setup visibility">
+            @foreach (var levelKvp in privacyLevels)
+            {
+                <option value="@levelKvp.Key">@levelKvp.Value</option>
+            }
+        </optgroup>
+    </select>
 
-	<label class="mb-2" asp-for="@Model.CommentWritingAccessId">Who can write comments on my profile?</label>
-	<select class="privacy-setting-select mb-5" asp-for="@Model.CommentWritingAccessId" required>
-		<optgroup label="Comments from">
-			@foreach (var levelKvp in privacyLevels)
-			{
-				<option value="@levelKvp.Key">@levelKvp.Value</option>
-			}
-		</optgroup>
-	</select>
+    <label class="mb-2" asp-for="@Model.CommentWritingAccessId">Who can write comments on my profile?</label>
+    <select class="privacy-setting-select mb-5" asp-for="@Model.CommentWritingAccessId" required>
+        <optgroup label="Comments from">
+            @foreach (var levelKvp in privacyLevels)
+            {
+                <option value="@levelKvp.Key">@levelKvp.Value</option>
+            }
+        </optgroup>
+    </select>
 
-	<a class="button-more mb-4 mt-3" asp-controller="PcSetup" asp-action="Index" asp-route-id="@Model.PcConfigurationId">
-		Configure PC Setup
-	</a>
+    <a class="button-more mb-4 mt-3" asp-controller="PcSetup" asp-action="Index" asp-route-id="@Model.PcConfigurationId">
+        Configure PC Setup
+    </a>
 
-	@if (ViewData["FirstError"] != null)
-	{
-		<div class="text-danger mb-3">@ViewData["FirstError"]</div>
-	}
+    @if (ViewData["FirstError"] != null)
+    {
+        <div class="text-danger mb-3">@ViewData["FirstError"]</div>
+    }
 
-	<button class="button-save" type="submit">Save</button>
+    <button class="button-save" type="submit">Save</button>
 </form>
 
 <div class="w-100 d-flex flex-column justify-content-center align-items-center">
-	<form asp-controller="Auth" asp-action="Logout" method="get">
-		<button class="button-danger mb-4 mt-2" type="submit">Log out</button>
-	</form>
+    <form asp-controller="Auth" asp-action="Logout" method="get">
+        <button class="button-danger mb-4 mt-2" type="submit">Log out</button>
+    </form>
 
-	<form asp-controller="Auth" asp-action="DeleteAccount" asp-route-login="@Model.Login" method="get">
-		<button class="button-danger" type="submit">Delete account</button>
-	</form>
+    <form asp-controller="Auth" asp-action="DeleteAccount" asp-route-login="@Model.Login" method="get">
+        <button class="button-danger" type="submit">Delete account</button>
+    </form>
 </div>

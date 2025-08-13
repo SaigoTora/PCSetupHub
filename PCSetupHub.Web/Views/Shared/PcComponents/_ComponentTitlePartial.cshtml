@@ -1,60 +1,58 @@
-﻿@using PCSetupHub.Web.ViewModels
-
-@model ComponentTitleViewModel
+﻿@model ComponentTitleViewModel
 
 <h3 class="component-title text-muted">
-	@Model.ComponentTypeName
-	@if (Model.ComponentNumber != null)
-	{
-		<sup>@Model.ComponentNumber</sup>
-	}
+    @Model.ComponentTypeName
+    @if (Model.ComponentNumber != null)
+    {
+        <sup>@Model.ComponentNumber</sup>
+    }
 </h3>
 <div class="section-header d-flex justify-content-between align-items-center mb-3">
-	<div>
-		@if (Model.Component != null)
-		{
-			<div class="component-name" translate="no">
-				@Model.Component.DisplayName
-			</div>
-		}
-	</div>
-	<div>
-		@if (Model.IsCurrentUserOwner)
-		{
-			if (Model.ShowAddButton && Model.ComponentCount < Model.MaxAllowedComponentCount)
-			{
-				<form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-pcConfigurationId="@Model.PcConfigurationId" method="get" class="d-inline">
-					<button class="add-button" type="submit" translate="no">Add</button>
-				</form>
-			}
+    <div>
+        @if (Model.Component != null)
+        {
+            <div class="component-name" translate="no">
+                @Model.Component.DisplayName
+            </div>
+        }
+    </div>
+    <div>
+        @if (Model.IsCurrentUserOwner)
+        {
+            if (Model.ShowAddButton && Model.ComponentCount < Model.MaxAllowedComponentCount)
+            {
+                <form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-pcConfigurationId="@Model.PcConfigurationId" method="get" class="d-inline">
+                    <button class="add-button" type="submit" translate="no">Add</button>
+                </form>
+            }
 
-			if (Model.Component == null && !Model.ShowAddButton)
-			{
-				<form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-pcConfigurationId="@Model.PcConfigurationId" method="get" class="d-inline">
-					<button class="select-button" type="submit" translate="no">Select</button>
-				</form>
-			}
-			else if (Model.Component != null)
-			{
-				if (Model.Component.IsDefault)
-				{
-					<form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-componentId="@Model.Component.Id" method="get" class="d-inline">
-						<button class="select-button" type="submit" translate="no">Select</button>
-					</form>
-					<form asp-controller="@Model.ControllerName" asp-action="Clear" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-componentId="@Model.Component.Id" class="d-inline">
-						<button class="clear-button" type="submit" translate="no">Clear</button>
-					</form>
-				}
-				else
-				{
-					<form asp-controller="@Model.ControllerName" asp-action="Edit" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-componentId="@Model.Component.Id" method="get" class="d-inline">
-						<button class="edit-button" type="submit" translate="no">Edit</button>
-					</form>
-					<form asp-controller="@Model.ControllerName" asp-action="Delete" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-componentId="@Model.Component.Id" class="d-inline">
-						<button class="delete-button" type="submit" translate="no">Delete</button>
-					</form>
-				}
-			}
-		}
-	</div>
+            if (Model.Component == null && !Model.ShowAddButton)
+            {
+                <form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-pcConfigurationId="@Model.PcConfigurationId" method="get" class="d-inline">
+                    <button class="select-button" type="submit" translate="no">Select</button>
+                </form>
+            }
+            else if (Model.Component != null)
+            {
+                if (Model.Component.IsDefault)
+                {
+                    <form asp-controller="@Model.ControllerName" asp-action="Search" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-componentId="@Model.Component.Id" method="get" class="d-inline">
+                        <button class="select-button" type="submit" translate="no">Select</button>
+                    </form>
+                    <form asp-controller="@Model.ControllerName" asp-action="Clear" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-componentId="@Model.Component.Id" class="d-inline">
+                        <button class="clear-button" type="submit" translate="no">Clear</button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-controller="@Model.ControllerName" asp-action="Edit" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-componentId="@Model.Component.Id" method="get" class="d-inline">
+                        <button class="edit-button" type="submit" translate="no">Edit</button>
+                    </form>
+                    <form asp-controller="@Model.ControllerName" asp-action="Delete" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-componentId="@Model.Component.Id" class="d-inline">
+                        <button class="delete-button" type="submit" translate="no">Delete</button>
+                    </form>
+                }
+            }
+        }
+    </div>
 </div>

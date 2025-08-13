@@ -1,33 +1,32 @@
 ﻿@using PCSetupHub.Data.Models.Hardware
-@using PCSetupHub.Web.ViewModels
 
 @model SearchComponentViewModel
 
 @{
-	ViewData["Title"] = "Motherboards";
+    ViewData["Title"] = "Motherboards";
 
-	string searchQueryName = $"{char.ToLower(Model.ControllerName[0]) + Model.ControllerName[1..]}SearchQuery";
+    string searchQueryName = $"{char.ToLower(Model.ControllerName[0]) + Model.ControllerName[1..]}SearchQuery";
 }
 
 <form class="mb-2" asp-controller="Motherboard" asp-action="Search" method="get">
-	<div class="searchbar-container">
-		<div class="search-bar">
-			<div class="input-container">
-				<input class="search-input"
-					   placeholder="Search..."
-					   type="search"
-					   name="@searchQueryName"
-					   value="@Model.SearchQuery" />
-			</div>
-		</div>
-		<button type="submit" class="search-button"><i class="fa fa-search"></i></button>
-	</div>
+    <div class="searchbar-container">
+        <div class="search-bar">
+            <div class="input-container">
+                <input class="search-input"
+                       placeholder="Search..."
+                       type="search"
+                       name="@searchQueryName"
+                       value="@Model.SearchQuery" />
+            </div>
+        </div>
+        <button type="submit" class="search-button"><i class="fa fa-search"></i></button>
+    </div>
 </form>
 
 <div class="mb-2">
-	@await Html.PartialAsync("PcComponents/_SearchResultsPartial", Model)
+    @await Html.PartialAsync("PcComponents/_SearchResultsPartial", Model)
 </div>
 
 <div class="create-component-prompt mb-3">
-	<span>Didn't find the right motherboard? <a asp-action="Create" asp-route-id="@Model.PcConfigurationId">Add yours</a>.</span>
+    <span>Didn't find the right motherboard? <a asp-action="Create" asp-route-id="@Model.PcConfigurationId">Add yours</a>.</span>
 </div>

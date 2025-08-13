@@ -1,116 +1,115 @@
 ﻿@using PCSetupHub.Data.Models.Hardware
-@using PCSetupHub.Web.ViewModels
 
 @model PcComponentFormViewModel<Ssd>
 
 @{
-	<link rel="stylesheet" href="~/css/form.css" />
+    <link rel="stylesheet" href="~/css/form.css" />
 
-	string actionName = Model.Mode switch
-	{
-		FormMode.Create => "Create",
-		FormMode.Edit => "Edit",
-		_ => throw new InvalidOperationException("Unsupported form mode")
-	};
+    string actionName = Model.Mode switch
+    {
+        FormMode.Create => "Create",
+        FormMode.Edit => "Edit",
+        _ => throw new InvalidOperationException("Unsupported form mode")
+    };
 
-	int? componentId = null;
-	if (Model.Mode == FormMode.Edit)
-		componentId = Model.Component?.Id;
+    int? componentId = null;
+    if (Model.Mode == FormMode.Edit)
+        componentId = Model.Component?.Id;
 }
 
 @if (Model.Component != null)
 {
-	<form asp-action="@actionName" asp-route-componentId="@componentId" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
-		<div class="form__group field">
-			<input type="text" class="form__field" placeholder="Name" asp-for="Component.Name" required autocomplete="off">
-			<label for="Name" class="form__label">Name</label>
-		</div>
+    <form asp-action="@actionName" asp-route-componentId="@componentId" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
+        <div class="form__group field">
+            <input type="text" class="form__field" placeholder="Name" asp-for="Component.Name" required autocomplete="off">
+            <label for="Name" class="form__label">Name</label>
+        </div>
 
-		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="Price" asp-for="Component.Price" min="0.01" step="0.01">
-			<label for="Price" class="form__label">Price ($)</label>
-		</div>
+        <div class="form__group field">
+            <input type="number" class="form__field" placeholder="Price" asp-for="Component.Price" min="0.01" step="0.01">
+            <label for="Price" class="form__label">Price ($)</label>
+        </div>
 
-		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="Capacity" asp-for="Component.Capacity" min="8" step="0.1" required value="@(Model.Component.Capacity == default ? "" : Model.Component.Capacity.ToString(System.Globalization.CultureInfo.InvariantCulture))" />
-			<label for="Capacity" class="form__label">Capacity (GB)</label>
-		</div>
+        <div class="form__group field">
+            <input type="number" class="form__field" placeholder="Capacity" asp-for="Component.Capacity" min="8" step="0.1" required value="@(Model.Component.Capacity == default ? "" : Model.Component.Capacity.ToString(System.Globalization.CultureInfo.InvariantCulture))" />
+            <label for="Capacity" class="form__label">Capacity (GB)</label>
+        </div>
 
-		<select class="mb-3" asp-for="Component.Type" required>
-			<optgroup label="Type">
-				<option value="@null" hidden>Select type</option>
-				<option value="SSD">SSD</option>
-				<option value="5000">HDD (RPM: 5000)</option>
-				<option value="5200">HDD (RPM: 5200)</option>
-				<option value="5400">HDD (RPM: 5400)</option>
-				<option value="5640">HDD (RPM: 5640)</option>
-				<option value="5700">HDD (RPM: 5700)</option>
-				<option value="5760">HDD (RPM: 5760)</option>
-				<option value="5900">HDD (RPM: 5900)</option>
-				<option value="5940">HDD (RPM: 5940)</option>
-				<option value="7200">HDD (RPM: 7200)</option>
-				<option value="10000">HDD (RPM: 10000)</option>
-				<option value="10500">HDD (RPM: 10500)</option>
-				<option value="15000">HDD (RPM: 15000)</option>
-			</optgroup>
-		</select>
+        <select class="mb-3" asp-for="Component.Type" required>
+            <optgroup label="Type">
+                <option value="@null" hidden>Select type</option>
+                <option value="SSD">SSD</option>
+                <option value="5000">HDD (RPM: 5000)</option>
+                <option value="5200">HDD (RPM: 5200)</option>
+                <option value="5400">HDD (RPM: 5400)</option>
+                <option value="5640">HDD (RPM: 5640)</option>
+                <option value="5700">HDD (RPM: 5700)</option>
+                <option value="5760">HDD (RPM: 5760)</option>
+                <option value="5900">HDD (RPM: 5900)</option>
+                <option value="5940">HDD (RPM: 5940)</option>
+                <option value="7200">HDD (RPM: 7200)</option>
+                <option value="10000">HDD (RPM: 10000)</option>
+                <option value="10500">HDD (RPM: 10500)</option>
+                <option value="15000">HDD (RPM: 15000)</option>
+            </optgroup>
+        </select>
 
-		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="Cache" asp-for="Component.Cache" min="2" value="@(Model.Component.Cache == default ? "" : Model.Component.Cache.ToString())" />
-			<label for="Cache" class="form__label">Cache (MB)</label>
-		</div>
+        <div class="form__group field">
+            <input type="number" class="form__field" placeholder="Cache" asp-for="Component.Cache" min="2" value="@(Model.Component.Cache == default ? "" : Model.Component.Cache.ToString())" />
+            <label for="Cache" class="form__label">Cache (MB)</label>
+        </div>
 
-		<select class="mb-4" asp-for="Component.FormFactor" required>
-			<optgroup label="Form factor">
-				<option value="@null" hidden>Select form factor</option>
-				<option value="M.2-2230">M.2-2230</option>
-				<option value="M.2-2242">M.2-2242</option>
-				<option value="M.2-2260">M.2-2260</option>
-				<option value="M.2-2280">M.2-2280</option>
-				<option value="M.2-22110">M.2-22110</option>
-				<option value="mSATA">mSATA</option>
-				<option value="PCIe">PCIe</option>
-				<option value="2.5">2.5 (HDD/SSD)</option>
-				<option value="3.5">3.5 (HDD)</option>
-			</optgroup>
-		</select>
+        <select class="mb-4" asp-for="Component.FormFactor" required>
+            <optgroup label="Form factor">
+                <option value="@null" hidden>Select form factor</option>
+                <option value="M.2-2230">M.2-2230</option>
+                <option value="M.2-2242">M.2-2242</option>
+                <option value="M.2-2260">M.2-2260</option>
+                <option value="M.2-2280">M.2-2280</option>
+                <option value="M.2-22110">M.2-22110</option>
+                <option value="mSATA">mSATA</option>
+                <option value="PCIe">PCIe</option>
+                <option value="2.5">2.5 (HDD/SSD)</option>
+                <option value="3.5">3.5 (HDD)</option>
+            </optgroup>
+        </select>
 
-		<select class="mb-3" asp-for="Component.Interface" required>
-			<optgroup label="Interface">
-				<option value="@null" hidden>Select interface</option>
-				<option value="PATA 44-Pin 100">PATA 44-Pin 100</option>
-				<option value="PATA 44-Pin 133">PATA 44-Pin 133</option>
-				<option value="PATA 100">PATA 100</option>
+        <select class="mb-3" asp-for="Component.Interface" required>
+            <optgroup label="Interface">
+                <option value="@null" hidden>Select interface</option>
+                <option value="PATA 44-Pin 100">PATA 44-Pin 100</option>
+                <option value="PATA 44-Pin 133">PATA 44-Pin 133</option>
+                <option value="PATA 100">PATA 100</option>
 
-				<option value="SATA 1.5 Gb/s">SATA 1.5 Gb/s</option>
-				<option value="SATA 3.0 Gb/s">SATA 3.0 Gb/s</option>
-				<option value="SATA 6.0 Gb/s">SATA 6.0 Gb/s</option>
+                <option value="SATA 1.5 Gb/s">SATA 1.5 Gb/s</option>
+                <option value="SATA 3.0 Gb/s">SATA 3.0 Gb/s</option>
+                <option value="SATA 6.0 Gb/s">SATA 6.0 Gb/s</option>
 
-				<option value="SAS 3.0 Gb/s">SAS 3.0 Gb/s</option>
-				<option value="SAS 6.0 Gb/s">SAS 6.0 Gb/s</option>
-				<option value="SAS 12.0 Gb/s">SAS 12.0 Gb/s</option>
+                <option value="SAS 3.0 Gb/s">SAS 3.0 Gb/s</option>
+                <option value="SAS 6.0 Gb/s">SAS 6.0 Gb/s</option>
+                <option value="SAS 12.0 Gb/s">SAS 12.0 Gb/s</option>
 
-				<option value="PCIe x1">PCIe x1</option>
-				<option value="PCIe x2">PCIe x2</option>
-				<option value="PCIe x4">PCIe x4</option>
-				<option value="PCIe x8">PCIe x8</option>
-				<option value="PCIe x16">PCIe x16</option>
+                <option value="PCIe x1">PCIe x1</option>
+                <option value="PCIe x2">PCIe x2</option>
+                <option value="PCIe x4">PCIe x4</option>
+                <option value="PCIe x8">PCIe x8</option>
+                <option value="PCIe x16">PCIe x16</option>
 
-				<option value="mSATA">mSATA</option>
-				<option value="M.2 SATA">M.2 SATA</option>
+                <option value="mSATA">mSATA</option>
+                <option value="M.2 SATA">M.2 SATA</option>
 
-				<option value="M.2 PCIe 2.0 X4">M.2 PCIe 2.0 X4</option>
-				<option value="M.2 PCIe 3.0 X2">M.2 PCIe 3.0 X2</option>
-				<option value="M.2 PCIe 3.0 X4">M.2 PCIe 3.0 X4</option>
-				<option value="M.2 PCIe 4.0 X4">M.2 PCIe 4.0 X4</option>
-				<option value="M.2 PCIe 4.0 X8">M.2 PCIe 4.0 X8</option>
-				<option value="M.2 PCIe 5.0 X2">M.2 PCIe 5.0 X2</option>
-				<option value="M.2 PCIe 5.0 X4">M.2 PCIe 5.0 X4</option>
+                <option value="M.2 PCIe 2.0 X4">M.2 PCIe 2.0 X4</option>
+                <option value="M.2 PCIe 3.0 X2">M.2 PCIe 3.0 X2</option>
+                <option value="M.2 PCIe 3.0 X4">M.2 PCIe 3.0 X4</option>
+                <option value="M.2 PCIe 4.0 X4">M.2 PCIe 4.0 X4</option>
+                <option value="M.2 PCIe 4.0 X8">M.2 PCIe 4.0 X8</option>
+                <option value="M.2 PCIe 5.0 X2">M.2 PCIe 5.0 X2</option>
+                <option value="M.2 PCIe 5.0 X4">M.2 PCIe 5.0 X4</option>
 
-				<option value="U.2">U.2</option>
-			</optgroup>
-		</select>
+                <option value="U.2">U.2</option>
+            </optgroup>
+        </select>
 
-		@await Html.PartialAsync("PcComponents/Forms/_FormSubmitSection", Model.Mode)
-	</form>
+        @await Html.PartialAsync("PcComponents/Forms/_FormSubmitSection", Model.Mode)
+    </form>
 }

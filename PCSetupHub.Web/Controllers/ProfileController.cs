@@ -81,7 +81,7 @@ namespace PCSetupHub.Web.Controllers
 				await hasAccess(settings.CommentWritingAccessId));
 		}
 
-		[HttpPost("UpdateStatus/{id}")]
+		[HttpPost("UpdateFriendshipStatus/{id}")]
 		[EnableRateLimiting("Friendship")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> UpdateFriendshipStatus(int id, int newStatusId)

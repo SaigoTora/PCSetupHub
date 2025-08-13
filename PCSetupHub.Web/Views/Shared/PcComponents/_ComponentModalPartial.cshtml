@@ -5,270 +5,270 @@
 @model HardwareComponent
 
 @{
-	<link rel="stylesheet" href="~/css/modal.css" />
-	<link rel="stylesheet" href="~/css/color-containers.css" />
+    <link rel="stylesheet" href="~/css/modal.css" />
+    <link rel="stylesheet" href="~/css/color-containers.css" />
 }
 
 <div class="modal fade" id=@($"modal-{@Model.GetType().Name}-{Model.Id}") tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title me-2" id="modalTitle">
-					@switch (Model)
-					{
-						case VideoCard _:
-							@:Video Card
-							break;
-						case PowerSupply _:
-							@:Power Supply
-							break;
-						case Ram _:
-						case Ssd _:
-						case Hdd _:
-							@: @Model.GetType().Name.ToUpper()
-							break;
-						default:
-							@: @Model.GetType().Name
-							break;
-					}
-					Info
-				</h5>
-				@if (!Model.IsDefault)
-				{
-					<i class="fa fa-circle-exclamation text-warning warning-icon" title="The specifications, entered by another user, may be incorrect."></i>
-				}
-				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<h5 class="text-center mb-3 model-name" translate="no">@Model.Name</h5>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title me-2" id="modalTitle">
+                    @switch (Model)
+                    {
+                        case VideoCard _:
+                            @:Video Card
+                            break;
+                        case PowerSupply _:
+                            @:Power Supply
+                            break;
+                        case Ram _:
+                        case Ssd _:
+                        case Hdd _:
+                            @: @Model.GetType().Name.ToUpper()
+                            break;
+                        default:
+                            @: @Model.GetType().Name
+                            break;
+                    }
+                    Info
+                </h5>
+                @if (!Model.IsDefault)
+                {
+                    <i class="fa fa-circle-exclamation text-warning warning-icon" title="The specifications, entered by another user, may be incorrect."></i>
+                }
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5 class="text-center mb-3 model-name" translate="no">@Model.Name</h5>
 
-				<table class="table-responsive w-100 characteristics-table">
-					<tr>
-						<td>Price</td>
-						@Html.RenderPriceInTable(Model.Price)
-					</tr>
-					@switch (Model)
-					{
-						case Processor processor:
-							{
-								<tr>
-									<td>Number of cores</td>
-									<td>@processor.CoreCount</td>
-								</tr>
-								<tr>
-									<td>Core clock</td>
-									<td>@Html.RenderRoundedNumber(processor.CoreClock) GHz</td>
-								</tr>
-								<tr>
-									<td>Boost clock</td>
-									<td>
-										@Html.RenderRoundedNumber(processor.BoostClock, "GHz")
-									</td>
-								</tr>
-								<tr>
-									<td>TDP</td>
-									<td>@processor.TDP W</td>
-								</tr>
-								<tr>
-									<td>Integrated graphics</td>
-									<td>
-										@Html.RenderText(processor.Graphics)
-									</td>
-								</tr>
-								<tr>
-									<td>SMT support</td>
-									<td>@Html.RenderBoolIndicator(processor.SMT)</td>
-								</tr>
-								break;
-							}
-						case VideoCard videoCard:
-							{
-								<tr>
-									<td>Chipset</td>
-									<td translate="no">@Html.RenderText(videoCard.Chipset)</td>
-								</tr>
-								<tr>
-									<td>Memory</td>
-									<td>@Html.RenderRoundedNumber(videoCard.Memory) GB</td>
-								</tr>
-								<tr>
-									<td>Core clock</td>
-									<td>@Html.RenderNumber(videoCard.CoreClock, "MHz")</td>
-								</tr>
-								<tr>
-									<td>Boost clock</td>
-									<td>@Html.RenderNumber(videoCard.BoostClock, "MHz")</td>
-								</tr>
-								<tr>
-									<td>Length</td>
-									<td>@Html.RenderNumber(videoCard.Length, "mm")</td>
-								</tr>
+                <table class="table-responsive w-100 characteristics-table">
+                    <tr>
+                        <td>Price</td>
+                        @Html.RenderPriceInTable(Model.Price)
+                    </tr>
+                    @switch (Model)
+                    {
+                        case Processor processor:
+                            {
+                                <tr>
+                                    <td>Number of cores</td>
+                                    <td>@processor.CoreCount</td>
+                                </tr>
+                                <tr>
+                                    <td>Core clock</td>
+                                    <td>@Html.RenderRoundedNumber(processor.CoreClock) GHz</td>
+                                </tr>
+                                <tr>
+                                    <td>Boost clock</td>
+                                    <td>
+                                        @Html.RenderRoundedNumber(processor.BoostClock, "GHz")
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>TDP</td>
+                                    <td>@processor.TDP W</td>
+                                </tr>
+                                <tr>
+                                    <td>Integrated graphics</td>
+                                    <td>
+                                        @Html.RenderText(processor.Graphics)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>SMT support</td>
+                                    <td>@Html.RenderBoolIndicator(processor.SMT)</td>
+                                </tr>
+                                break;
+                            }
+                        case VideoCard videoCard:
+                            {
+                                <tr>
+                                    <td>Chipset</td>
+                                    <td translate="no">@Html.RenderText(videoCard.Chipset)</td>
+                                </tr>
+                                <tr>
+                                    <td>Memory</td>
+                                    <td>@Html.RenderRoundedNumber(videoCard.Memory) GB</td>
+                                </tr>
+                                <tr>
+                                    <td>Core clock</td>
+                                    <td>@Html.RenderNumber(videoCard.CoreClock, "MHz")</td>
+                                </tr>
+                                <tr>
+                                    <td>Boost clock</td>
+                                    <td>@Html.RenderNumber(videoCard.BoostClock, "MHz")</td>
+                                </tr>
+                                <tr>
+                                    <td>Length</td>
+                                    <td>@Html.RenderNumber(videoCard.Length, "mm")</td>
+                                </tr>
 
-								var videoCardColors = videoCard?.ColorVideoCards?.Select(x => x.Color)
-								?? Enumerable.Empty<Color?>();
-								<tr>
-									<td>Color</td>
-									<td>@Html.RenderColorIndicator(videoCardColors)</td>
-								</tr>
-								break;
-							}
-						case Motherboard motherboard:
-							{
-								<tr>
-									<td>Socket</td>
-									<td>@Html.RenderText(motherboard.Socket)</td>
-								</tr>
-								<tr>
-									<td>Form factor</td>
-									<td>@Html.RenderText(motherboard.FormFactor)</td>
-								</tr>
-								<tr>
-									<td>Maximum memory</td>
-									<td>@motherboard.MaxMemory GB</td>
-								</tr>
-								<tr>
-									<td>Number of memory slots</td>
-									<td>@motherboard.MemorySlots</td>
-								</tr>
+                                var videoCardColors = videoCard?.ColorVideoCards?.Select(x => x.Color)
+                                ?? Enumerable.Empty<Color?>();
+                                <tr>
+                                    <td>Color</td>
+                                    <td>@Html.RenderColorIndicator(videoCardColors)</td>
+                                </tr>
+                                break;
+                            }
+                        case Motherboard motherboard:
+                            {
+                                <tr>
+                                    <td>Socket</td>
+                                    <td>@Html.RenderText(motherboard.Socket)</td>
+                                </tr>
+                                <tr>
+                                    <td>Form factor</td>
+                                    <td>@Html.RenderText(motherboard.FormFactor)</td>
+                                </tr>
+                                <tr>
+                                    <td>Maximum memory</td>
+                                    <td>@motherboard.MaxMemory GB</td>
+                                </tr>
+                                <tr>
+                                    <td>Number of memory slots</td>
+                                    <td>@motherboard.MemorySlots</td>
+                                </tr>
 
-								var motherboardColors = motherboard?.ColorMotherboards?.Select(x => x.Color)
-								?? Enumerable.Empty<Color?>();
-								<tr>
-									<td>Color</td>
-									<td>@Html.RenderColorIndicator(motherboardColors)</td>
-								</tr>
-								break;
-							}
-						case PowerSupply powerSupply:
-							{
-								<tr>
-									<td>Type</td>
-									<td>@Html.RenderText(powerSupply.Type)</td>
-								</tr>
-								<tr>
-									<td>Efficiency rating</td>
-									<td>@Html.RenderText(powerSupply.Efficiency)</td>
-								</tr>
-								<tr>
-									<td>Wattage</td>
-									<td>@powerSupply.Wattage W</td>
-								</tr>
-								<tr>
-									<td>Modularity</td>
-									<td>@Html.RenderText(powerSupply.Modular)</td>
-								</tr>
+                                var motherboardColors = motherboard?.ColorMotherboards?.Select(x => x.Color)
+                                ?? Enumerable.Empty<Color?>();
+                                <tr>
+                                    <td>Color</td>
+                                    <td>@Html.RenderColorIndicator(motherboardColors)</td>
+                                </tr>
+                                break;
+                            }
+                        case PowerSupply powerSupply:
+                            {
+                                <tr>
+                                    <td>Type</td>
+                                    <td>@Html.RenderText(powerSupply.Type)</td>
+                                </tr>
+                                <tr>
+                                    <td>Efficiency rating</td>
+                                    <td>@Html.RenderText(powerSupply.Efficiency)</td>
+                                </tr>
+                                <tr>
+                                    <td>Wattage</td>
+                                    <td>@powerSupply.Wattage W</td>
+                                </tr>
+                                <tr>
+                                    <td>Modularity</td>
+                                    <td>@Html.RenderText(powerSupply.Modular)</td>
+                                </tr>
 
-								var powerSupplyColors = powerSupply?.ColorPowerSupplies?.Select(x => x.Color)
-								?? Enumerable.Empty<Color?>();
-								<tr>
-									<td>Color</td>
-									<td>@Html.RenderColorIndicator(powerSupplyColors)</td>
-								</tr>
-								break;
-							}
-						case Ram ram:
-							{
-								<tr>
-									<td>DDR version</td>
-									<td>@ram.MemoryType</td>
-								</tr>
-								<tr>
-									<td>Frequency</td>
-									<td>@ram.Frequency MHz</td>
-								</tr>
-								<tr>
-									<td>Number of modules</td>
-									<td>@ram.ModulesCount</td>
-								</tr>
-								<tr>
-									<td>Size of each module</td>
-									<td>@ram.ModuleCapacity GB</td>
-								</tr>
-								<tr>
-									<td>First Word Latency</td>
-									<td>@Html.RenderRoundedNumber(ram.FirstWordLatency) ns</td>
-								</tr>
-								<tr>
-									<td>CAS Latency</td>
-									<td>@Html.RenderRoundedNumber(ram.CASLatency)</td>
-								</tr>
+                                var powerSupplyColors = powerSupply?.ColorPowerSupplies?.Select(x => x.Color)
+                                ?? Enumerable.Empty<Color?>();
+                                <tr>
+                                    <td>Color</td>
+                                    <td>@Html.RenderColorIndicator(powerSupplyColors)</td>
+                                </tr>
+                                break;
+                            }
+                        case Ram ram:
+                            {
+                                <tr>
+                                    <td>DDR version</td>
+                                    <td>@ram.MemoryType</td>
+                                </tr>
+                                <tr>
+                                    <td>Frequency</td>
+                                    <td>@ram.Frequency MHz</td>
+                                </tr>
+                                <tr>
+                                    <td>Number of modules</td>
+                                    <td>@ram.ModulesCount</td>
+                                </tr>
+                                <tr>
+                                    <td>Size of each module</td>
+                                    <td>@ram.ModuleCapacity GB</td>
+                                </tr>
+                                <tr>
+                                    <td>First Word Latency</td>
+                                    <td>@Html.RenderRoundedNumber(ram.FirstWordLatency) ns</td>
+                                </tr>
+                                <tr>
+                                    <td>CAS Latency</td>
+                                    <td>@Html.RenderRoundedNumber(ram.CASLatency)</td>
+                                </tr>
 
-								var ramColors = ram?.ColorRams?.Select(x => x.Color)
-								?? Enumerable.Empty<Color?>();
-								<tr>
-									<td>Color</td>
-									<td>@Html.RenderColorIndicator(ramColors)</td>
-								</tr>
-								break;
-							}
-						case Ssd ssd:
-							{
-								<tr>
-									<td>Capacity</td>
-									<td>@Html.RenderRoundedNumber(ssd.Capacity) GB</td>
-								</tr>
-								<tr>
-									<td>Type</td>
-									<td>@Html.RenderText(ssd.Type)</td>
-								</tr>
-								<tr>
-									<td>Cache</td>
-									<td>@Html.RenderNumber(ssd.Cache, "MB")</td>
-								</tr>
-								<tr>
-									<td>Form factor</td>
-									<td>@Html.RenderText(ssd.FormFactor)</td>
-								</tr>
-								<tr>
-									<td>Interface</td>
-									<td>@Html.RenderText(ssd.Interface)</td>
-								</tr>
-								break;
-							}
-						case Hdd hdd:
-							{
-								<tr>
-									<td>Type</td>
-									<td>@Html.RenderText(hdd.Type)</td>
-								</tr>
-								<tr>
-									<td>Interface</td>
-									<td>@Html.RenderText(hdd.Interface)</td>
-								</tr>
-								<tr>
-									<td>Capacity</td>
-									<td>@hdd.Capacity GB</td>
-								</tr>
+                                var ramColors = ram?.ColorRams?.Select(x => x.Color)
+                                ?? Enumerable.Empty<Color?>();
+                                <tr>
+                                    <td>Color</td>
+                                    <td>@Html.RenderColorIndicator(ramColors)</td>
+                                </tr>
+                                break;
+                            }
+                        case Ssd ssd:
+                            {
+                                <tr>
+                                    <td>Capacity</td>
+                                    <td>@Html.RenderRoundedNumber(ssd.Capacity) GB</td>
+                                </tr>
+                                <tr>
+                                    <td>Type</td>
+                                    <td>@Html.RenderText(ssd.Type)</td>
+                                </tr>
+                                <tr>
+                                    <td>Cache</td>
+                                    <td>@Html.RenderNumber(ssd.Cache, "MB")</td>
+                                </tr>
+                                <tr>
+                                    <td>Form factor</td>
+                                    <td>@Html.RenderText(ssd.FormFactor)</td>
+                                </tr>
+                                <tr>
+                                    <td>Interface</td>
+                                    <td>@Html.RenderText(ssd.Interface)</td>
+                                </tr>
+                                break;
+                            }
+                        case Hdd hdd:
+                            {
+                                <tr>
+                                    <td>Type</td>
+                                    <td>@Html.RenderText(hdd.Type)</td>
+                                </tr>
+                                <tr>
+                                    <td>Interface</td>
+                                    <td>@Html.RenderText(hdd.Interface)</td>
+                                </tr>
+                                <tr>
+                                    <td>Capacity</td>
+                                    <td>@hdd.Capacity GB</td>
+                                </tr>
 
-								var hddColors = hdd?.ColorHdds?.Select(x => x.Color)
-								?? Enumerable.Empty<Color?>();
-								<tr>
-									<td>Color</td>
-									<td>@Html.RenderColorIndicator(hddColors)</td>
-								</tr>
-								break;
-							}
-					}
-				</table>
-			</div>
-			<div class="modal-footer flex-column">
-				<button type="button" class="button-ok mx-auto ps-5 pe-5 mb-2-5" data-bs-dismiss="modal">ОК</button>
+                                var hddColors = hdd?.ColorHdds?.Select(x => x.Color)
+                                ?? Enumerable.Empty<Color?>();
+                                <tr>
+                                    <td>Color</td>
+                                    <td>@Html.RenderColorIndicator(hddColors)</td>
+                                </tr>
+                                break;
+                            }
+                    }
+                </table>
+            </div>
+            <div class="modal-footer flex-column">
+                <button type="button" class="button-ok mx-auto ps-5 pe-5 mb-2-5" data-bs-dismiss="modal">ОК</button>
 
-				<div class="w-100 d-flex justify-content-evenly align-items-center">
-					<a href="@Model.PcPartPickerLink" target="_blank" rel="noopener" title="PCPartPicker" class="me-2-5" style="text-decoration: none;">
-						<img src="~/Images/pcpartpicker-logo.png" alt="PCPartPicker" height="25" />
-					</a>
-					<a href="@Model.AmazonLink" target="_blank" rel="noopener" title="Amazon" class="me-2-5" style="text-decoration: none;">
-						<img src="~/Images/amazon-logo.png" alt="Amazon" height="25" />
-					</a>
-					<a href="@Model.EbayLink" target="_blank" rel="noopener" title="Ebay" class="me-2" style="text-decoration: none;">
-						<img src="~/Images/ebay-logo.png" alt="Ebay" height="25" />
-					</a>
-					<a href="@Model.BandHLink" target="_blank" rel="noopener" title="B&H Photo Video" style="text-decoration: none;">
-						<img src="~/Images/b&h-logo.png" alt="B&H Photo Video" height="25" />
-					</a>
-				</div>
-			</div>
-		</div>
-	</div>
+                <div class="w-100 d-flex justify-content-evenly align-items-center">
+                    <a href="@Model.PcPartPickerLink" target="_blank" rel="noopener" title="PCPartPicker" class="me-2-5" style="text-decoration: none;">
+                        <img src="~/Images/pcpartpicker-logo.png" alt="PCPartPicker" height="25" />
+                    </a>
+                    <a href="@Model.AmazonLink" target="_blank" rel="noopener" title="Amazon" class="me-2-5" style="text-decoration: none;">
+                        <img src="~/Images/amazon-logo.png" alt="Amazon" height="25" />
+                    </a>
+                    <a href="@Model.EbayLink" target="_blank" rel="noopener" title="Ebay" class="me-2" style="text-decoration: none;">
+                        <img src="~/Images/ebay-logo.png" alt="Ebay" height="25" />
+                    </a>
+                    <a href="@Model.BandHLink" target="_blank" rel="noopener" title="B&H Photo Video" style="text-decoration: none;">
+                        <img src="~/Images/b&h-logo.png" alt="B&H Photo Video" height="25" />
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

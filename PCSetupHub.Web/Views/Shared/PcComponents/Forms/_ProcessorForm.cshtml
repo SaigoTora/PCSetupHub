@@ -1,83 +1,82 @@
 ﻿@using PCSetupHub.Data.Models.Hardware
-@using PCSetupHub.Web.ViewModels
 
 @model PcComponentFormViewModel<Processor>
 
 @{
-	<link rel="stylesheet" href="~/css/form.css" />
+    <link rel="stylesheet" href="~/css/form.css" />
 
-	string actionName = Model.Mode switch
-	{
-		FormMode.Create => "Create",
-		FormMode.Edit => "Edit",
-		_ => throw new InvalidOperationException("Unsupported form mode")
-	};
+    string actionName = Model.Mode switch
+    {
+        FormMode.Create => "Create",
+        FormMode.Edit => "Edit",
+        _ => throw new InvalidOperationException("Unsupported form mode")
+    };
 
-	int? componentId = null;
-	if (Model.Mode == FormMode.Edit)
-		componentId = Model.Component?.Id;
+    int? componentId = null;
+    if (Model.Mode == FormMode.Edit)
+        componentId = Model.Component?.Id;
 }
 
 @if (Model.Component != null)
 {
-	<form asp-action="@actionName" asp-route-componentId="@componentId" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
-		<div class="form__group field">
-			<input type="text" class="form__field" placeholder="Name" asp-for="Component.Name" required autocomplete="off">
-			<label for="Name" class="form__label">Name</label>
-		</div>
+    <form asp-action="@actionName" asp-route-componentId="@componentId" method="post" class="w-100 d-flex flex-column justify-content-center align-items-center">
+        <div class="form__group field">
+            <input type="text" class="form__field" placeholder="Name" asp-for="Component.Name" required autocomplete="off">
+            <label for="Name" class="form__label">Name</label>
+        </div>
 
-		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="Price" asp-for="Component.Price" min="0.01" step="0.01">
-			<label for="Price" class="form__label">Price ($)</label>
-		</div>
+        <div class="form__group field">
+            <input type="number" class="form__field" placeholder="Price" asp-for="Component.Price" min="0.01" step="0.01">
+            <label for="Price" class="form__label">Price ($)</label>
+        </div>
 
-		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="CoreCount" asp-for="Component.CoreCount" min="1" max="255" required value="@(Model.Component.CoreCount == default ? "" : Model.Component.CoreCount.ToString())" />
-			<label for="CoreCount" class="form__label">Number of cores</label>
-		</div>
+        <div class="form__group field">
+            <input type="number" class="form__field" placeholder="CoreCount" asp-for="Component.CoreCount" min="1" max="255" required value="@(Model.Component.CoreCount == default ? "" : Model.Component.CoreCount.ToString())" />
+            <label for="CoreCount" class="form__label">Number of cores</label>
+        </div>
 
-		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="CoreClock" asp-for="Component.CoreClock" min="1" step="0.1" required value="@(Model.Component.CoreClock == default ? "" : Model.Component.CoreClock.ToString(System.Globalization.CultureInfo.InvariantCulture))" />
-			<label for="CoreClock" class="form__label">Core clock (GHz)</label>
-		</div>
+        <div class="form__group field">
+            <input type="number" class="form__field" placeholder="CoreClock" asp-for="Component.CoreClock" min="1" step="0.1" required value="@(Model.Component.CoreClock == default ? "" : Model.Component.CoreClock.ToString(System.Globalization.CultureInfo.InvariantCulture))" />
+            <label for="CoreClock" class="form__label">Core clock (GHz)</label>
+        </div>
 
-		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="BoostClock" asp-for="Component.BoostClock" min="2" step="0.1" />
-			<label for="BoostClock" class="form__label">Boost clock (GHz)</label>
-		</div>
+        <div class="form__group field">
+            <input type="number" class="form__field" placeholder="BoostClock" asp-for="Component.BoostClock" min="2" step="0.1" />
+            <label for="BoostClock" class="form__label">Boost clock (GHz)</label>
+        </div>
 
-		<div class="form__group field">
-			<input type="number" class="form__field" placeholder="TDP" asp-for="Component.TDP" min="20" required value="@(Model.Component.TDP == default ? "" : Model.Component.TDP.ToString())" />
-			<label for="TDP" class="form__label">TDP (W)</label>
-		</div>
+        <div class="form__group field">
+            <input type="number" class="form__field" placeholder="TDP" asp-for="Component.TDP" min="20" required value="@(Model.Component.TDP == default ? "" : Model.Component.TDP.ToString())" />
+            <label for="TDP" class="form__label">TDP (W)</label>
+        </div>
 
-		<div class="form__group field mb-5">
-			<input type="text" class="form__field" placeholder="Graphics" asp-for="Component.Graphics">
-			<label for="Graphics" class="form__label">Integrated graphics</label>
-		</div>
+        <div class="form__group field mb-5">
+            <input type="text" class="form__field" placeholder="Graphics" asp-for="Component.Graphics">
+            <label for="Graphics" class="form__label">Integrated graphics</label>
+        </div>
 
-		<div class="radio-button-container">
-			<div>
-				<label>SMT support:</label>
-			</div>
-			<div>
-				<div class="radio-button me-4">
-					<input type="radio" asp-for="Component.SMT" value="true" id="smt-yes" class="radio-button__input">
-					<label for="smt-yes" class="radio-button__label">
-						<span class="radio-button__custom"></span>
-						Yes
-					</label>
-				</div>
-				<div class="radio-button">
-					<input type="radio" asp-for="Component.SMT" value="false" id="smt-no" class="radio-button__input">
-					<label for="smt-no" class="radio-button__label">
-						<span class="radio-button__custom"></span>
-						No
-					</label>
-				</div>
-			</div>
-		</div>
+        <div class="radio-button-container">
+            <div>
+                <label>SMT support:</label>
+            </div>
+            <div>
+                <div class="radio-button me-4">
+                    <input type="radio" asp-for="Component.SMT" value="true" id="smt-yes" class="radio-button__input">
+                    <label for="smt-yes" class="radio-button__label">
+                        <span class="radio-button__custom"></span>
+                        Yes
+                    </label>
+                </div>
+                <div class="radio-button">
+                    <input type="radio" asp-for="Component.SMT" value="false" id="smt-no" class="radio-button__input">
+                    <label for="smt-no" class="radio-button__label">
+                        <span class="radio-button__custom"></span>
+                        No
+                    </label>
+                </div>
+            </div>
+        </div>
 
-		@await Html.PartialAsync("PcComponents/Forms/_FormSubmitSection", Model.Mode)
-	</form>
+        @await Html.PartialAsync("PcComponents/Forms/_FormSubmitSection", Model.Mode)
+    </form>
 }
