@@ -25,8 +25,10 @@ namespace PCSetupHub.Data.Models.Hardware
 
 		[Range(60, short.MaxValue, ErrorMessage = "Length must be at least 60 mm.")]
 		public short? Length { get; set; }
+
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 		public ICollection<ColorVideoCard>? ColorVideoCards { get; set; }
+
 		public override string DisplayName => $"{Chipset} {Name} {Math.Round(Memory, 2):0.##} GB";
 
 		public VideoCard() { }

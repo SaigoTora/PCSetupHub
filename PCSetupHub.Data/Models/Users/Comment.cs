@@ -6,10 +6,11 @@ namespace PCSetupHub.Data.Models.Users
 {
 	public class Comment : BaseEntity
 	{
-		public int UserId { get; private set; }
-		public int? CommentatorId { get; private set; }
 		public User? User { get; private set; }
+		public int UserId { get; private set; }
+
 		public User? Commentator { get; private set; }
+		public int? CommentatorId { get; private set; }
 
 		[Required(ErrorMessage = "Text is required.")]
 		[StringLength(512, MinimumLength = 1,

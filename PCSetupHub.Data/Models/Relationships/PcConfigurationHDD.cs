@@ -5,10 +5,11 @@ namespace PCSetupHub.Data.Models.Relationships
 {
 	public class PcConfigurationHdd : BaseEntity
 	{
-		public int PcConfigurationId { get; private set; }
-		public int HddId { get; set; }
 		public PcConfiguration? PcConfiguration { get; private set; }
+		public int PcConfigurationId { get; private set; }
+
 		public Hdd? Hdd { get; private set; }
+		public int HddId { get; set; }
 
 		public PcConfigurationHdd() { }
 		public PcConfigurationHdd(int pcConfigurationId, int hddId)

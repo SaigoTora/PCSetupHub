@@ -9,6 +9,7 @@ namespace PCSetupHub.Data.Models.Hardware
 		[Required]
 		[StringLength(255)]
 		public string Name { get; private set; } = string.Empty;
+
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 
 		public PcType() { }

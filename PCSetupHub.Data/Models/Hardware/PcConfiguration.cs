@@ -10,15 +10,20 @@ namespace PCSetupHub.Data.Models.Hardware
 		public int UserId { get; private set; }
 
 		public PcType? Type { get; set; }
-		public Processor? Processor { get; set; }
-		public VideoCard? VideoCard { get; set; }
-		public Motherboard? Motherboard { get; set; }
-		public PowerSupply? PowerSupply { get; set; }
 		public int? TypeId { get; private set; }
+
+		public Processor? Processor { get; set; }
 		public int? ProcessorId { get; private set; }
+
+		public VideoCard? VideoCard { get; set; }
 		public int? VideoCardId { get; private set; }
+
+		public Motherboard? Motherboard { get; set; }
 		public int? MotherboardId { get; private set; }
+
+		public PowerSupply? PowerSupply { get; set; }
 		public int? PowerSupplyId { get; private set; }
+
 		public ICollection<PcConfigurationRam>? PcConfigurationRams { get; private set; }
 		public ICollection<PcConfigurationSsd>? PcConfigurationSsds { get; private set; }
 		public ICollection<PcConfigurationHdd>? PcConfigurationHdds { get; private set; }

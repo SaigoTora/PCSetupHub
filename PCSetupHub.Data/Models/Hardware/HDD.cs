@@ -22,8 +22,10 @@ namespace PCSetupHub.Data.Models.Hardware
 
 		[Range(120, int.MaxValue, ErrorMessage = "Capacity must be at least 120 GB.")]
 		public int Capacity { get; set; }
+
 		public ICollection<PcConfigurationHdd>? PcConfigurationHdds { get; private set; }
 		public ICollection<ColorHdd>? ColorHdds { get; set; }
+
 		public override string DisplayName => $"{Name} {Capacity} GB";
 
 		public Hdd() { }

@@ -6,10 +6,11 @@ namespace PCSetupHub.Data.Models.Relationships
 {
 	public class ColorVideoCard : BaseEntity
 	{
-		public int ColorId { get; private set; }
-		public int VideoCardId { get; private set; }
 		public Color? Color { get; private set; }
+		public int ColorId { get; private set; }
+
 		public VideoCard? VideoCard { get; private set; }
+		public int VideoCardId { get; private set; }
 
 		public ColorVideoCard() { }
 		public ColorVideoCard(int colorId, int videoCardId)

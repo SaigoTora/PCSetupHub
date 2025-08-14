@@ -5,10 +5,11 @@ namespace PCSetupHub.Data.Models.Relationships
 {
 	public class PcConfigurationRam : BaseEntity
 	{
-		public int PcConfigurationId { get; private set; }
-		public int RamId { get; set; }
 		public PcConfiguration? PcConfiguration { get; private set; }
+		public int PcConfigurationId { get; private set; }
+
 		public Ram? Ram { get; private set; }
+		public int RamId { get; set; }
 
 		public PcConfigurationRam() { }
 		public PcConfigurationRam(int pcConfigurationId, int ramId)

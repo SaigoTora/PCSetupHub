@@ -6,12 +6,15 @@ namespace PCSetupHub.Data.Models.Users
 {
 	public class Friendship : BaseEntity
 	{
-		public int InitiatorId { get; private set; }
-		public int FriendId { get; private set; }
-		public int StatusId { get; private set; }
 		public User? Initiator { get; private set; }
+		public int InitiatorId { get; private set; }
+
 		public User? Friend { get; private set; }
+		public int FriendId { get; private set; }
+
 		public FriendshipStatus? Status { get; private set; }
+		public int StatusId { get; private set; }
+
 		[Column(TypeName = "date")]
 		public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 		[Column(TypeName = "date")]

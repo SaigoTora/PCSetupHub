@@ -28,8 +28,10 @@ namespace PCSetupHub.Data.Models.Hardware
 		[RegularExpression(@"^[A-Za-z/ ]+$",
 			ErrorMessage = "Modular can contain Latin letters, spaces and slashes (/).")]
 		public string Modular { get; set; } = string.Empty;
+
 		public ICollection<PcConfiguration>? PcConfigurations { get; private set; }
 		public ICollection<ColorPowerSupply>? ColorPowerSupplies { get; set; }
+
 		public override string DisplayName => $"{Name} {Wattage} W";
 
 		public PowerSupply() { }

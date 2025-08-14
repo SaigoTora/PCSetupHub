@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 using PCSetupHub.Data.Models.Base;
 using PCSetupHub.Data.Models.Hardware;
+using PCSetupHub.Data.Models.Relationships;
 
 namespace PCSetupHub.Data.Models.Users
 {
@@ -38,8 +39,8 @@ namespace PCSetupHub.Data.Models.Users
 		public ICollection<Friendship>? SentFriendRequests { get; private set; }
 		public ICollection<Comment>? WrittenComments { get; private set; }
 		public ICollection<Comment>? ReceivedComments { get; set; }
+		public ICollection<UserChats>? UserChats { get; private set; }
 		public ICollection<Message>? SentMessages { get; private set; }
-		public ICollection<Message>? ReceivedMessages { get; private set; }
 
 		public bool HasPassword => PasswordHash != null;
 		public ICollection<User>? Friends

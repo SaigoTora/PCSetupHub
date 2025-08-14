@@ -23,8 +23,10 @@ namespace PCSetupHub.Data.Models.Hardware
 
 		[Range(1, double.MaxValue, ErrorMessage = "CAS Latency must be greater than 0.")]
 		public double CASLatency { get; set; }
+
 		public ICollection<PcConfigurationRam>? PcConfigurationRams { get; private set; }
 		public ICollection<ColorRam>? ColorRams { get; set; }
+
 		public override string DisplayName => $"{Name} {DisplayMemoryType}";
 		private string DisplayMemoryType => "DDR" + (MemoryType == 0 ? " (DDR1)" : MemoryType);
 

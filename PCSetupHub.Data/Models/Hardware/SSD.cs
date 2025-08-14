@@ -34,7 +34,9 @@ namespace PCSetupHub.Data.Models.Hardware
 			ErrorMessage = "Interface can contain Latin letters, numbers, spaces, dots (.), " +
 			"hyphens (-) and slashes (/).")]
 		public string Interface { get; set; } = string.Empty;
+
 		public ICollection<PcConfigurationSsd>? PcConfigurationSsds { get; private set; }
+
 		public override string DisplayName => $"{Name} {Math.Round(Capacity, 2):0.##} GB";
 
 		public Ssd() { }

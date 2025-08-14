@@ -266,6 +266,9 @@ namespace PCSetupHub.Data
 			SeedUsers();
 			SeedComments();
 			SeedFriendships();
+
+			SeedChats();
+			SeedUserChats();
 			SeedMessages();
 		}
 
@@ -324,21 +327,52 @@ namespace PCSetupHub.Data
 			_context?.Friendships.AddRange(friendships);
 			_context?.SaveChanges();
 		}
+
+		private static void SeedChats()
+		{
+			_context?.Chats.AddRange(
+				new Chat(),
+				new Chat(),
+				new Chat(),
+				new Chat(),
+				new Chat(),
+				new Chat());
+
+			_context?.SaveChanges();
+		}
+		private static void SeedUserChats()
+		{
+			_context?.UserChats.AddRange(
+				new UserChats(1, 1),
+				new UserChats(3, 1),
+				new UserChats(1, 2),
+				new UserChats(5, 2),
+				new UserChats(2, 3),
+				new UserChats(3, 3),
+				new UserChats(2, 4),
+				new UserChats(4, 4),
+				new UserChats(3, 5),
+				new UserChats(4, 5),
+				new UserChats(4, 6),
+				new UserChats(5, 6));
+
+			_context?.SaveChanges();
+		}
 		private static void SeedMessages()
 		{
 			_context?.Messages.AddRange(
-				new Message(1, 3, "Hi, I think we could be friends, what do you think?", true),
-				new Message(1, 5, "Hi! I think we could be friends, what do you think?", false),
-				new Message(2, 3, "Hello, I'm thinking about upgrading my PC.", true),
-				new Message(2, 3, "Any recommendations?", true),
-				new Message(2, 4, "Good evening, you have a cool profile!", true),
-				new Message(2, 4, "Add me as your friend.", false),
-				new Message(3, 4, "Good morning, let's meet at our place today.", true),
-				new Message(4, 3, "Sorry, I'm busy today. =(\nLet's do it another time.", false),
-				new Message(4, 5, "Hey, how's it going?", true),
-				new Message(5, 4, "Hey! Pretty good, just finished work.", true),
-				new Message(5, 4, "You?", true),
-				new Message(4, 5, "Same here. Today I'll go to a cafe with my family.", true));
+				new Message(1, 1, "Hi, I think we could be friends, what do you think?", true),
+				new Message(2, 1, "Hi! I think we could be friends, what do you think?", false),
+				new Message(3, 2, "Hello, I'm thinking about upgrading my PC.", true),
+				new Message(3, 2, "Any recommendations?", true),
+				new Message(4, 2, "Good evening, you have a cool profile!", true),
+				new Message(4, 2, "Add me as your friend.", false),
+				new Message(5, 3, "Good morning, let's meet at our place today.", true),
+				new Message(5, 4, "Sorry, I'm busy today. =(\nLet's do it another time.", false),
+				new Message(6, 4, "Hey, how's it going?", true),
+				new Message(6, 5, "Hey! Pretty good, just finished work.", true),
+				new Message(6, 5, "You?", true),
+				new Message(6, 4, "Same here. Today I'll go to a cafe with my family.", true));
 
 			_context?.SaveChanges();
 		}

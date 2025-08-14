@@ -14,6 +14,8 @@ namespace PCSetupHub.Data
 		public DbSet<Friendship> Friendships { get; set; }
 		public DbSet<FriendshipStatus> FriendshipStatuses { get; set; }
 		public DbSet<Message> Messages { get; set; }
+		public DbSet<Chat> Chats { get; set; }
+		public DbSet<UserChats> UserChats { get; set; }
 		public DbSet<PrivacyLevel> PrivacyLevels { get; set; }
 		public DbSet<PrivacySetting> PrivacySettings { get; set; }
 		public DbSet<User> Users { get; set; }
@@ -58,6 +60,8 @@ namespace PCSetupHub.Data
 			_modelBuilder.Entity<Comment>().ToTable("Comment");
 			_modelBuilder.Entity<Friendship>().ToTable("Friendship");
 			_modelBuilder.Entity<FriendshipStatus>().ToTable("FriendshipStatus");
+			_modelBuilder.Entity<Chat>().ToTable("Chat");
+			_modelBuilder.Entity<UserChats>().ToTable("UserChat");
 			_modelBuilder.Entity<Message>().ToTable("Message");
 			_modelBuilder.Entity<PrivacyLevel>().ToTable("PrivacyLevel");
 			_modelBuilder.Entity<PrivacySetting>().ToTable("PrivacySetting");
@@ -104,6 +108,10 @@ namespace PCSetupHub.Data
 
 			_modelBuilder.Entity<PcConfiguration>()
 				.HasIndex(pc => pc.UserId)
+				.IsUnique();
+
+			_modelBuilder.Entity<Chat>()
+				.HasIndex(c => c.PublicId)
 				.IsUnique();
 
 			_modelBuilder.Entity<User>()
@@ -170,16 +178,28 @@ namespace PCSetupHub.Data
 		}
 		private void SetMessageRelationships()
 		{
+			_modelBuilder.Entity<UserChats>()
+				.HasOne(uc => uc.User)
+				.WithMany(u => u.UserChats)
+				.HasForeignKey(uc => uc.UserId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			_modelBuilder.Entity<UserChats>()
+				.HasOne(uc => uc.Chat)
+				.WithMany(c => c.UserChats)
+				.HasForeignKey(uc => uc.ChatId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			_modelBuilder.Entity<Message>()
+				.HasOne(m => m.Chat)
+				.WithMany(c => c.Messages)
+				.HasForeignKey(m => m.ChatId)
+				.OnDelete(DeleteBehavior.Cascade);
+
 			_modelBuilder.Entity<Message>()
 				.HasOne(m => m.Sender)
 				.WithMany(u => u.SentMessages)
 				.HasForeignKey(m => m.SenderId)
-				.OnDelete(DeleteBehavior.Restrict);
-
-			_modelBuilder.Entity<Message>()
-				.HasOne(m => m.Receiver)
-				.WithMany(u => u.ReceivedMessages)
-				.HasForeignKey(m => m.ReceiverId)
 				.OnDelete(DeleteBehavior.Restrict);
 		}
 		private void SetPrivacySettingRelationships()
