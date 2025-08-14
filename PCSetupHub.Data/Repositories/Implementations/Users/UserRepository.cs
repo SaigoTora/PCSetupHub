@@ -18,6 +18,7 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 		{
 			_pcConfigRepository = pcConfigRepository;
 		}
+
 		#region Read
 		public async Task<User?> GetByLoginAsync(string login, UserIncludes includes,
 			bool asNoTracking = true)
@@ -31,7 +32,6 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 			ApplyPrivacySettingInclude(ref query, includes);
 			ApplyPcConfigurationInclude(ref query, includes);
 			ApplyFriendshipsInclude(ref query, includes);
-			ApplyMessagesInclude(ref query, includes);
 
 			User? user = await query
 				.AsSplitQuery()
@@ -59,8 +59,7 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 					UserIncludes.Password |
 					UserIncludes.PrivacySetting |
 					UserIncludes.PcConfigurationFull |
-					UserIncludes.Friendships |
-					UserIncludes.Messages, asNoTracking);
+					UserIncludes.Friendships, asNoTracking);
 			}
 
 			return await GetByLoginAsync(login, UserIncludes.None, asNoTracking);
@@ -89,14 +88,6 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 					.Include(u => u.ReceivedFriendRequests!).ThenInclude(rfr => rfr.Initiator)
 					.Include(u => u.SentFriendRequests!).ThenInclude(sfr => sfr.Friend);
 		}
-		private static void ApplyMessagesInclude(ref IQueryable<User> query,
-			UserIncludes includes)
-		{
-			if (includes.HasFlag(UserIncludes.Messages))
-				query = query
-					.Include(u => u.ReceivedMessages!)
-					.Include(u => u.SentMessages!);
-		}
 		#endregion
 
 		public async Task<bool> ExistsByLoginAsync(string login)
@@ -120,7 +111,7 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 			DeleteCustomHardware(user);
 			await DeleteReceivedCommentsAsync(login);
 			DeleteFriendships(user);
-			DeleteMessages(user);
+			await DeleteChatsAsync(user);
 
 			await DeleteAsync(user);
 
@@ -177,15 +168,25 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 				foreach (Friendship friendship in user.ReceivedFriendRequests)
 					Context.Remove(friendship);
 		}
-		private void DeleteMessages(User user)
+		private async Task DeleteChatsAsync(User user)
 		{
-			if (user.SentMessages != null)
-				foreach (Message message in user.SentMessages)
-					Context.Remove(message);
+			var chatIds = await Context.UserChats
+				.Where(uc => uc.UserId == user.Id)
+				.Select(uc => uc.ChatId)
+				.ToListAsync();
 
-			if (user.ReceivedMessages != null)
-				foreach (Message message in user.ReceivedMessages)
-					Context.Remove(message);
+			foreach (int chatId in chatIds)
+			{
+				int participantsCount = await Context.UserChats
+					.CountAsync(uc => uc.ChatId == chatId && uc.UserId != user.Id);
+
+				if (participantsCount <= 1)
+				{
+					var chat = await Context.Chats.FirstOrDefaultAsync(c => c.Id == chatId);
+					if (chat != null)
+						Context.Chats.Remove(chat);
+				}
+			}
 		}
 		#endregion
 	}

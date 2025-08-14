@@ -8,7 +8,6 @@
 		PrivacySetting = 1 << 1,
 		PcConfiguration = 1 << 2,
 		PcConfigurationFull = 1 << 3,
-		Friendships = 1 << 4,
-		Messages = 1 << 5
+		Friendships = 1 << 4
 	}
 }
