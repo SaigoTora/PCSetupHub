@@ -90,8 +90,10 @@ namespace PCSetupHub.Web.Controllers
 			if (friendship == null)
 				return NotFound();
 
-			int userId = User.GetId() ?? -1;
-			if (friendship.FriendId != userId)
+			int? userId = User.GetId();
+			if (!userId.HasValue)
+				return StatusCode(403);
+			if (friendship.FriendId != userId.Value)
 				return StatusCode(403);
 
 			try
@@ -99,12 +101,12 @@ namespace PCSetupHub.Web.Controllers
 				friendship.ChangeStatus((FriendshipStatusType)newStatusId);
 				await _friendshipRepository.UpdateAsync(friendship);
 				_logger.LogInformation("User {UserId} updated friendship {FriendshipId} " +
-					"to status {StatusId}", userId, id, newStatusId);
+					"to status {StatusId}", userId.Value, id, newStatusId);
 			}
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "User {UserId} failed to update friendship {FriendshipId} " +
-					"to status {StatusId}", userId, id, newStatusId);
+					"to status {StatusId}", userId.Value, id, newStatusId);
 				throw;
 			}
 
@@ -155,20 +157,22 @@ namespace PCSetupHub.Web.Controllers
 			if (friendship == null)
 				return NotFound();
 
-			int userId = User.GetId() ?? -1;
-			if (friendship.InitiatorId != userId)
+			int? userId = User.GetId();
+			if (!userId.HasValue)
+				return StatusCode(403);
+			if (friendship.InitiatorId != userId.Value)
 				return StatusCode(403);
 
 			try
 			{
 				await _friendshipRepository.DeleteAsync(id);
-				_logger.LogInformation("User {UserId} deleted friendship {FriendshipId}", userId,
-					id);
+				_logger.LogInformation("User {UserId} deleted friendship {FriendshipId}",
+					userId.Value, id);
 			}
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "User {UserId} failed to delete friendship {FriendshipId}",
-					userId, id);
+					userId.Value, id);
 				throw;
 			}
 

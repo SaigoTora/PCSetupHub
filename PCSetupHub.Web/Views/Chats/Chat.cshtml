@@ -1,0 +1,53 @@
+﻿@using PCSetupHub.Data.Models.Users
+
+@model ChatViewModel
+
+@{
+    ViewData["Title"] = "Chat";
+
+    <link rel="stylesheet" href="~/css/message.css" />
+
+    int? userId = User.GetId();
+    bool isChatOneToOne = Model.Participants?.Count == 1;
+}
+
+@if (Model.Participants != null)
+{
+    @if (isChatOneToOne)
+    {
+        User? participant = Model.Participants.FirstOrDefault();
+
+        if (participant != null)
+        {
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="d-flex align-items-center ms-1 me-2">
+                    <img src="@participant.AvatarUrl" alt="User avatar @participant.Login"
+                         title="@participant.Login" width="60" height="60"
+                         class="user-avatar" />
+                </div>
+                <div class="user-login">@participant.Login</div>
+            </div>
+        }
+    }
+}
+@if (Model.Messages != null)
+{
+    <div class="d-flex flex-column justify-content-end">
+        @foreach (Message message in Model.Messages)
+        {
+            if (userId.HasValue && message.SenderId == userId.Value)
+            {
+                <div>You: @message.Text <small>@message.CreatedAt</small></div>
+            }
+            else
+            {
+                <div>Friend: @message.Text <small>@message.CreatedAt</small></div>
+            }
+        }
+    </div>
+}
+
+<form>
+    <input placeholder="Write a message..." type="text" />
+    <button>Send</button>
+</form>

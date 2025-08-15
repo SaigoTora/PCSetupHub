@@ -64,8 +64,10 @@ namespace PCSetupHub.Web.Controllers
 			if (pcConfiguration == null)
 				return NotFound();
 
-			int userId = User.GetId() ?? -1;
-			if (pcConfiguration.User != null && pcConfiguration.UserId != userId)
+			int? userId = User.GetId();
+			if (!userId.HasValue)
+				return StatusCode(403);
+			if (pcConfiguration.User != null && pcConfiguration.UserId != userId.Value)
 				return StatusCode(403);
 
 			// There should be no more than 1 element since the Name field is unique
@@ -78,12 +80,12 @@ namespace PCSetupHub.Web.Controllers
 				pcConfiguration.Type = pcType[0];
 				await _pcConfigRepository.UpdateAsync(pcConfiguration);
 				_logger.LogInformation("User {UserId} updated PcConfiguration {Id} " +
-					"to type '{TypeName}'", userId, id, typeName);
+					"to type '{TypeName}'", userId.Value, id, typeName);
 			}
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "User {UserId} failed to update PcConfiguration {Id} " +
-					"to type '{TypeName}'", userId, id, typeName);
+					"to type '{TypeName}'", userId.Value, id, typeName);
 				throw;
 			}
 

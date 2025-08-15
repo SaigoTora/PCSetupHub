@@ -9,8 +9,6 @@
     ViewData["Title"] = "Messages";
 
     <link rel="stylesheet" href="~/css/message.css" />
-
-    int userId = User.GetId() ?? 0;
 }
 
 @if (Model.Length > 0)
@@ -35,7 +33,7 @@
         {
             User user = message.OtherParticipants.First();
             <div class="message-container mb-1">
-                <a class="message-link" asp-controller="Profile" asp-action="Index" asp-route-login="@user.Login">
+                <a class="message-link" asp-controller="Chats" asp-action="Chat" asp-route-chatPublicId="@message.Chat?.PublicId">
                     <div class="d-flex justify-content-start align-items-start">
                         <div class="d-flex align-items-center me-2-5">
                             <img src="@user.AvatarUrl" alt="User avatar @user.Login"

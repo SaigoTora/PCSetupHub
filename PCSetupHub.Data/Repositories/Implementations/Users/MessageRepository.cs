@@ -42,6 +42,16 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 
 			return [.. messages];
 		}
+		public async Task<Message[]> GetMessagesAsync(string chatPublicId)
+		{
+			return await Context.Messages
+				.Where(m => m.Chat!.PublicId == chatPublicId)
+				.Include(m => m.Sender)
+				.Include(m => m.Chat)
+				.OrderByDescending(m => m.CreatedAt)
+				.ThenByDescending(m => m.Id)
+				.ToArrayAsync();
+		}
 
 		private Task<Message?> GetLastRelevantMessageAsync(int chatId, int userId)
 		{
