@@ -1,4 +1,5 @@
 ﻿using PCSetupHub.Data.Models.Base;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PCSetupHub.Data.Models.Users
 {
@@ -13,6 +14,9 @@ namespace PCSetupHub.Data.Models.Users
 		public string Text { get; private set; } = string.Empty;
 		public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 		public bool IsRead { get; set; } = false;
+
+		[NotMapped]
+		public ICollection<User>? OtherParticipants { get; set; }
 
 		public Message() { }
 		public Message(int chatId, int senderId, string text, bool isRead = false)

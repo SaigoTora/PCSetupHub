@@ -114,6 +114,12 @@ namespace PCSetupHub.Data.Models.Users
 			Email = email;
 			Description = description;
 		}
+		public User(string avatarUrl, string login, string name)
+		{
+			AvatarUrl = avatarUrl;
+			Login = login;
+			Name = name;
+		}
 
 		public Friendship? GetReceivedRequestFrom(int userId)
 			=> ReceivedFriendRequests?.FirstOrDefault(fr => fr.InitiatorId == userId);

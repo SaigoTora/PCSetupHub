@@ -5,6 +5,6 @@ namespace PCSetupHub.Data.Repositories.Interfaces.Users
 {
 	public interface IMessageRepository : IRepository<Message>
 	{
-		public Task<List<Message>> GetPreviewsAsync(int userId);
+		public Task<Message[]> GetPreviewsAsync(int userId);
 	}
 }

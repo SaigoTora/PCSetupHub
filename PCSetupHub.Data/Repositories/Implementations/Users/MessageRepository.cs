@@ -12,23 +12,47 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 			: base(context)
 		{ }
 
-		public async Task<List<Message>> GetPreviewsAsync(int userId)
+		public async Task<Message[]> GetPreviewsAsync(int userId)
 		{
-			var previewIds = await Context.Messages
-				.Where(m => m.SenderId == userId || m.ReceiverId == userId)
-				.GroupBy(m => m.SenderId == userId ? m.ReceiverId : m.SenderId)
-				.Select(g => g.OrderByDescending(m => m.CreatedAt).First().Id)
-				.ToListAsync();
+			// Load chats with participants
+			Chat[] chats = await Context.Chats
+				.Where(c => c.UserChats!.Any(uc => uc.UserId == userId))
+				.Include(c => c.UserChats!).ThenInclude(uc => uc.User)
+				.AsNoTracking()
+				.ToArrayAsync();
 
-			var previews = await Context.Messages
-				.Where(m => previewIds.Contains(m.Id))
+			List<Message> messages = [];
+
+			foreach (var chat in chats)
+			{
+				// Load only the last unread message from others, or last message if none
+				Message? lastMessage = await GetLastRelevantMessageAsync(chat.Id, userId);
+
+				if (lastMessage != null)
+				{
+					// Attach participants
+					lastMessage.OtherParticipants = chat.UserChats?
+						.Where(uc => uc.UserId != userId)
+						.Select(uc => new User(uc.User!.AvatarUrl, uc.User!.Login, uc.User!.Name))
+						.ToArray();
+
+					messages.Add(lastMessage);
+				}
+			}
+
+			return [.. messages];
+		}
+
+		private Task<Message?> GetLastRelevantMessageAsync(int chatId, int userId)
+		{
+			return Context.Messages
 				.Include(m => m.Sender)
-				.Include(m => m.Receiver)
-				.OrderBy(m => m.IsRead)
+				.Include(m => m.Chat)
+				.Where(m => m.ChatId == chatId)
+				.OrderByDescending(m => !m.IsRead && m.SenderId != userId)
 				.ThenByDescending(m => m.CreatedAt)
-				.ToListAsync();
-
-			return previews;
+				.ThenByDescending(m => m.Id)
+				.FirstOrDefaultAsync();
 		}
 	}
 }

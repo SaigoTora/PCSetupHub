@@ -32,7 +32,7 @@ namespace PCSetupHub.Web.Controllers
 			if (user.Id != User.GetId())
 				return StatusCode(403);
 
-			List<Message> messages = await _messageRepository.GetPreviewsAsync(user.Id);
+			Message[] messages = await _messageRepository.GetPreviewsAsync(user.Id);
 
 			return View(messages);
 		}

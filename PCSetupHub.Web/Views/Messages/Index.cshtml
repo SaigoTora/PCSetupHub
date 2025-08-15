@@ -3,7 +3,7 @@
 @using PCSetupHub.Data.Models.Users
 
 
-@model List<Message>
+@model Message[]
 
 @{
     ViewData["Title"] = "Messages";
@@ -13,24 +13,10 @@
     int userId = User.GetId() ?? 0;
 }
 
-@if (Model.Count > 0)
+@if (Model.Length > 0)
 {
     @foreach (var message in Model)
     {
-        User? user = null;
-        if (message.SenderId == userId)
-        {
-            user = message.Receiver;
-        }
-        if (message.ReceiverId == userId)
-        {
-            user = message.Sender;
-        }
-        if (user == null)
-        {
-            continue;
-        }
-
         string displayCreatedAt = string.Empty;
         if (DateTime.UtcNow.Day == message.CreatedAt.Day)
         {
@@ -45,35 +31,39 @@
             displayCreatedAt = message.CreatedAt.ToLocalTime().ToString("d MMMM yyyy", new CultureInfo("en-US"));
         }
 
-        <div class="message-container mb-1">
-            <a class="message-link" asp-controller="Profile" asp-action="Index" asp-route-login="@user.Login">
-                <div class="d-flex justify-content-start align-items-start">
-                    <div class="d-flex align-items-center me-2-5">
-                        <img src="@user.AvatarUrl" alt="User avatar @user.Login"
-                             title="@user.Login" width="65" height="65"
-                             class="user-avatar" />
-                    </div>
-                    <div class="d-flex flex-column w-100" style="min-width: 0;">
-                        <div class="d-flex justify-content-between mb-1">
-                            <div class="d-flex align-items-center">
-                                <span class="preview-user-login" title="@user.Name">
-                                    @user.Login
-                                </span>
-                                @if (!message.IsRead)
-                                {
-                                    <i class="fas fa-circle preview-new-message-icon" title="Unread"></i>
-                                }
-                            </div>
-                            <div class="preview-message-datetime"
-                                 title="@message.CreatedAt.ToLocalTime().ToString("dd MMMM, yyyy 'at' HH:mm:ss", new CultureInfo("en-US"))">
-                                @displayCreatedAt
-                            </div>
+        @if (message.OtherParticipants != null && message.OtherParticipants.Count == 1)
+        {
+            User user = message.OtherParticipants.First();
+            <div class="message-container mb-1">
+                <a class="message-link" asp-controller="Profile" asp-action="Index" asp-route-login="@user.Login">
+                    <div class="d-flex justify-content-start align-items-start">
+                        <div class="d-flex align-items-center me-2-5">
+                            <img src="@user.AvatarUrl" alt="User avatar @user.Login"
+                                 title="@user.Login" width="65" height="65"
+                                 class="user-avatar" />
                         </div>
-                        <div class="preview-message-text text-truncate @(message.IsRead ? "message-read" : "message-unread")" title="@message.Text">@message.Text</div>
+                        <div class="d-flex flex-column w-100" style="min-width: 0;">
+                            <div class="d-flex justify-content-between mb-1">
+                                <div class="d-flex align-items-center">
+                                    <span class="preview-user-login" title="@user.Name">
+                                        @user.Login
+                                    </span>
+                                    @if (!message.IsRead)
+                                    {
+                                        <i class="fas fa-circle preview-new-message-icon" title="Unread"></i>
+                                    }
+                                </div>
+                                <div class="preview-message-datetime"
+                                     title="@message.CreatedAt.ToLocalTime().ToString("dd MMMM, yyyy 'at' HH:mm:ss", new CultureInfo("en-US"))">
+                                    @displayCreatedAt
+                                </div>
+                            </div>
+                            <div class="preview-message-text text-truncate @(message.IsRead ? "message-read" : "message-unread")" title="@message.Text">@message.Text</div>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+        }
     }
 }
 else
