@@ -53,7 +53,7 @@ namespace PCSetupHub.Web.Controllers
 
 			User[] participants = await _chatRepository.GetChatParticipantsAsync(chatPublicId);
 			Message[] messages = await _messageRepository.GetMessagesAsync(chatPublicId);
-			ChatViewModel model = new(participants, messages);
+			ChatViewModel model = new(chatPublicId, participants, messages);
 
 			return View(model);
 		}

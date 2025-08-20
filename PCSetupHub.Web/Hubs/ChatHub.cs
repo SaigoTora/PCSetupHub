@@ -1,19 +1,48 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
+using PCSetupHub.Core.DTOs;
+using PCSetupHub.Data.Models.Users;
+using PCSetupHub.Data.Repositories.Interfaces.Users;
+
 namespace PCSetupHub.Web.Hubs
 {
 	public class ChatHub : Hub
 	{
-		public async Task JoinToChat(string chatName)
+		private readonly IChatRepository _chatRepository;
+		private readonly IMessageRepository _messageRepository;
+
+		public ChatHub(IMessageRepository messageRepository, IChatRepository chatRepository)
 		{
-			await Groups.AddToGroupAsync(Context.ConnectionId, chatName);
+			_messageRepository = messageRepository;
+			_chatRepository = chatRepository;
 		}
 
-		public async Task SendMessage(string chatName, string user, string message)
+		public async Task JoinToChat(string chatId)
 		{
-			await Clients
-				.Group(chatName)
-				.SendAsync("ReceiveMessage", $"{user} says - {message}	from chat {chatName}");
+			await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
+		}
+
+		public async Task SendMessage(ChatMessageRequest messageRequest)
+		{
+			if (!string.IsNullOrEmpty(messageRequest.ChatPublicId))
+			{
+				List<Chat> chats = await _chatRepository
+					.GetSomeAsync(c => c.PublicId == messageRequest.ChatPublicId);
+
+				if (chats.Count == 1)
+				{
+					Chat chat = chats[0];
+					Message message = new(chat.Id, messageRequest.SenderId, messageRequest.Text);
+					await _messageRepository.AddAsync(message);
+
+					ChatMessageResponse response = new(message.SenderId, message.Text,
+						message.CreatedAt);
+
+					await Clients
+						.Group(messageRequest.ChatPublicId)
+						.SendAsync("ReceiveMessage", response);
+				}
+			}
 		}
 	}
 }

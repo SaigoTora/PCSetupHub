@@ -32,22 +32,21 @@
 }
 @if (Model.Messages != null)
 {
-    <div class="d-flex flex-column justify-content-end">
+    <div id="messageList" class="d-flex flex-column-reverse">
         @foreach (Message message in Model.Messages)
         {
-            if (userId.HasValue && message.SenderId == userId.Value)
-            {
-                <div>You: @message.Text <small>@message.CreatedAt</small></div>
-            }
-            else
-            {
-                <div>Friend: @message.Text <small>@message.CreatedAt</small></div>
-            }
+            <div>@message.SenderId: @message.Text (@message.CreatedAt)</div>
         }
     </div>
 }
 
-<form>
-    <input placeholder="Write a message..." type="text" />
-    <button>Send</button>
+<form id="messages" data-chat-id="@Model.ChatId" data-user-id="@userId">
+    <label for="inputMessage">Message</label>
+    <input placeholder="Write a message..." type="text" id="inputMessage" autocomplete="off" />
+
+    <button id="sendButton">Send</button>
 </form>
+
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
