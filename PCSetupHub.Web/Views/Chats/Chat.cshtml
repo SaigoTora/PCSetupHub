@@ -1,50 +1,65 @@
-﻿@using PCSetupHub.Data.Models.Users
+﻿@using System.Web
+
+@using PCSetupHub.Data.Models.Users
 
 @model ChatViewModel
 
 @{
     ViewData["Title"] = "Chat";
 
-    <link rel="stylesheet" href="~/css/message.css" />
+    <link rel="stylesheet" href="~/css/message.css" asp-append-version="true" />
 
     int? userId = User.GetId();
-    bool isChatOneToOne = Model.Participants?.Count == 1;
+    bool isChatOneToOne = Model.Participants?.Count == 2;
 }
 
-@if (Model.Participants != null)
+@if (Model.Participants != null && userId.HasValue)
 {
-    @if (isChatOneToOne)
-    {
-        User? participant = Model.Participants.FirstOrDefault();
-
-        if (participant != null)
+    <div class="d-flex justify-content-center mb-2">
+        @if (isChatOneToOne)
         {
-            <div class="d-flex justify-content-center align-items-center">
-                <div class="d-flex align-items-center ms-1 me-2">
-                    <img src="@participant.AvatarUrl" alt="User avatar @participant.Login"
-                         title="@participant.Login" width="60" height="60"
-                         class="user-avatar" />
-                </div>
-                <div class="user-login">@participant.Login</div>
-            </div>
-        }
-    }
-}
-@if (Model.Messages != null)
-{
-    <div id="messageList" class="d-flex flex-column-reverse">
-        @foreach (Message message in Model.Messages)
-        {
-            <div>@message.SenderId: @message.Text (@message.CreatedAt)</div>
+            User? participant = Model.Participants.FirstOrDefault(p => p.Id != userId.Value);
+            if (participant != null)
+            {
+                <a asp-controller="Profile" asp-action="Index" asp-route-login="@participant.Login" class="text-decoration-none text-light">
+                    <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center ms-1 me-2">
+                            <img src="@participant.AvatarUrl" alt="User avatar @participant.Login"
+                                 title="@participant.Login" width="60" height="60"
+                                 class="user-avatar" />
+                        </div>
+                        <span class="user-login">@participant.Login</span>
+                    </div>
+                </a>
+            }
         }
     </div>
 }
 
-<form id="messages" data-chat-id="@Model.ChatId" data-user-id="@userId">
-    <label for="inputMessage">Message</label>
-    <input placeholder="Write a message..." type="text" id="inputMessage" autocomplete="off" />
+<div id="messageList" class="messages-container mb-4">
+    @if (Model.Messages != null)
+    {
+        @foreach (Message message in Model.Messages)
+        {
+            <div class="message @(message.SenderId == userId ? "message-out" : "message-in")">
+                <div class="message-text">
+                    @Html.Raw(HttpUtility.HtmlEncode(message.Text).Replace("\n", "<br />"))
+                </div>
+                <div class="message-time">
+                    @message.CreatedAt.ToLocalTime().ToString("HH:mm")
+                </div>
+            </div>
+        }
+    }
+</div>
 
-    <button id="sendButton">Send</button>
+<form id="messages" data-chat-id="@Model.ChatId" data-user-id="@userId">
+    <textarea id="inputMessage" class="message-input" placeholder="Write a message..." type="text" autocomplete="off" title="" required
+              oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+
+    <div class="d-flex justify-content-end">
+        <button id="sendButton" class="button-send">Send</button>
+    </div>
 </form>
 
 

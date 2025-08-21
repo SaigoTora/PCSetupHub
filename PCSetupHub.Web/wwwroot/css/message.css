@@ -40,3 +40,115 @@
     padding-left: 0.5rem;
     max-width: 80%;
 }
+
+
+.messages-container {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    height: 66dvh;
+    overflow: auto;
+}
+
+    .messages-container::-webkit-scrollbar {
+        width: 0.2rem;
+        height: 0.2rem;
+    }
+
+    .messages-container::-webkit-scrollbar-track {
+        background: transparent;
+        border-radius: 4px;
+    }
+
+    .messages-container::-webkit-scrollbar-thumb {
+        background: #707070;
+        border-radius: 4px;
+    }
+
+        .messages-container::-webkit-scrollbar-thumb:hover {
+            background: #909090;
+        }
+
+
+.message {
+    display: inline-block;
+    max-width: 70%;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--border-radius);
+    position: relative;
+    word-wrap: break-word;
+}
+
+.message-in {
+    background-color: #2a2f38;
+    color: #ffffff;
+    align-self: flex-start;
+    border-top-left-radius: 0;
+    margin-left: 0.5rem;
+}
+
+.message-out {
+    background-color: #4a90e2;
+    color: #ffffff;
+    align-self: flex-end;
+    border-top-right-radius: 0;
+    margin-right: 0.5rem;
+}
+
+.message-time {
+    font-size: 0.7rem;
+    color: #e0e0e0;
+    text-align: right;
+    margin-top: 3px;
+    user-select: none;
+}
+
+
+.message-input {
+    width: 100%;
+    border: 1px solid var(--color-text-muted);
+    border-radius: var(--border-radius);
+    color: var(--color-light-text);
+    font-size: 0.96rem;
+    background-color: rgba(32, 36, 42, 0.75);
+    padding: 0.5rem 0.75rem;
+    outline: none;
+    resize: none;
+    height: 8rem;
+    min-height: 8rem;
+    max-height: 8rem;
+}
+
+    .message-input:focus {
+        border-color: var(--color-light-text);
+        background-color: rgba(32, 36, 42, 0.85);
+    }
+
+    .message-input::placeholder {
+        user-select: none;
+    }
+
+    .message-input::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+
+.button-send {
+    border-radius: var(--border-radius);
+    border: none;
+    font-size: 1.25rem;
+    padding: 0.15rem 1.75rem;
+    color: var(--color-light-text);
+    transition: background-color 0.2s ease-in-out;
+    background-color: var(--color-secondary-accent);
+}
+
+    .button-send:hover {
+        background-color: var(--color-secondary-accent-hover);
+    }
+
+
+.footer {
+    display: none;
+}

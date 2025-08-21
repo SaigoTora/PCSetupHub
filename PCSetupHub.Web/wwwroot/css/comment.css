@@ -21,6 +21,11 @@
         user-select: none;
     }
 
+    .comment-input::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+
 .submit-comment-button {
     padding-block: 0.3rem;
     padding-inline: 1rem;
