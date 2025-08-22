@@ -1,6 +1,7 @@
 ﻿@using System.Web
 
 @using PCSetupHub.Data.Models.Users
+@using PCSetupHub.Web.Helpers
 
 @model ChatViewModel
 
@@ -10,7 +11,12 @@
     <link rel="stylesheet" href="~/css/message.css" asp-append-version="true" />
 
     int? userId = User.GetId();
-    bool isChatOneToOne = Model.Participants?.Count == 2;
+    bool isChatOneToOne = Model.Participants?.Length == 2;
+    DateOnly? lastMessageDate = null;
+    if (Model.Messages != null)
+    {
+        lastMessageDate = DateOnly.FromDateTime(Model.Messages.First().CreatedAt.ToLocalTime());
+    }
 }
 
 @if (Model.Participants != null && userId.HasValue)
@@ -23,7 +29,7 @@
             {
                 <a asp-controller="Profile" asp-action="Index" asp-route-login="@participant.Login" class="text-decoration-none text-light">
                     <div class="d-flex align-items-center">
-                        <div class="d-flex align-items-center ms-1 me-2">
+                        <div class="d-flex align-items-center ms-1 me-2-5">
                             <img src="@participant.AvatarUrl" alt="User avatar @participant.Login"
                                  title="@participant.Login" width="60" height="60"
                                  class="user-avatar" />
@@ -36,11 +42,21 @@
     </div>
 }
 
-<div id="messageList" class="messages-container mb-4">
-    @if (Model.Messages != null)
+<div id="messageList" class="messages-container mb-4" data-last-message-date="@lastMessageDate?.ToString("yyyy-MM-dd")">
+    @if (Model.Messages != null && Model.Messages.Length > 0)
     {
+        DateTime firstDateTime = Model.Messages.First().CreatedAt.ToLocalTime();
+        DateOnly lastDate = DateOnly.FromDateTime(firstDateTime);
+
         @foreach (Message message in Model.Messages)
         {
+            DateOnly currentDate = DateOnly.FromDateTime(message.CreatedAt.ToLocalTime());
+            if (lastDate != currentDate)
+            {
+                @Html.RenderMessageDate(lastDate)
+                lastDate = currentDate;
+            }
+
             <div class="message @(message.SenderId == userId ? "message-out" : "message-in")">
                 <div class="message-text">
                     @Html.Raw(HttpUtility.HtmlEncode(message.Text).Replace("\n", "<br />"))
@@ -50,6 +66,7 @@
                 </div>
             </div>
         }
+        @Html.RenderMessageDate(lastDate)
     }
 </div>
 

@@ -21,10 +21,10 @@ namespace PCSetupHub.Web.Hubs
 		{
 			await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
 		}
-
 		public async Task SendMessage(ChatMessageRequest messageRequest)
 		{
-			if (!string.IsNullOrEmpty(messageRequest.ChatPublicId))
+			if (!string.IsNullOrEmpty(messageRequest.ChatPublicId)
+				&& !string.IsNullOrEmpty(messageRequest.Text))
 			{
 				List<Chat> chats = await _chatRepository
 					.GetSomeAsync(c => c.PublicId == messageRequest.ChatPublicId);

@@ -70,6 +70,15 @@
             background: #909090;
         }
 
+.message-date-separator {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #aaa;
+    user-select: none;
+}
+
 
 .message {
     display: inline-block;
@@ -97,7 +106,7 @@
 }
 
 .message-time {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     color: #e0e0e0;
     text-align: right;
     margin-top: 3px;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Globalization;
 using System.Text;
 
 using PCSetupHub.Data.Models.Attributes;
@@ -124,6 +125,28 @@ namespace PCSetupHub.Web.Helpers
 			}
 
 			return new HtmlString(contentBuilder.ToString().TrimEnd(',', ' '));
+		}
+
+		/// <summary>
+		/// Renders a date separator for chat messages inside a styled div.
+		/// Shows "Month dd" if the date is in the current year, otherwise "Month dd, yyyy".
+		/// </summary>
+		/// <param name="html">Html helper instance.</param>
+		/// <param name="date">The message date to display.</param>
+		/// <returns>HTML content with the formatted date separator.</returns>
+		public static IHtmlContent RenderMessageDate(this IHtmlHelper html, DateOnly date)
+		{
+			StringBuilder contentBuilder = new();
+			CultureInfo culture = new("en-US");
+
+			contentBuilder.Append("<div class=\"message-date-separator\">");
+			if (date.Year == DateTime.Now.Year)
+				contentBuilder.Append(date.ToString("MMMM dd", culture));
+			else
+				contentBuilder.Append(date.ToString("MMMM dd, yyyy", culture));
+			contentBuilder.Append("</div>");
+
+			return new HtmlString(contentBuilder.ToString());
 		}
 	}
 }
