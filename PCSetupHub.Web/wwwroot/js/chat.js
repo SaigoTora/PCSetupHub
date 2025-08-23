@@ -5,20 +5,35 @@ const chatId = messages.getAttribute("data-chat-id");
 const userId = parseInt(messages.getAttribute("data-user-id"));
 const inputMessage = document.getElementById("inputMessage");
 const sendButton = document.getElementById("sendButton");
+const sendFirstButton = document.getElementById("sendFirstButton");
 
-var connection = new signalR.HubConnectionBuilder()
-    .withUrl("/chat")
-    .build();
-
-connection.start()
-    .then(() => {
-        if (chatId) {
-            return connection.invoke("JoinToChat", chatId);
-        }
-    })
-    .catch(err => console.error(err.toString()));
+if (sendFirstButton) {
+    if (inputMessage) {
+        inputMessage.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                if (!inputMessage.value) {
+                    return;
+                }
+                sendFirstButton.click();
+            }
+        });
+    }
+}
 
 if (sendButton) {
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chat")
+        .build();
+
+    connection.start()
+        .then(() => {
+            if (chatId) {
+                return connection.invoke("JoinToChat", chatId);
+            }
+        })
+        .catch(err => console.error(err.toString()));
+
     sendButton.addEventListener("click", (e) => {
         const message = inputMessage.value;
 
@@ -44,21 +59,21 @@ if (sendButton) {
             }
         });
     }
+
+    connection.on("ReceiveMessage", (response) => {
+        const messageList = document.getElementById("messageList");
+        if (!messageList) return;
+
+        const dateSeparator = createDateSeparatorIfNeeded(messageList, new Date(response.createdAt));
+        if (dateSeparator) {
+            messageList.prepend(dateSeparator);
+        }
+
+        const messageEl = createMessageElement(response, userId);
+        messageList.prepend(messageEl);
+        messageEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
 }
-
-connection.on("ReceiveMessage", (response) => {
-    const messageList = document.getElementById("messageList");
-    if (!messageList) return;
-
-    const dateSeparator = createDateSeparatorIfNeeded(messageList, new Date(response.createdAt));
-    if (dateSeparator) {
-        messageList.prepend(dateSeparator);
-    }
-
-    const messageEl = createMessageElement(response, userId);
-    messageList.prepend(messageEl);
-    messageEl.scrollIntoView({ behavior: "smooth", block: "start" });
-});
 
 function createMessageElement(response, userId) {
     const el = document.createElement("div");
@@ -84,7 +99,6 @@ function createMessageElement(response, userId) {
 
     return el;
 }
-
 function createDateSeparatorIfNeeded(messageList, newMessageDate) {
     const lastMessageDateStr = messageList.getAttribute("data-last-message-date");
     if (!lastMessageDateStr) return null;

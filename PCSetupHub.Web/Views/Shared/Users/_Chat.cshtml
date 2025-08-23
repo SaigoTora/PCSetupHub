@@ -1,0 +1,97 @@
+﻿@using System.Web
+
+@using PCSetupHub.Data.Models.Users
+@using PCSetupHub.Web.Helpers
+
+@model ChatViewModel
+
+@{
+    <link rel="stylesheet" href="~/css/message.css" asp-append-version="true" />
+
+    int? userId = User.GetId();
+    bool isChatOneToOne = Model.Participants?.Length == 2;
+    User? firstParticipant = null;
+    DateOnly? lastMessageDate = null;
+    if (Model.Messages != null)
+    {
+        lastMessageDate = DateOnly.FromDateTime(Model.Messages.First().CreatedAt.ToLocalTime());
+    }
+}
+
+@if (Model.Participants != null && userId.HasValue)
+{
+    <div class="d-flex justify-content-center mb-2">
+        @if (isChatOneToOne)
+        {
+            firstParticipant = Model.Participants.FirstOrDefault(p => p.Id != userId.Value);
+            if (firstParticipant != null)
+            {
+                <a id="participantLink" asp-controller="Profile" asp-action="Index" asp-route-login="@firstParticipant.Login" class="text-decoration-none text-light">
+                    <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center ms-1 me-2-5">
+                            <img src="@firstParticipant.AvatarUrl" alt="User avatar @firstParticipant.Login"
+                                 title="@firstParticipant.Login" width="60" height="60"
+                                 class="user-avatar" />
+                        </div>
+                        <span class="user-login">@firstParticipant.Login</span>
+                    </div>
+                </a>
+            }
+        }
+    </div>
+}
+
+<div id="messageList" class="messages-container mb-4" data-last-message-date="@lastMessageDate?.ToString("yyyy-MM-dd")">
+    @if (Model.Messages != null && Model.Messages.Length > 0)
+    {
+        DateTime firstDateTime = Model.Messages.First().CreatedAt.ToLocalTime();
+        DateOnly lastDate = DateOnly.FromDateTime(firstDateTime);
+
+        @foreach (Message message in Model.Messages)
+        {
+            DateOnly currentDate = DateOnly.FromDateTime(message.CreatedAt.ToLocalTime());
+            if (lastDate != currentDate)
+            {
+                @Html.RenderMessageDate(lastDate)
+                lastDate = currentDate;
+            }
+
+            <div class="message @(message.SenderId == userId ? "message-out" : "message-in")">
+                <div class="message-text">
+                    @Html.Raw(HttpUtility.HtmlEncode(message.Text).Replace("\n", "<br />"))
+                </div>
+                <div class="message-time">
+                    @message.CreatedAt.ToLocalTime().ToString("HH:mm")
+                </div>
+            </div>
+        }
+        @Html.RenderMessageDate(lastDate)
+    }
+    else
+    {
+        <span class="empty-chat-message">This chat is empty. Send the first message to start the conversation.</span>
+    }
+</div>
+
+<form asp-controller="Chats" asp-action="SendFirstMessage" method="post" id="messages" data-chat-id="@Model.ChatId" data-user-id="@userId">
+    <textarea id="inputMessage" name="MessageText" class="message-input" placeholder="Write a message..." type="text" autocomplete="off" title="" required
+              oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+
+    @if (Model.IsChatEmpty && isChatOneToOne && firstParticipant != null)
+    {
+        <input type="hidden" name="ReceiverUserId" value="@firstParticipant.Id" />
+        <div class="d-flex justify-content-end">
+            <button id="sendFirstButton" class="button-send" type="submit">Send</button>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-end">
+            <button id="sendButton" class="button-send" type="button">Send</button>
+        </div>
+    }
+</form>
+
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>

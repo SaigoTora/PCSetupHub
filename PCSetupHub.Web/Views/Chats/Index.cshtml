@@ -9,6 +9,8 @@
     ViewData["Title"] = "Messages";
 
     <link rel="stylesheet" href="~/css/message.css" asp-append-version="true" />
+
+    int? userId = User.GetId();
 }
 
 @if (Model.Length > 0)
@@ -29,7 +31,7 @@
             displayCreatedAt = message.CreatedAt.ToLocalTime().ToString("d MMMM yyyy", new CultureInfo("en-US"));
         }
 
-        @if (message.OtherParticipants != null && message.OtherParticipants.Count == 1)
+        @if (message.OtherParticipants != null && message.OtherParticipants.Count == 1 && userId.HasValue)
         {
             User user = message.OtherParticipants.First();
             <div class="message-container mb-1">
@@ -46,7 +48,7 @@
                                     <span class="preview-user-login" title="@user.Name">
                                         @user.Login
                                     </span>
-                                    @if (!message.IsRead)
+                                    @if (!message.IsRead && message.SenderId != userId)
                                     {
                                         <i class="fas fa-circle preview-new-message-icon" title="Unread"></i>
                                     }
@@ -56,7 +58,7 @@
                                     @displayCreatedAt
                                 </div>
                             </div>
-                            <div class="preview-message-text text-truncate @(message.IsRead ? "message-read" : "message-unread")" title="@message.Text">@message.Text</div>
+                            <div class="preview-message-text text-truncate @((!message.IsRead && message.SenderId != userId) ? "message-unread" : "message-read")" title="@message.Text">@message.Text</div>
                         </div>
                     </div>
                 </a>

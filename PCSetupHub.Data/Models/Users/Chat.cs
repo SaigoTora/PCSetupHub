@@ -5,7 +5,7 @@ namespace PCSetupHub.Data.Models.Users
 {
 	public class Chat : BaseEntity
 	{
-		public string PublicId { get; private set; } = Guid.NewGuid().ToString();
+		public string PublicId { get; set; } = Guid.NewGuid().ToString();
 		public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
 		public ICollection<UserChats>? UserChats { get; private set; }
