@@ -44,7 +44,7 @@
                     <span id=@($"openModal-{Model.Components[i].GetType().Name}-{Model.Components[i].Id}") class="pc-component-name" translate="no">
                         @Model.Components[i].DisplayName
                     </span>
-                    @await Html.PartialAsync("PcComponents/_ComponentModalPartial", Model.Components[i])
+                    @await Html.PartialAsync("PcComponents/_ComponentModal", Model.Components[i])
                 </td>
                 <td>
                     <form asp-controller="@Model.ControllerName" asp-action="Select" asp-route-pcConfigurationId="@Model.PcConfigurationId" asp-route-currentComponentId="@Model.CurrentComponentId" asp-route-componentId="@Model.Components[i].Id" method="post">

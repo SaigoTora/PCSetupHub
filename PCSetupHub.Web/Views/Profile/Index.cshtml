@@ -256,7 +256,7 @@
                                     <span id=@($"openModal-{typeof(Processor).Name}-{pcConfig.Processor.Id}") class="pc-component-name" translate="no">
                                         @pcConfig.Processor.DisplayName
                                     </span>
-                                    @await Html.PartialAsync("PcComponents/_ComponentModalPartial", pcConfig.Processor)
+                                    @await Html.PartialAsync("PcComponents/_ComponentModal", pcConfig.Processor)
                                 </td>
 
                                 @Html.RenderPriceInTable(pcConfig.Processor.Price)
@@ -270,7 +270,7 @@
                                     <span id=@($"openModal-{typeof(VideoCard).Name}-{pcConfig.VideoCard.Id}") class="pc-component-name" translate="no">
                                         @pcConfig.VideoCard.DisplayName
                                     </span>
-                                    @await Html.PartialAsync("PcComponents/_ComponentModalPartial", pcConfig.VideoCard)
+                                    @await Html.PartialAsync("PcComponents/_ComponentModal", pcConfig.VideoCard)
                                 </td>
                                 @Html.RenderPriceInTable(pcConfig.VideoCard.Price)
                             </tr>
@@ -283,7 +283,7 @@
                                     <span id=@($"openModal-{typeof(Motherboard).Name}-{pcConfig.Motherboard.Id}") class="pc-component-name" translate="no">
                                         @pcConfig.Motherboard.DisplayName
                                     </span>
-                                    @await Html.PartialAsync("PcComponents/_ComponentModalPartial", pcConfig.Motherboard)
+                                    @await Html.PartialAsync("PcComponents/_ComponentModal", pcConfig.Motherboard)
                                 </td>
                                 @Html.RenderPriceInTable(pcConfig.Motherboard.Price)
                             </tr>
@@ -296,7 +296,7 @@
                                     <span id=@($"openModal-{typeof(PowerSupply).Name}-{pcConfig.PowerSupply.Id}") class="pc-component-name" translate="no">
                                         @pcConfig.PowerSupply.DisplayName
                                     </span>
-                                    @await Html.PartialAsync("PcComponents/_ComponentModalPartial", pcConfig.PowerSupply)
+                                    @await Html.PartialAsync("PcComponents/_ComponentModal", pcConfig.PowerSupply)
                                 </td>
                                 @Html.RenderPriceInTable(pcConfig.PowerSupply.Price)
                             </tr>
@@ -318,7 +318,7 @@
                                         <span id=@($"openModal-{typeof(Ram).Name}-{rams[i]?.Id}") class="pc-component-name" translate="no">
                                             @rams[i]?.DisplayName
                                         </span>
-                                        @await Html.PartialAsync("PcComponents/_ComponentModalPartial", rams[i])
+                                        @await Html.PartialAsync("PcComponents/_ComponentModal", rams[i])
                                     </td>
                                     @Html.RenderPriceInTable(rams[i]?.Price)
                                 </tr>
@@ -341,7 +341,7 @@
                                         <span id=@($"openModal-{typeof(Ssd).Name}-{ssds[i]?.Id}") class="pc-component-name" translate="no">
                                             @ssds[i]?.DisplayName
                                         </span>
-                                        @await Html.PartialAsync("PcComponents/_ComponentModalPartial", ssds[i])
+                                        @await Html.PartialAsync("PcComponents/_ComponentModal", ssds[i])
                                     </td>
                                     @Html.RenderPriceInTable(ssds[i]?.Price)
                                 </tr>
@@ -364,7 +364,7 @@
                                         <span id=@($"openModal-{typeof(Hdd).Name}-{hdds[i]?.Id}") class="pc-component-name" translate="no">
                                             @hdds[i]?.DisplayName
                                         </span>
-                                        @await Html.PartialAsync("PcComponents/_ComponentModalPartial", hdds[i])
+                                        @await Html.PartialAsync("PcComponents/_ComponentModal", hdds[i])
                                     </td>
                                     @Html.RenderPriceInTable(hdds[i]?.Price)
                                 </tr>

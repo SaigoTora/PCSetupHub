@@ -43,7 +43,7 @@
 </section>
 
 <section class="component-card">
-    @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "Processor", "Processor", Model.Processor, isCurrentUserOwner))
+    @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "Processor", "Processor", Model.Processor, isCurrentUserOwner))
     @if (Model.Processor != null)
     {
         Processor processor = Model.Processor;
@@ -94,7 +94,7 @@
 </section>
 
 <section class="component-card">
-    @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "Video Card", "VideoCard", Model.VideoCard, isCurrentUserOwner))
+    @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "Video Card", "VideoCard", Model.VideoCard, isCurrentUserOwner))
     @if (Model.VideoCard != null)
     {
         VideoCard videoCard = Model.VideoCard;
@@ -146,7 +146,7 @@
 </section>
 
 <section class="component-card">
-    @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "Motherboard", "Motherboard", Model.Motherboard, isCurrentUserOwner))
+    @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "Motherboard", "Motherboard", Model.Motherboard, isCurrentUserOwner))
     @if (Model.Motherboard != null)
     {
         Motherboard motherboard = Model.Motherboard;
@@ -194,7 +194,7 @@
 </section>
 
 <section class="component-card">
-    @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "Power Supply", "PowerSupply", Model.PowerSupply, isCurrentUserOwner))
+    @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "Power Supply", "PowerSupply", Model.PowerSupply, isCurrentUserOwner))
     @if (Model.PowerSupply != null)
     {
         PowerSupply powerSupply = Model.PowerSupply;
@@ -248,11 +248,11 @@
         {
             @if (rams.Length == 1)
             {
-                @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "RAM", "Ram", rams[i], isCurrentUserOwner, i == 0, rams.Length, PcConfiguration.MAX_RAM_COUNT))
+                @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "RAM", "Ram", rams[i], isCurrentUserOwner, i == 0, rams.Length, PcConfiguration.MAX_RAM_COUNT))
             }
             else
             {
-                @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "RAM", "Ram", rams[i], isCurrentUserOwner, i == 0, rams.Length, PcConfiguration.MAX_RAM_COUNT, i + 1))
+                @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "RAM", "Ram", rams[i], isCurrentUserOwner, i == 0, rams.Length, PcConfiguration.MAX_RAM_COUNT, i + 1))
             }
 
             @if (rams[i] != null)
@@ -310,7 +310,7 @@
     }
     else
     {
-        @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "RAM", "Ram", null, isCurrentUserOwner, true, rams?.Length ?? 0, PcConfiguration.MAX_RAM_COUNT))
+        @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "RAM", "Ram", null, isCurrentUserOwner, true, rams?.Length ?? 0, PcConfiguration.MAX_RAM_COUNT))
     }
 </section>
 
@@ -321,11 +321,11 @@
         {
             @if (ssds.Length == 1)
             {
-                @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "SSD", "Ssd", ssds[i], isCurrentUserOwner, i == 0, ssds.Length, PcConfiguration.MAX_SSD_COUNT))
+                @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "SSD", "Ssd", ssds[i], isCurrentUserOwner, i == 0, ssds.Length, PcConfiguration.MAX_SSD_COUNT))
             }
             else
             {
-                @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "SSD", "Ssd", ssds[i], isCurrentUserOwner, i == 0, ssds.Length, PcConfiguration.MAX_SSD_COUNT, i + 1))
+                @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "SSD", "Ssd", ssds[i], isCurrentUserOwner, i == 0, ssds.Length, PcConfiguration.MAX_SSD_COUNT, i + 1))
             }
 
             @if (ssds[i] != null)
@@ -371,7 +371,7 @@
     }
     else
     {
-        @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "SSD", "Ssd", null, isCurrentUserOwner, true, ssds?.Length ?? 0, PcConfiguration.MAX_SSD_COUNT))
+        @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "SSD", "Ssd", null, isCurrentUserOwner, true, ssds?.Length ?? 0, PcConfiguration.MAX_SSD_COUNT))
     }
 </section>
 
@@ -382,11 +382,11 @@
         {
             @if (hdds.Length == 1)
             {
-                @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "HDD", "Hdd", hdds[i], isCurrentUserOwner, i == 0, hdds.Length, PcConfiguration.MAX_HDD_COUNT))
+                @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "HDD", "Hdd", hdds[i], isCurrentUserOwner, i == 0, hdds.Length, PcConfiguration.MAX_HDD_COUNT))
             }
             else
             {
-                @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "HDD", "Hdd", hdds[i], isCurrentUserOwner, i == 0, hdds.Length, PcConfiguration.MAX_HDD_COUNT, i + 1))
+                @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "HDD", "Hdd", hdds[i], isCurrentUserOwner, i == 0, hdds.Length, PcConfiguration.MAX_HDD_COUNT, i + 1))
             }
 
             @if (hdds[i] != null)
@@ -433,6 +433,6 @@
     }
     else
     {
-        @await Html.PartialAsync("PcComponents/_ComponentTitlePartial", new ComponentTitleViewModel(Model.Id, "HDD", "Hdd", null, isCurrentUserOwner, true, hdds?.Length ?? 0, PcConfiguration.MAX_HDD_COUNT))
+        @await Html.PartialAsync("PcComponents/_ComponentTitle", new ComponentTitleViewModel(Model.Id, "HDD", "Hdd", null, isCurrentUserOwner, true, hdds?.Length ?? 0, PcConfiguration.MAX_HDD_COUNT))
     }
 </section>
