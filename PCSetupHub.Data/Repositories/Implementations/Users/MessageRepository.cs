@@ -40,7 +40,10 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 				}
 			}
 
-			return [.. messages];
+			return [.. messages
+				.OrderByDescending(m => !m.IsRead && m.SenderId != userId)
+				.ThenByDescending(m => m.CreatedAt)
+				.ThenByDescending(m => m.Id)];
 		}
 		public async Task<Message[]> GetMessagesAsync(string chatPublicId)
 		{
