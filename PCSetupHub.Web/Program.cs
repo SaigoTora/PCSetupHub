@@ -11,12 +11,6 @@ using PCSetupHub.Core.Middlewares;
 using PCSetupHub.Core.Services;
 using PCSetupHub.Core.Settings;
 using PCSetupHub.Data;
-using PCSetupHub.Data.Models.Hardware;
-using PCSetupHub.Data.Repositories.Base;
-using PCSetupHub.Data.Repositories.Implementations.PcConfigurations;
-using PCSetupHub.Data.Repositories.Implementations.Users;
-using PCSetupHub.Data.Repositories.Interfaces.PcConfigurations;
-using PCSetupHub.Data.Repositories.Interfaces.Users;
 using PCSetupHub.Web.Hubs;
 
 
@@ -57,21 +51,11 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 	services.ConfigureRateLimiter();
 	await services.AddAuthAsync(configuration);
 	await services.AddExternalAuthProvidersAsync(configuration);
-	services.AddAWSService<IAmazonS3>();
-	services.AddEndpointsApiExplorer();
-	services.AddSwaggerGen();
 
-	services.AddScoped<IUserRepository, UserRepository>();
-	services.AddScoped<IPcConfigurationRepository, PcConfigurationRepository>();
-	services.AddScoped(typeof(IRepository<>), typeof(BaseRepo<>));
-	services.AddScoped<IFriendshipRepository, FriendshipRepository>();
-	services.AddScoped<IChatRepository, ChatRepository>();
-	services.AddScoped<IMessageRepository, MessageRepository>();
-	services.AddScoped<IHardwareComponentRepository<VideoCard>, VideoCardRepository>();
-	services.AddScoped<IHardwareComponentRepository<Motherboard>, MotherboardRepository>();
-	services.AddScoped<IHardwareComponentRepository<PowerSupply>, PowerSupplyRepository>();
-	services.AddScoped<IHardwareComponentRepository<Hdd>, HddRepository>();
-	services.AddScoped<IHardwareComponentRepository<Ram>, RamRepository>();
+	services.AddAWSService<IAmazonS3>()
+		.AddEndpointsApiExplorer()
+		.AddSwaggerGen()
+		.AddRepositories(configuration);
 
 	services.AddScoped<IUserService, UserService>();
 	services.AddScoped<IUserAccessService, UserAccessService>();
