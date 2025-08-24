@@ -1,12 +1,13 @@
 ﻿@model ContactsViewModel
 @{
-    <link rel="stylesheet" href="~/css/contact.css" />
+    <link rel="stylesheet" href="~/css/contact.css" asp-append-version="true" />
 }
 
 <ul class="nav contacts-tabs-container">
     <li class="contacts-tab-item me-auto">
-        <a class="contacts-nav-link contacts-back-nav-link" asp-controller="Profile" asp-action="Index" asp-route-login="@Model.Login">Back</a>
+        <a class="contacts-nav-link contacts-back-nav-link" asp-controller="Profile" asp-action="Index" asp-route-login="@Model.Login" title="Back to @Model.Login">Back</a>
     </li>
+
     @if (Model.ContactsPrivacy != null && Model.ContactsPrivacy.AreFriendsVisible)
     {
         <li class="contacts-tab-item me-1">
@@ -27,3 +28,23 @@
         </li>
     }
 </ul>
+
+<div class="login-context">
+    <span class="user-select-none">
+        @switch (Model.ActionName)
+        {
+            case "Friends":
+                @:Friends of
+                break;
+            case "Followers":
+                @:Followers of
+                break;
+            case "Followings":
+                @:Followings of
+                break;
+        }
+    </span>
+    <span class="fw-bold">
+        @Model.Login
+    </span>
+</div>
