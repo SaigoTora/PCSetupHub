@@ -145,13 +145,14 @@ namespace PCSetupHub.Web.Controllers
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> Search(string contactSearchQuery, int page = 1)
 		{
+			int? userId = User.GetId();
 			Expression<Func<User, bool>> filter = u
-				=> u.Login.Contains(contactSearchQuery) || u.Name.Contains(contactSearchQuery);
+				=> (u.Login.Contains(contactSearchQuery) || u.Name.Contains(contactSearchQuery))
+					&& userId.HasValue && u.Id != userId.Value;
 
 			int totalItems = await _userRepository.CountAsync(filter);
 			List<User> contacts = await _userRepository
 				.GetPageAsync(filter, page, CONTACTS_PAGE_SIZE);
-
 
 			ContactsViewModel model = new(contacts, string.Empty, contactSearchQuery, page,
 				totalItems, nameof(Search), CONTACTS_PAGE_SIZE, nameof(contactSearchQuery));
