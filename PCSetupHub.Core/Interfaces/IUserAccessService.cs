@@ -14,5 +14,16 @@ namespace PCSetupHub.Core.Interfaces
 		/// <returns>A task that returns true if access is allowed; otherwise false.</returns>
 		Task<bool> HasAccessAsync(string requesterLogin, string targetLogin,
 			PrivacyLevelType level);
+
+		/// <summary>
+		/// Checks asynchronously whether the given user has permission to send messages
+		/// to the specified target user, considering both users' privacy settings.
+		/// </summary>
+		/// <param name="user">The user who wants to send a message.</param>
+		/// <param name="targetUser">The target user who may receive the message.</param>
+		/// <returns>
+		/// A task that returns true if messaging is allowed; otherwise false.
+		/// </returns>
+		public Task<bool> HasAccessToMessagingAsync(User user, User targetUser);
 	}
 }

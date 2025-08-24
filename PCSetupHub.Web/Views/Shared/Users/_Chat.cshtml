@@ -74,20 +74,21 @@
 </div>
 
 <form asp-controller="Chats" asp-action="SendFirstMessage" method="post" id="messages" data-chat-id="@Model.ChatId" data-user-id="@userId">
-    <textarea id="inputMessage" name="MessageText" class="message-input" placeholder="Write a message..." type="text" autocomplete="off" title="" required
-              oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+    <textarea id="inputMessage" name="MessageText" class="message-input"
+              placeholder="@(Model.CanSendMessage ? "Write a message..." : "You cannot send messages to this user")" type="text" autocomplete="off" title="" required
+              oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" @(Model.CanSendMessage ? "" : "disabled")></textarea>
 
     @if (Model.IsChatEmpty && isChatOneToOne && firstParticipant != null)
     {
-        <input type="hidden" name="ReceiverUserId" value="@firstParticipant.Id" />
+        <input type="hidden" name="ReceiverUserLogin" value="@firstParticipant.Login" />
         <div class="d-flex justify-content-end">
-            <button id="sendFirstButton" class="button-send" type="submit">Send</button>
+            <button id="sendFirstButton" class="button-send" type="submit" @(Model.CanSendMessage ? "" : "disabled")>Send</button>
         </div>
     }
     else
     {
         <div class="d-flex justify-content-end">
-            <button id="sendButton" class="button-send" type="button">Send</button>
+            <button id="sendButton" class="button-send" type="button" @(Model.CanSendMessage ? "" : "disabled")>Send</button>
         </div>
     }
 </form>

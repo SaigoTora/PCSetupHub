@@ -52,5 +52,16 @@ namespace PCSetupHub.Core.Services
 
 			return false;
 		}
+
+		public async Task<bool> HasAccessToMessagingAsync(User user, User targetUser)
+		{
+			bool messageAccessGranted = await HasAccessAsync(user.Login,
+				targetUser.Login, (PrivacyLevelType)targetUser.PrivacySetting.MessagesAccessId);
+			if (!messageAccessGranted)
+				return false;
+
+			return await HasAccessAsync(targetUser.Login,
+				user.Login, (PrivacyLevelType)user.PrivacySetting.MessagesAccessId);
+		}
 	}
 }

@@ -21,7 +21,7 @@ if (sendFirstButton) {
     }
 }
 
-if (sendButton) {
+if (sendButton && !sendButton.disabled) {
     var connection = new signalR.HubConnectionBuilder()
         .withUrl("/chat")
         .build();

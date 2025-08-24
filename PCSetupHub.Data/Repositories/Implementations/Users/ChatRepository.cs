@@ -26,6 +26,7 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 		{
 			return await Context.UserChats
 				.Where(uc => uc.Chat!.PublicId == chatPublicId)
+				.Include(uc => uc.User!.PrivacySetting)
 				.Select(uc => uc.User!)
 				.ToArrayAsync();
 		}

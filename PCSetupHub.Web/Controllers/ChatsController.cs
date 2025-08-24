@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using PCSetupHub.Core.Extensions;
+using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Data.Models.Relationships;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Base;
@@ -18,16 +19,19 @@ namespace PCSetupHub.Web.Controllers
 		private readonly IRepository<UserChats> _userChatsRepository;
 		private readonly IChatRepository _chatRepository;
 		private readonly IMessageRepository _messageRepository;
+		private readonly IUserAccessService _userAccessService;
 
 		public ChatsController(ILogger<ChatsController> logger,
 			IUserRepository userRepository, IRepository<UserChats> userChatsRepository,
-			IChatRepository chatRepository, IMessageRepository messageRepository)
+			IChatRepository chatRepository, IMessageRepository messageRepository,
+			IUserAccessService userAccessService)
 		{
 			_logger = logger;
 			_userRepository = userRepository;
 			_userChatsRepository = userChatsRepository;
 			_chatRepository = chatRepository;
 			_messageRepository = messageRepository;
+			_userAccessService = userAccessService;
 		}
 
 		[HttpGet("Chats/{login}")]
@@ -56,8 +60,15 @@ namespace PCSetupHub.Web.Controllers
 				return StatusCode(403);
 
 			User[] participants = await _chatRepository.GetChatParticipantsAsync(chatPublicId);
+			bool canSendMessage = true;
+			if (participants.Length == 2)
+			{
+				canSendMessage = await _userAccessService
+					.HasAccessToMessagingAsync(participants[0], participants[1]);
+			}
+
 			Message[] messages = await _messageRepository.GetMessagesAsync(chatPublicId);
-			ChatViewModel model = new(chatPublicId, participants, messages);
+			ChatViewModel model = new(chatPublicId, participants, messages, canSendMessage);
 
 			return View(model);
 		}
@@ -66,20 +77,24 @@ namespace PCSetupHub.Web.Controllers
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> StartChat(string login)
 		{
-			int? userId = User.GetId();
-			if (!userId.HasValue)
+			string? currentUserLogin = User.GetLogin();
+			if (string.IsNullOrEmpty(currentUserLogin))
 				return StatusCode(403);
-			User? user = await _userRepository.GetOneAsync(userId.Value);
+			User? user = await _userRepository.GetByLoginAsync(currentUserLogin,
+				UserIncludes.PrivacySetting);
 			if (user == null)
 				return NotFound();
 
-			User? targetUser = await _userRepository.GetByLoginAsync(login, UserIncludes.None);
+			User? targetUser = await _userRepository.GetByLoginAsync(login,
+				UserIncludes.PrivacySetting);
 			if (targetUser == null)
 				return NotFound();
 
 			Chat? chat = await _chatRepository.GetChatBetweenUsersAsync(user.Id, targetUser.Id);
 			if (chat == null)
 			{
+				if (!await _userAccessService.HasAccessToMessagingAsync(user, targetUser))
+					return StatusCode(403);
 				User[] participants = [user, targetUser];
 				ChatViewModel model = new(participants);
 				return View(model);
@@ -90,26 +105,32 @@ namespace PCSetupHub.Web.Controllers
 
 		[HttpPost]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-		public async Task<IActionResult> SendFirstMessage(int receiverUserId, string messageText)
+		public async Task<IActionResult> SendFirstMessage(string receiverUserLogin,
+			string messageText)
 		{
 			if (string.IsNullOrEmpty(messageText))
 				return BadRequest();
 
-			int? senderUserId = User.GetId();
-			if (!senderUserId.HasValue)
+			string? senderUserLogin = User.GetLogin();
+			if (string.IsNullOrEmpty(senderUserLogin))
 				return StatusCode(403);
-			User? senderUser = await _userRepository.GetOneAsync(senderUserId.Value);
+			User? senderUser = await _userRepository.GetByLoginAsync(senderUserLogin,
+				UserIncludes.PrivacySetting);
 			if (senderUser == null)
 				return NotFound();
 
-			User? receiverUser = await _userRepository.GetOneAsync(receiverUserId);
+			User? receiverUser = await _userRepository.GetByLoginAsync(receiverUserLogin,
+				UserIncludes.PrivacySetting);
 			if (receiverUser == null)
 				return NotFound();
 
+			if (!await _userAccessService.HasAccessToMessagingAsync(senderUser, receiverUser))
+				return StatusCode(403);
+
 			Chat chat = await _chatRepository.AddChatWithUniquePublicIdAsync();
-			await _userChatsRepository.AddAsync(new UserChats(senderUserId.Value, chat.Id));
-			await _userChatsRepository.AddAsync(new UserChats(receiverUserId, chat.Id));
-			await _messageRepository.AddAsync(new Message(chat.Id, senderUserId.Value,
+			await _userChatsRepository.AddAsync(new UserChats(senderUser.Id, chat.Id));
+			await _userChatsRepository.AddAsync(new UserChats(receiverUser.Id, chat.Id));
+			await _messageRepository.AddAsync(new Message(chat.Id, senderUser.Id,
 				messageText));
 
 			return RedirectToAction("Chat", new { chatPublicId = chat.PublicId });

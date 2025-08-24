@@ -69,14 +69,22 @@ namespace PCSetupHub.Web.Controllers
 					(PrivacyLevelType)accessId);
 			}
 
+			User? currentUser = await _userRepository.GetByLoginAsync(currentUserLogin,
+				UserIncludes.PrivacySetting);
+			bool areMessageVisible = false;
+			if (currentUser != null)
+			{
+				areMessageVisible = await _userAccessService.HasAccessToMessagingAsync(currentUser,
+					user);
+			}
+
 			PrivacySetting settings = user.PrivacySetting;
 			ContactsPrivacyViewModel contactsPrivacy = new(
 				await hasAccess(settings.FriendsAccessId),
 				await hasAccess(settings.FollowersAccessId),
 				await hasAccess(settings.FollowingsAccessId));
 
-			return new ProfileViewModel(user, contactsPrivacy,
-				await hasAccess(settings.MessagesAccessId),
+			return new ProfileViewModel(user, contactsPrivacy, areMessageVisible,
 				await hasAccess(settings.PcConfigAccessId),
 				await hasAccess(settings.CommentWritingAccessId));
 		}

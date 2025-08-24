@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
 using PCSetupHub.Core.DTOs;
+using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
 
@@ -10,11 +11,14 @@ namespace PCSetupHub.Web.Hubs
 	{
 		private readonly IChatRepository _chatRepository;
 		private readonly IMessageRepository _messageRepository;
+		private readonly IUserAccessService _userAccessService;
 
-		public ChatHub(IMessageRepository messageRepository, IChatRepository chatRepository)
+		public ChatHub(IMessageRepository messageRepository, IChatRepository chatRepository,
+			IUserAccessService userAccessService)
 		{
 			_messageRepository = messageRepository;
 			_chatRepository = chatRepository;
+			_userAccessService = userAccessService;
 		}
 
 		public async Task JoinToChat(string chatId)
@@ -32,6 +36,9 @@ namespace PCSetupHub.Web.Hubs
 				if (chats.Count == 1)
 				{
 					Chat chat = chats[0];
+					if (!await IsMessageAllowedAsync(chat.PublicId))
+						return;
+
 					Message message = new(chat.Id, messageRequest.SenderId, messageRequest.Text);
 					await _messageRepository.AddAsync(message);
 
@@ -43,6 +50,21 @@ namespace PCSetupHub.Web.Hubs
 						.SendAsync("ReceiveMessage", response);
 				}
 			}
+		}
+
+		private async Task<bool> IsMessageAllowedAsync(string chatPublicId)
+		{
+			User[] participants = await _chatRepository.GetChatParticipantsAsync(chatPublicId);
+			if (participants.Length == 2)
+			{
+				if (participants[0] == null || participants[1] == null)
+					return false;
+
+				return await _userAccessService.HasAccessToMessagingAsync(participants[0],
+					participants[1]);
+			}
+
+			return true;
 		}
 	}
 }
