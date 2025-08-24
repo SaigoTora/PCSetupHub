@@ -26,6 +26,7 @@ namespace PCSetupHub.Core.Extensions
 				options.GlobalLimiter = CreateGlobalLimiter(1000, TimeSpan.FromMinutes(10));
 
 				AddFixedWindowPolicy(options, "AccountCritical", 20, TimeSpan.FromMinutes(10));
+				AddFixedWindowPolicy(options, "SendFirstMessage", 10, TimeSpan.FromMinutes(10));
 				AddFixedWindowPolicy(options, "Friendship", 50, TimeSpan.FromMinutes(10));
 				AddFixedWindowPolicy(options, "Comments", 50, TimeSpan.FromMinutes(10));
 				AddFixedWindowPolicy(options, "UploadAvatar", 5, TimeSpan.FromMinutes(10));

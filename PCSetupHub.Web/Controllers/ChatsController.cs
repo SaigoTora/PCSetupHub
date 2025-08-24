@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Interfaces;
@@ -93,10 +94,10 @@ namespace PCSetupHub.Web.Controllers
 			Chat? chat = await _chatRepository.GetChatBetweenUsersAsync(user.Id, targetUser.Id);
 			if (chat == null)
 			{
-				if (!await _userAccessService.HasAccessToMessagingAsync(user, targetUser))
-					return StatusCode(403);
+				bool canSendMessage = await _userAccessService.HasAccessToMessagingAsync(user,
+					targetUser);
 				User[] participants = [user, targetUser];
-				ChatViewModel model = new(participants);
+				ChatViewModel model = new(participants, canSendMessage);
 				return View(model);
 			}
 
@@ -104,6 +105,7 @@ namespace PCSetupHub.Web.Controllers
 		}
 
 		[HttpPost]
+		[EnableRateLimiting("SendFirstMessage")]
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public async Task<IActionResult> SendFirstMessage(string receiverUserLogin,
 			string messageText)

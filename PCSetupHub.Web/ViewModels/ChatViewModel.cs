@@ -10,9 +10,10 @@ namespace PCSetupHub.Web.ViewModels
 		public bool CanSendMessage { get; private set; }
 		public bool IsChatEmpty { get; private set; }
 
-		public ChatViewModel(User[] participants)
+		public ChatViewModel(User[] participants, bool canSendMessage)
 		{
 			Participants = participants;
+			CanSendMessage = canSendMessage;
 			IsChatEmpty = true;
 		}
 		public ChatViewModel(string chatId, User[] participants, Message[] messages,
@@ -21,8 +22,8 @@ namespace PCSetupHub.Web.ViewModels
 			ChatId = chatId;
 			Participants = participants;
 			Messages = messages;
-			IsChatEmpty = messages.Length == 0;
 			CanSendMessage = canSendMessage;
+			IsChatEmpty = messages.Length == 0;
 		}
 	}
 }
