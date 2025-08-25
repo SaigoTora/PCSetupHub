@@ -105,6 +105,13 @@
     margin-right: 0.5rem;
 }
 
+.message-bottom-container {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+}
+
+
 .message-time {
     font-size: 0.68rem;
     color: #e0e0e0;
@@ -112,6 +119,27 @@
     margin-top: 3px;
     user-select: none;
 }
+
+.read-status {
+    display: inline-flex;
+    align-items: center;
+}
+
+    .read-status i {
+        font-size: 0.95rem;
+    }
+
+    .read-status.is-sent {
+        color: #6bbfff;
+    }
+
+    .read-status.is-read {
+        color: #3CCFCF;
+    }
+
+    .read-status i:hover, .message-time:hover {
+        filter: brightness(1.1);
+    }
 
 .empty-chat-message {
     font-size: 0.85rem;

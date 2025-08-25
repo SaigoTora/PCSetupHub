@@ -42,7 +42,7 @@ namespace PCSetupHub.Web.Hubs
 					Message message = new(chat.Id, messageRequest.SenderId, messageRequest.Text);
 					await _messageRepository.AddAsync(message);
 
-					ChatMessageResponse response = new(message.SenderId, message.Text,
+					ChatMessageResponse response = new(message.Id, message.SenderId, message.Text,
 						message.CreatedAt);
 
 					await Clients
@@ -50,6 +50,13 @@ namespace PCSetupHub.Web.Hubs
 						.SendAsync("ReceiveMessage", response);
 				}
 			}
+		}
+		public async Task MarkMessagesAsRead(string chatId, List<int> messageIds)
+		{
+			await _messageRepository.MarkAsReadAsync(messageIds);
+
+			foreach (var messageId in messageIds)
+				await Clients.Group(chatId).SendAsync("MessageRead", messageId);
 		}
 
 		private async Task<bool> IsMessageAllowedAsync(string chatPublicId)

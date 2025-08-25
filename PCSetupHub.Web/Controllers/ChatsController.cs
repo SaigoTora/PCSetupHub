@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.SignalR;
 
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Interfaces;
@@ -9,6 +10,7 @@ using PCSetupHub.Data.Models.Relationships;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Base;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
+using PCSetupHub.Web.Hubs;
 using PCSetupHub.Web.ViewModels;
 
 namespace PCSetupHub.Web.Controllers
@@ -21,11 +23,12 @@ namespace PCSetupHub.Web.Controllers
 		private readonly IChatRepository _chatRepository;
 		private readonly IMessageRepository _messageRepository;
 		private readonly IUserAccessService _userAccessService;
+		private readonly IHubContext<ChatHub> _hubContext;
 
 		public ChatsController(ILogger<ChatsController> logger,
 			IUserRepository userRepository, IRepository<UserChats> userChatsRepository,
 			IChatRepository chatRepository, IMessageRepository messageRepository,
-			IUserAccessService userAccessService)
+			IUserAccessService userAccessService, IHubContext<ChatHub> hubContext)
 		{
 			_logger = logger;
 			_userRepository = userRepository;
@@ -33,6 +36,7 @@ namespace PCSetupHub.Web.Controllers
 			_chatRepository = chatRepository;
 			_messageRepository = messageRepository;
 			_userAccessService = userAccessService;
+			_hubContext = hubContext;
 		}
 
 		[HttpGet("Chats/{login}")]
@@ -66,6 +70,13 @@ namespace PCSetupHub.Web.Controllers
 			{
 				canSendMessage = await _userAccessService
 					.HasAccessToMessagingAsync(participants[0], participants[1]);
+			}
+
+			int[] unreadMessageIds = await GetUnreadMessageIdsAsync(chatPublicId, userId.Value);
+			if (unreadMessageIds.Length > 0)
+			{
+				await _messageRepository.MarkAsReadAsync(unreadMessageIds);
+				await NotifyMessagesReadAsync(chatPublicId, unreadMessageIds);
 			}
 
 			Message[] messages = await _messageRepository.GetMessagesAsync(chatPublicId);
@@ -136,6 +147,26 @@ namespace PCSetupHub.Web.Controllers
 				messageText));
 
 			return RedirectToAction("Chat", new { chatPublicId = chat.PublicId });
+		}
+
+		private async Task<int[]> GetUnreadMessageIdsAsync(string chatId, int userId)
+		{
+			Message[] messages = await _messageRepository.GetMessagesAsync(chatId);
+
+			return [.. messages
+				.Where(m => m.SenderId != userId && !m.IsRead)
+				.Select(m => m.Id)];
+		}
+		private async Task NotifyMessagesReadAsync(string chatId, int[] messageIds)
+		{
+			if (messageIds.Length <= 0)
+				return;
+
+			foreach (int msgId in messageIds)
+			{
+				await _hubContext.Clients.Group(chatId)
+					.SendAsync("MessageRead", msgId);
+			}
 		}
 	}
 }

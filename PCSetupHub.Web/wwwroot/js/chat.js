@@ -72,7 +72,36 @@ if (sendButton && !sendButton.disabled) {
         const messageEl = createMessageElement(response, userId);
         messageList.prepend(messageEl);
         messageEl.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        if (response.senderId !== userId) {
+            markAsRead(chatId, [response.messageId]);
+        }
     });
+
+    connection.on("MessageRead", function (messageId) {
+        const msgEl = document.querySelector(`.message[data-message-id="${messageId}"]`);
+        if (!msgEl) return;
+
+        const statusSpan = msgEl.querySelector(".read-status");
+        if (statusSpan) {
+            statusSpan.classList.remove("is-sent");
+            statusSpan.classList.add("is-read");
+            statusSpan.title = "Read";
+        }
+
+        const statusIcon = msgEl.querySelector(".read-status i");
+        if (statusIcon) {
+            statusIcon.classList.remove("fa-check");
+            statusIcon.classList.add("fa-check-double");
+            statusIcon.setAttribute('aria-label', 'Read');
+            msgEl.querySelector(".read-status").classList.add("is-read");
+        }
+    });
+
+    function markAsRead(chatId, messageIds) {
+        connection.invoke("MarkMessagesAsRead", chatId, messageIds)
+            .catch(err => console.error(err.toString()));
+    }
 }
 
 function createMessageElement(response, userId) {
@@ -85,17 +114,38 @@ function createMessageElement(response, userId) {
         el.classList.add("message-in");
     }
 
+    el.setAttribute("data-message-id", response.messageId);
     const textDiv = document.createElement("div");
     textDiv.classList.add("message-text");
     textDiv.innerHTML = response.text.replace(/\n/g, "<br>");
 
-    const timeDiv = document.createElement("div");
-    timeDiv.classList.add("message-time");
+    const bottomDiv = document.createElement("div");
+    bottomDiv.classList.add("message-bottom-container");
+    const timeSpan = document.createElement("span");
+    timeSpan.classList.add("message-time");
     const messageDate = new Date(response.createdAt);
-    timeDiv.textContent = messageDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    timeSpan.textContent = messageDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    timeSpan.title = messageDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    bottomDiv.appendChild(timeSpan);
+
+    if (response.senderId === userId) {
+        const statusSpan = document.createElement("span");
+        statusSpan.classList.add("read-status");
+        statusSpan.classList.add("is-sent");
+        statusSpan.setAttribute('aria-label', 'Message status');
+        statusSpan.title = "Sent";
+
+        const statusIcon = document.createElement("i");
+        statusIcon.classList.add("fa-solid");
+        statusIcon.classList.add("fa-check");
+        statusIcon.setAttribute('aria-label', 'Sent');
+        statusSpan.appendChild(statusIcon);
+
+        bottomDiv.appendChild(statusSpan);
+    }
 
     el.appendChild(textDiv);
-    el.appendChild(timeDiv);
+    el.appendChild(bottomDiv);
 
     return el;
 }

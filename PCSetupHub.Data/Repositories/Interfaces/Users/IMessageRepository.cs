@@ -18,5 +18,12 @@ namespace PCSetupHub.Data.Repositories.Interfaces.Users
 		/// <param name="chatPublicId">The public ID of the chat.</param>
 		/// <returns>An array of messages from the chat, ordered by newest first.</returns>
 		public Task<Message[]> GetMessagesAsync(string chatPublicId);
+
+		/// <summary>
+		/// Marks the specified messages as read in the database.
+		/// </summary>
+		/// <param name="messageIds">A collection of message IDs to mark as read.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		public Task MarkAsReadAsync(ICollection<int> messageIds);
 	}
 }

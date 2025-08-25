@@ -55,6 +55,17 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 				.ThenByDescending(m => m.Id)
 				.ToArrayAsync();
 		}
+		public async Task MarkAsReadAsync(ICollection<int> messageIds)
+		{
+			List<Message> messages = await Context.Messages
+				.Where(m => messageIds.Contains(m.Id) && !m.IsRead)
+				.ToListAsync();
+
+			foreach (Message message in messages)
+				message.IsRead = true;
+
+			await Context.SaveChangesAsync();
+		}
 
 		private Task<Message?> GetLastRelevantMessageAsync(int chatId, int userId)
 		{
@@ -67,5 +78,6 @@ namespace PCSetupHub.Data.Repositories.Implementations.Users
 				.ThenByDescending(m => m.Id)
 				.FirstOrDefaultAsync();
 		}
+
 	}
 }

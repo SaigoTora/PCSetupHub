@@ -56,12 +56,20 @@
                 lastDate = currentDate;
             }
 
-            <div class="message @(message.SenderId == userId ? "message-out" : "message-in")">
+            <div class="message @(message.SenderId == userId ? "message-out" : "message-in")" data-message-id="@message.Id">
                 <div class="message-text">
                     @Html.Raw(HttpUtility.HtmlEncode(message.Text).Replace("\n", "<br />"))
                 </div>
-                <div class="message-time">
-                    @message.CreatedAt.ToLocalTime().ToString("HH:mm")
+                <div class="message-bottom-container">
+                    <span class="message-time" title="@message.CreatedAt.ToLocalTime().ToString("HH:mm")">
+                        @message.CreatedAt.ToLocalTime().ToString("HH:mm")
+                    </span>
+                    @if (message.SenderId == userId)
+                    {
+                        <span class="read-status @(message.IsRead ? "is-read" : "is-sent")" aria-label="Message status" title="@(message.IsRead ? "Read" : "Sent")">
+                            <i class="fa-solid @(message.IsRead ? "fa-check-double" : "fa-check")" aria-label="@(message.IsRead ? "Read" : "Sent")"></i>
+                        </span>
+                    }
                 </div>
             </div>
         }
