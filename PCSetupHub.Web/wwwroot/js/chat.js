@@ -7,18 +7,16 @@ const inputMessage = document.getElementById("inputMessage");
 const sendButton = document.getElementById("sendButton");
 const sendFirstButton = document.getElementById("sendFirstButton");
 
-if (sendFirstButton) {
-    if (inputMessage) {
-        inputMessage.addEventListener("keydown", function (e) {
-            if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                if (!inputMessage.value) {
-                    return;
-                }
-                sendFirstButton.click();
+if (sendFirstButton && inputMessage) {
+    inputMessage.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            if (!inputMessage.value) {
+                return;
             }
-        });
-    }
+            sendFirstButton.click();
+        }
+    });
 }
 
 if (sendButton && !sendButton.disabled) {

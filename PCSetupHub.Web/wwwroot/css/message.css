@@ -41,6 +41,17 @@
     max-width: 80%;
 }
 
+.chat-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-inline: 1rem;
+}
+
+.back-icon {
+    font-size: 1.7rem;
+}
 
 .messages-container {
     display: flex;
@@ -195,4 +206,11 @@
 
 .footer {
     display: none;
+}
+
+@media(max-width: 420px) {
+    .chat-header {
+        justify-content: flex-end;
+        margin-inline: 0;
+    }
 }

@@ -20,7 +20,13 @@
 
 @if (Model.Participants != null && userId.HasValue)
 {
-    <div class="d-flex justify-content-center mb-2">
+    <div class="chat-header mb-2">
+        <div class="position-absolute start-0">
+            <a class="text-light" href="#" title="Back"
+               onclick="if (document.referrer !== '') { history.back(); } else { window.location.href='@Url.Action("Index", "Chats", new { login = User.GetLogin() })'; }">
+                <i class="fas fa-arrow-left back-icon"></i>
+            </a>
+        </div>
         @if (isChatOneToOne)
         {
             firstParticipant = Model.Participants.FirstOrDefault(p => p.Id != userId.Value);
@@ -33,7 +39,7 @@
                                  title="@firstParticipant.Login" width="60" height="60"
                                  class="user-avatar" />
                         </div>
-                        <span class="user-login">@firstParticipant.Login</span>
+                        <span class="user-login" title="@firstParticipant.Name">@firstParticipant.Login</span>
                     </div>
                 </a>
             }
