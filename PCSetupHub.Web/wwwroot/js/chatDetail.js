@@ -1,11 +1,12 @@
 ﻿"use strict";
 
-const messages = document.getElementById("messages");
-const chatId = messages.getAttribute("data-chat-id");
-const userId = parseInt(messages.getAttribute("data-user-id"));
+const messageForm = document.getElementById("messageForm");
+const chatId = messageForm.getAttribute("data-chat-id");
+const userId = parseInt(messageForm.getAttribute("data-user-id"));
 const inputMessage = document.getElementById("inputMessage");
 const sendButton = document.getElementById("sendButton");
 const sendFirstButton = document.getElementById("sendFirstButton");
+
 
 if (sendFirstButton && inputMessage) {
     inputMessage.addEventListener("keydown", function (e) {

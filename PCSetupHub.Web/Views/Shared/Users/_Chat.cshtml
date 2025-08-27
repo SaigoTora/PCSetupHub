@@ -87,7 +87,7 @@
     }
 </div>
 
-<form asp-controller="Chats" asp-action="SendFirstMessage" method="post" id="messages" data-chat-id="@Model.ChatId" data-user-id="@userId">
+<form asp-controller="Chats" asp-action="SendFirstMessage" method="post" id="messageForm" data-chat-id="@Model.ChatId" data-user-id="@userId">
     <textarea id="inputMessage" name="MessageText" class="message-input"
               placeholder="@(Model.CanSendMessage ? "Write a message..." : "You cannot send messages to this user")" type="text" autocomplete="off" title="" required
               oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" @(Model.CanSendMessage ? "" : "disabled")></textarea>
@@ -109,4 +109,4 @@
 
 
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/chat.js"></script>
+<script src="~/js/chatDetail.js"></script>

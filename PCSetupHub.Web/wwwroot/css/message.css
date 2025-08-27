@@ -58,7 +58,7 @@
     flex-direction: column-reverse;
     gap: 0.5rem;
     padding: 0.5rem;
-    height: 66dvh;
+    height: 65dvh;
     overflow: auto;
 }
 

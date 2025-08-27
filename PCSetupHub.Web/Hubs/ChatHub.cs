@@ -21,6 +21,10 @@ namespace PCSetupHub.Web.Hubs
 			_userAccessService = userAccessService;
 		}
 
+		public async Task JoinUserGroup(int userId)
+		{
+			await Groups.AddToGroupAsync(Context.ConnectionId, userId.ToString());
+		}
 		public async Task JoinToChat(string chatId)
 		{
 			await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
@@ -48,6 +52,12 @@ namespace PCSetupHub.Web.Hubs
 					await Clients
 						.Group(messageRequest.ChatPublicId)
 						.SendAsync("ReceiveMessage", response);
+
+					if (message.Sender != null)
+					{
+						await NotifyLobbyAsync(response, message.Sender,
+							messageRequest.ChatPublicId);
+					}
 				}
 			}
 		}
@@ -72,6 +82,26 @@ namespace PCSetupHub.Web.Hubs
 			}
 
 			return true;
+		}
+		private async Task NotifyLobbyAsync(ChatMessageResponse response, User sender,
+			string chatPublicId)
+		{
+			User[] participants = await _chatRepository
+				.GetChatParticipantsAsync(chatPublicId);
+
+			int[] participantsId = [.. participants
+				.Where(u => u.Id != response.SenderId)
+				.Select(u => u.Id)];
+
+			LobbyMessageResponse lobbyResponse = new(chatPublicId, response.MessageId, sender.Id,
+				sender.AvatarUrl, sender.Login, sender.Name, response.Text, response.CreatedAt);
+
+			foreach (int participantId in participantsId)
+			{
+				await Clients
+					.Group(participantId.ToString())
+					.SendAsync("ReceiveMessage", lobbyResponse);
+			}
 		}
 	}
 }

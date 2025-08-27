@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.SignalR;
 
+using PCSetupHub.Core.DTOs;
 using PCSetupHub.Core.Extensions;
 using PCSetupHub.Core.Interfaces;
 using PCSetupHub.Data.Models.Relationships;
@@ -143,8 +144,16 @@ namespace PCSetupHub.Web.Controllers
 			Chat chat = await _chatRepository.AddChatWithUniquePublicIdAsync();
 			await _userChatsRepository.AddAsync(new UserChats(senderUser.Id, chat.Id));
 			await _userChatsRepository.AddAsync(new UserChats(receiverUser.Id, chat.Id));
-			await _messageRepository.AddAsync(new Message(chat.Id, senderUser.Id,
-				messageText));
+			Message message = new(chat.Id, senderUser.Id, messageText);
+			await _messageRepository.AddAsync(message);
+
+			LobbyMessageResponse response = new(chat.PublicId, message.Id, senderUser.Id,
+				senderUser.AvatarUrl, senderUserLogin, senderUser.Name, messageText,
+				message.CreatedAt);
+
+			await _hubContext.Clients
+				.Group(receiverUser.Id.ToString())
+				.SendAsync("ReceiveMessage", response);
 
 			return RedirectToAction("Chat", new { chatPublicId = chat.PublicId });
 		}
