@@ -40,12 +40,7 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 		options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 	});
 
-	services.AddHttpClient();
-
-	KeyVaultSecret secretConnection = await AzureSecretService.GetSecretAsync(configuration,
-		"ConnectionStrings--DefaultConnection");
-	string connectionString = secretConnection.Value;
-	services.AddDbContext<PcSetupContext>(options => options.UseSqlServer(connectionString));
+	await ConfigureDatabaseAndCacheAsync(services, configuration);
 
 	services.AddDatabaseDeveloperPageExceptionFilter();
 	services.ConfigureRateLimiter();
@@ -60,6 +55,7 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 	services.AddScoped<IUserService, UserService>();
 	services.AddScoped<IUserAccessService, UserAccessService>();
 	services.AddScoped<IImageStorageService, ImageStorageService>();
+	services.AddSingleton<ICacheService, CacheService>();
 	services.AddHttpClient<INewsApiService, NewsApiService>(client =>
 	{
 		client.DefaultRequestHeaders.Add("User-Agent", "PCSetupHubApp/1.0");
@@ -67,6 +63,20 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 
 	services.Configure<AwsSettings>(configuration.GetSection("AwsSettings"));
 	services.AddSignalR();
+}
+static async Task ConfigureDatabaseAndCacheAsync(IServiceCollection services,
+	IConfiguration configuration)
+{
+	KeyVaultSecret secretDb = await AzureSecretService.GetSecretAsync(configuration,
+		"ConnectionStrings--DefaultConnection");
+	services.AddDbContext<PcSetupContext>(options => options.UseSqlServer(secretDb.Value));
+
+	KeyVaultSecret secretRedis = await AzureSecretService.GetSecretAsync(configuration,
+		"ConnectionStrings--RedisConnection");
+	services.AddStackExchangeRedisCache(options =>
+	{
+		options.Configuration = secretRedis.Value;
+	});
 }
 static void CreateDbIfNotExists(IHost host, ILogger<Program> logger)
 {
