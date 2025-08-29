@@ -24,6 +24,6 @@ namespace PCSetupHub.Core.Interfaces
 		/// <returns>
 		/// A task that returns true if messaging is allowed; otherwise false.
 		/// </returns>
-		public Task<bool> HasAccessToMessagingAsync(User user, User targetUser);
+		Task<bool> HasAccessToMessagingAsync(User user, User targetUser);
 	}
 }

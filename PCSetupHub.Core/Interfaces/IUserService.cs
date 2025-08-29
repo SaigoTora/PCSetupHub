@@ -16,7 +16,7 @@ namespace PCSetupHub.Core.Interfaces
 		/// <param name="isSeeding">If true, skips uniqueness checks for login and email during registration 
 		/// (used when seeding data).</param>
 		/// <returns>A task representing the asynchronous operation.</returns>
-		public Task RegisterAsync(string login, string password, string name, string email,
+		Task RegisterAsync(string login, string password, string name, string email,
 			string? description, bool isSeeding = false);
 
 		/// <summary>
@@ -25,7 +25,7 @@ namespace PCSetupHub.Core.Interfaces
 		/// <param name="user">The user entity.</param>
 		/// <param name="password">The password to hash.</param>
 		/// <returns>The hashed password string.</returns>
-		public string HashPassword(User user, string password);
+		string HashPassword(User user, string password);
 
 		/// <summary>
 		/// Verifies whether the provided password matches the user's stored password hash.
@@ -33,7 +33,7 @@ namespace PCSetupHub.Core.Interfaces
 		/// <param name="user">The user entity.</param>
 		/// <param name="password">The password to verify.</param>
 		/// <returns>True if the password is correct; otherwise, false.</returns>
-		public bool VerifyPassword(User user, string password);
+		bool VerifyPassword(User user, string password);
 
 		/// <summary>
 		/// Authenticates a user by login and password and returns tokens on success.
@@ -42,7 +42,7 @@ namespace PCSetupHub.Core.Interfaces
 		/// <param name="password">The user's password.</param>
 		/// <param name="userRememberMe">Whether to remember the user (longer token lifespan).</param>
 		/// <returns>A task with an AuthResponse containing access and refresh tokens.</returns>
-		public Task<AuthResponse> LoginAsync(string login, string password, bool userRememberMe);
+		Task<AuthResponse> LoginAsync(string login, string password, bool userRememberMe);
 
 		/// <summary>
 		/// Logs in or registers a user using their Google ID and returns tokens.
@@ -52,7 +52,7 @@ namespace PCSetupHub.Core.Interfaces
 		/// <param name="name">The user's name from Google.</param>
 		/// <param name="login">Optional login name; defaults to email if null.</param>
 		/// <returns>A task with an AuthResponse containing access and refresh tokens.</returns>
-		public Task<AuthResponse> LoginOrRegisterByGoogleIdAsync(string googleId, string email,
+		Task<AuthResponse> LoginOrRegisterByGoogleIdAsync(string googleId, string email,
 			string name, string? login = null);
 
 		/// <summary>
@@ -61,6 +61,6 @@ namespace PCSetupHub.Core.Interfaces
 		/// <param name="accessToken">The access token.</param>
 		/// <param name="refreshToken">The refresh token.</param>
 		/// <returns>A task that returns true if the tokens are valid and user is logged in; otherwise, false.</returns>
-		public Task<bool> IsUserLoggedInAsync(string accessToken, string refreshToken);
+		Task<bool> IsUserLoggedInAsync(string accessToken, string refreshToken);
 	}
 }

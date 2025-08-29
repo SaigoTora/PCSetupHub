@@ -60,6 +60,10 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 	services.AddScoped<IUserService, UserService>();
 	services.AddScoped<IUserAccessService, UserAccessService>();
 	services.AddScoped<IImageStorageService, ImageStorageService>();
+	services.AddHttpClient<INewsApiService, NewsApiService>(client =>
+	{
+		client.DefaultRequestHeaders.Add("User-Agent", "PCSetupHubApp/1.0");
+	});
 
 	services.Configure<AwsSettings>(configuration.GetSection("AwsSettings"));
 	services.AddSignalR();
