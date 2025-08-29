@@ -9,6 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.2" />
 		<PackageReference Include="AWSSDK.S3" Version="4.0.5" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.12.2" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="9.0.7" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
 			<PrivateAssets>all</PrivateAssets>

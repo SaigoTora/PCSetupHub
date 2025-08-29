@@ -1,0 +1,41 @@
+﻿.news-container {
+    margin-block: 3.5rem;
+}
+
+.news-title {
+    font-size: 1.6rem;
+}
+
+.news-image-container {
+    display: flex;
+    justify-content: center;
+}
+
+.news-content {
+    text-indent: 1.25rem;
+    padding-left: -1.25rem;
+}
+
+.news-image {
+    width: 96%;
+}
+
+.news-publish-date {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    font-style: italic;
+    margin-right: 2%;
+}
+
+.news-link {
+    text-decoration: none;
+    color: var(--color-accent);
+}
+
+    .news-link:hover {
+        text-decoration: underline;
+    }
+
+.news-source-name, .news-author {
+    font-size: 0.92rem;
+}
