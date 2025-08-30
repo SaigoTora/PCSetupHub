@@ -151,11 +151,11 @@ namespace PCSetupHub.Web.Controllers
 
 		#region Google login
 		[HttpGet]
-		[EnableRateLimiting("LimitPerUser")]
+		[EnableRateLimiting("AccountCritical")]
 		public IActionResult GoogleLogin()
 		{
-			var redirectUrl = Url.Action("GoogleResponse", "Auth");
-			var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+			string? redirectUrl = Url.Action("GoogleResponse", "Auth");
+			AuthenticationProperties properties = new() { RedirectUri = redirectUrl };
 
 			return Challenge(properties, GoogleDefaults.AuthenticationScheme);
 		}
@@ -190,11 +190,20 @@ namespace PCSetupHub.Web.Controllers
 			if (string.IsNullOrWhiteSpace(name))
 				name = DEFAULT_NAME;
 
-			AuthResponse authResponse = await _userService.LoginOrRegisterByGoogleIdAsync(googleId!,
-				email!, name!);
-			AddTokensToCookies(authResponse, false);
-			_logger.LogInformation("Google authentication succeeded for user {Email} " +
-				"(GoogleId: {GoogleId})", email, googleId);
+			try
+			{
+				AuthResponse authResponse = await _userService.LoginOrRegisterByGoogleIdAsync(googleId!,
+					email!, name!);
+				AddTokensToCookies(authResponse, false);
+				_logger.LogInformation("Google authentication succeeded for user {Email} " +
+					"(GoogleId: {GoogleId})", email, googleId);
+			}
+			catch (Exception ex) when (HandleRegistrationExceptions(ex))
+			{
+				_logger.LogWarning("Google authentication failed for user {Email}: " +
+					"{ExceptionMessage}", email, ex.Message);
+				return View("Login");
+			}
 
 			return RedirectToAction("Index", "Home");
 		}

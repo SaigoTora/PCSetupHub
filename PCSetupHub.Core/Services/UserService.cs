@@ -32,11 +32,8 @@ namespace PCSetupHub.Core.Services
 		public async Task RegisterAsync(string login, string password, string name, string email,
 			string? description, bool isSeeding = false)
 		{
-			if (!isSeeding && await _userRepository.ExistsByLoginAsync(login))
-				throw new UserAlreadyExistsException($"User with login '{login}' already exists.");
-			if (!isSeeding && await _userRepository.ExistsByEmailAsync(email))
-				throw new EmailAlreadyExistsException($"User with email " +
-					$"'{email}' already exists.");
+			if (!isSeeding)
+				await EnsureUserUniqueAsync(login, email);
 
 			User user = new(login, password, name, email, description);
 			string passwordHash = HashPassword(user, password);
@@ -84,6 +81,7 @@ namespace PCSetupHub.Core.Services
 				{
 					GoogleId = googleId
 				};
+				await EnsureUserUniqueAsync(login, email);
 				user = await _userRepository.AddAsync(user);
 				await _privacySettingRepository.AddAsync(new PrivacySetting(user.Id));
 				await _pcConfigurationRepository.AddAsync(new PcConfiguration(user.Id));
@@ -99,6 +97,16 @@ namespace PCSetupHub.Core.Services
 				= await _jwtService.ValidateAndRefreshTokensAsync(accessToken, refreshToken);
 
 			return isRefreshTokenValid;
+		}
+
+		private async Task EnsureUserUniqueAsync(string login, string email)
+		{
+			if (await _userRepository.ExistsByLoginAsync(login))
+				throw new UserAlreadyExistsException($"User with login '{login}' already exists.");
+
+			if (await _userRepository.ExistsByEmailAsync(email))
+				throw new EmailAlreadyExistsException($"User with email " +
+					$"'{email}' already exists.");
 		}
 	}
 }
