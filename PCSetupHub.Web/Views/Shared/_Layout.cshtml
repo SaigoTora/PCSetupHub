@@ -2,6 +2,10 @@
 
 @{
     string? userLogin = User.GetLogin();
+
+    bool isLoginEmpty = string.IsNullOrEmpty(userLogin);
+    const string authContoller = "Auth";
+    const string authLoginAction = "Login";
 }
 
 <!DOCTYPE html>
@@ -38,32 +42,44 @@
                 </li>
                 <li class="nav-item nav-menu-item">
                     <a class="d-flex align-items-center w-100 text-decoration-none"
-                       asp-controller="Profile" asp-action="Index" asp-route-login="@userLogin">
+                       asp-controller="@(isLoginEmpty? authContoller : "Profile")"
+                       asp-action="@(isLoginEmpty? authLoginAction : "Index")"
+                       asp-route-login="@userLogin">
                         <i class="fa-solid fa-user nav-menu-icon"></i>
                         <span class="d-inline nav-link nav-menu-text">Profile</span>
                     </a>
                 </li>
                 <li class="nav-item nav-menu-item">
-                    <a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Chats" asp-action="Index" asp-route-login="@userLogin">
+                    <a class="d-flex align-items-center w-100 text-decoration-none"
+                       asp-controller="@(isLoginEmpty? authContoller : "Chats")"
+                       asp-action="@(isLoginEmpty? authLoginAction : "Index")"
+                       asp-route-login="@userLogin">
                         <i class="fa-solid fa-message nav-menu-icon"></i>
                         <span class="d-inline nav-link nav-menu-text">Messages</span>
                     </a>
                 </li>
                 <li class="nav-item nav-menu-item">
-                    <a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Contacts" asp-action="Friends" asp-route-login="@userLogin">
+                    <a class="d-flex align-items-center w-100 text-decoration-none"
+                       asp-controller="@(isLoginEmpty? authContoller : "Contacts")"
+                       asp-action="@(isLoginEmpty? authLoginAction : "Friends")"
+                       asp-route-login="@userLogin">
                         <i class="fa-solid fa-user-group nav-menu-icon"></i>
                         <span class="d-inline nav-link nav-menu-text">Friends</span>
                     </a>
                 </li>
                 <li class="nav-item nav-menu-item">
                     <a class="d-flex align-items-center w-100 text-decoration-none"
-                       asp-controller="Contacts" asp-action="Search">
+                       asp-controller="@(isLoginEmpty? authContoller : "Contacts")"
+                       asp-action="@(isLoginEmpty? authLoginAction : "Search")">
                         <i class="fa-solid fa-search nav-menu-icon"></i>
                         <span class="d-inline nav-link nav-menu-text">Search</span>
                     </a>
                 </li>
                 <li class="nav-item nav-menu-item">
-                    <a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Settings" asp-action="Index" asp-route-login="@userLogin">
+                    <a class="d-flex align-items-center w-100 text-decoration-none"
+                       asp-controller="@(isLoginEmpty? authContoller : "Settings")"
+                       asp-action="@(isLoginEmpty? authLoginAction : "Index")"
+                       asp-route-login="@userLogin">
                         <i class="fa-solid fa-gear nav-menu-icon"></i>
                         <span class="d-inline nav-link nav-menu-text">Settings</span>
                     </a>
@@ -71,7 +87,7 @@
             </ul>
 
             <ul class="nav nav-pills flex-column">
-                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                @if (User.Identity != null && !isLoginEmpty)
                 {
                     <li class="nav-item nav-menu-item preserve-text">
                         <a class="d-flex align-items-center w-100 text-decoration-none" asp-controller="Settings" asp-action="Index" asp-route-login="@userLogin">
