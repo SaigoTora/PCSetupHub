@@ -48,7 +48,7 @@ function getChatContainerInnerHTML(response) {
                 <div class="d-flex align-items-center me-2-5">
                     <img src="${response.senderAvatarUrl}" alt="User avatar ${response.senderLogin}"
                          title="${response.senderLogin}" width="65" height="65"
-                         class="user-avatar" />
+                         class="user-avatar" loading="lazy" />
                 </div>
                 <div class="d-flex flex-column w-100" style="min-width: 0;">
                     <div class="d-flex justify-content-between mb-1">

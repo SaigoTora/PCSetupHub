@@ -42,7 +42,7 @@
             @if (!string.IsNullOrEmpty(article.UrlToImage))
             {
                 <div class="news-image-container mb-2-5">
-                    <img src="@article.UrlToImage" class="news-image" alt="News image" title="@article.Title" />
+                    <img src="@article.UrlToImage" class="news-image" alt="News image" title="@article.Title" loading="lazy" />
                 </div>
             }
             <div class="news-content ps-3 mb-2">
