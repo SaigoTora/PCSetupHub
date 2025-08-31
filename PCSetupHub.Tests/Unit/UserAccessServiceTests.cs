@@ -4,7 +4,7 @@ using PCSetupHub.Core.Services;
 using PCSetupHub.Data.Models.Users;
 using PCSetupHub.Data.Repositories.Interfaces.Users;
 
-namespace PCSetupHub.Tests
+namespace PCSetupHub.Tests.Unit
 {
 	public class UserAccessServiceTests
 	{
