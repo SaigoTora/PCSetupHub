@@ -35,8 +35,8 @@ namespace PCSetupHub.Data.Models.Users
 		public PcConfiguration PcConfiguration { get; set; } = null!;
 		public PrivacySetting PrivacySetting { get; private set; } = null!;
 
-		public ICollection<Friendship>? ReceivedFriendRequests { get; private set; }
-		public ICollection<Friendship>? SentFriendRequests { get; private set; }
+		public ICollection<Friendship>? ReceivedFriendRequests { get; set; }
+		public ICollection<Friendship>? SentFriendRequests { get; set; }
 		public ICollection<Comment>? WrittenComments { get; private set; }
 		public ICollection<Comment>? ReceivedComments { get; set; }
 		public ICollection<UserChats>? UserChats { get; private set; }

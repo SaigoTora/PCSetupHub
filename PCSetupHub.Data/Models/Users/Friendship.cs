@@ -37,6 +37,11 @@ namespace PCSetupHub.Data.Models.Users
 			else
 				AcceptedAt = null;
 		}
+		public void SetUsers(User initiator, User friend)
+		{
+			Initiator = initiator;
+			Friend = friend;
+		}
 		public void ResetUsers()
 		{
 			Initiator = new();
