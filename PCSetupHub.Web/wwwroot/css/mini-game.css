@@ -1,0 +1,37 @@
+﻿.game-icon {
+    font-size: 2.35rem;
+    transform: rotate(10deg);
+    color: var(--color-secondary-accent);
+    transition: 0.4s ease;
+}
+
+    .game-icon:hover {
+        transform: rotate(0deg);
+        transform: translateX(-0.3rem);
+        color: var(--color-accent);
+    }
+
+
+.options-header {
+    display: flex;
+    justify-content: space-between;
+    padding-inline: 1rem;
+    color: var(--color-accent);
+}
+
+.first-option-container, .second-option-container {
+    display: flex;
+    border-radius: var(--border-radius);
+    padding-block: 1rem;
+    margin-block: 0.25rem;
+}
+
+.first-option-container {
+    padding-left: 1rem;
+}
+
+.second-option-container {
+    background-color: var(--color-dark-background-hover);
+    justify-content: flex-end;
+    padding-right: 1rem;
+}

@@ -1,0 +1,42 @@
+﻿@using PCSetupHub.Data.Models.Hardware
+
+
+@model AssignmentGameViewModel
+
+@{
+    ViewData["Title"] = "Assignment Game";
+
+    <link rel="stylesheet" href="~/css/mini-game.css" />
+}
+
+<h1 class="mb-5">Match the best <b class="text-accent">DUO</b></h1>
+
+<div class="options-header pt-3 mb-3">
+    <h3><b>Processors</b></h3>
+    <h3><b>Video Cards</b></h3>
+</div>
+
+@for (int i = 0; i < Model.Processors.Length && i < Model.VideoCards.Length; i++)
+{
+    Processor processor = Model.Processors[i];
+    VideoCard videoCard = Model.VideoCards[i];
+
+    <div class="first-option-container">
+        <div class="me-3">
+            <b class="user-select-none fs-5">@(i + 1). </b>
+            <span id=@($"openModal-{typeof(Processor).Name}-{processor.Id}") class="pc-component-name fs-5" translate="no">
+                @processor.DisplayName
+            </span>
+            @await Html.PartialAsync("PcComponents/_ComponentModal", processor)
+        </div>
+    </div>
+    <div class="second-option-container">
+        <div class="">
+            <b class="user-select-none fs-5">@((char)('a' + i)). </b>
+            <span id=@($"openModal-{typeof(VideoCard).Name}-{videoCard.Id}") class="pc-component-name fs-5" translate="no">
+                @videoCard.DisplayName
+            </span>
+            @await Html.PartialAsync("PcComponents/_ComponentModal", videoCard)
+        </div>
+    </div>
+}

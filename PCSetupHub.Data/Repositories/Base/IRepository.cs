@@ -69,6 +69,15 @@ namespace PCSetupHub.Data.Repositories.Base
 		/// <returns>A list of matching entities.</returns>
 		Task<List<T>> GetSomeAsync(Expression<Func<T, bool>> where);
 
+		/// <summary>
+		/// Retrieves entities that match the specified condition and projects them into a different type.
+		/// </summary>
+		/// <typeparam name="TResult">The type of the projected result.</typeparam>
+		/// <param name="where">The filtering condition.</param>
+		/// <param name="select">The projection expression specifying which fields or type to return.</param>
+		/// <returns>An array of projected results.</returns>
+		Task<TResult[]> GetSomeAsync<TResult>(Expression<Func<T, bool>> where,
+			Expression<Func<T, TResult>> select);
 
 		/// <summary>
 		/// Retrieves a specific page of entities sorted by ID.

@@ -10,6 +10,7 @@
     ViewData["Title"] = "Home";
 
     <link rel="stylesheet" href="~/css/news.css" />
+    <link rel="stylesheet" href="~/css/mini-game.css" />
 
     string ExtractPlainText(string? rawContent)
     {
@@ -31,7 +32,12 @@
 
 @if (Model != null)
 {
-    <h1 class="mb-5 fw-bold"><span class="text-accent">Tech</span> News</h1>
+    <div class="position-relative">
+        <h1 class="mb-5 fw-bold"><span class="text-accent">Tech</span> News</h1>
+        <a asp-controller="MiniGames" asp-action="AssignmentGame" title="Assignment Game" class="position-absolute top-0 end-0 me-5">
+            <i class="fas fa-gamepad game-icon"></i>
+        </a>
+    </div>
     for (int i = 0; i < Model.Length; i++)
     {
         Article article = Model[i];

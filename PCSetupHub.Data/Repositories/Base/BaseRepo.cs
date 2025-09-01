@@ -64,6 +64,14 @@ namespace PCSetupHub.Data.Repositories.Base
 		}
 		public async Task<List<T>> GetSomeAsync(Expression<Func<T, bool>> where)
 			=> await _table.Where(where).ToListAsync();
+		public async Task<TResult[]> GetSomeAsync<TResult>(Expression<Func<T, bool>> where,
+			Expression<Func<T, TResult>> select)
+		{
+			return await _table
+				.Where(where)
+				.Select(select)
+				.ToArrayAsync();
+		}
 		public async Task<List<T>> GetPageAsync(int pageNumber, int pageSize)
 		{
 			return await _table
