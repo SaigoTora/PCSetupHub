@@ -60,6 +60,7 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 	{
 		client.DefaultRequestHeaders.Add("User-Agent", "PCSetupHubApp/1.0");
 	});
+	services.AddSingleton<IAssignmentService, AuctionAssignmentService>();
 
 	services.Configure<AwsSettings>(configuration.GetSection("AwsSettings"));
 	services.AddSignalR();
