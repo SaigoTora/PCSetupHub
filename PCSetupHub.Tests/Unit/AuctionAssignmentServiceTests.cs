@@ -8,7 +8,7 @@ namespace PCSetupHub.Tests.Unit
 		public void Solve_5x5Matrix_Maximize_ReturnsExpectedAssignment()
 		{
 			// Arrange
-			int[,] matrix = new int[5, 5];
+			double[,] matrix = new double[5, 5];
 			matrix[0, 0] = 7;
 			matrix[0, 1] = 3;
 			matrix[0, 2] = 6;
@@ -54,7 +54,7 @@ namespace PCSetupHub.Tests.Unit
 		public void Solve_3x2Matrix_Maximize_ReturnsExpectedAssignmentWithUnassigned()
 		{
 			// Arrange
-			int[,] matrix = new int[3, 2];
+			double[,] matrix = new double[3, 2];
 			matrix[0, 0] = 2;
 			matrix[0, 1] = 8;
 
@@ -79,7 +79,7 @@ namespace PCSetupHub.Tests.Unit
 		public void Solve_3x4Matrix_Maximize_ReturnsOneOfExpectedAssignments()
 		{
 			// Arrange
-			int[,] matrix = new int[3, 4];
+			double[,] matrix = new double[3, 4];
 			matrix[0, 0] = 5;
 			matrix[0, 1] = 8;
 			matrix[0, 2] = 9;
@@ -114,7 +114,7 @@ namespace PCSetupHub.Tests.Unit
 		public void Solve_3x3Matrix_Minimize_ReturnsExpectedAssignment()
 		{
 			// Arrange
-			int[,] matrix = new int[3, 3];
+			double[,] matrix = new double[3, 3];
 			matrix[0, 0] = 1;
 			matrix[0, 1] = 2;
 			matrix[0, 2] = 3;
@@ -142,7 +142,7 @@ namespace PCSetupHub.Tests.Unit
 		public void Solve_5x4Matrix_Minimize_ReturnsExpectedAssignmentWithUnassigned()
 		{
 			// Arrange
-			int[,] matrix = new int[5, 4];
+			double[,] matrix = new double[5, 4];
 			matrix[0, 0] = 10;
 			matrix[0, 1] = 19;
 			matrix[0, 2] = 8;
@@ -183,7 +183,7 @@ namespace PCSetupHub.Tests.Unit
 		public void Solve_3x4Matrix_Minimize_ReturnsExpectedAssignment()
 		{
 			// Arrange
-			int[,] matrix = new int[3, 4];
+			double[,] matrix = new double[3, 4];
 			matrix[0, 0] = 2;
 			matrix[0, 1] = 4;
 			matrix[0, 2] = 8;

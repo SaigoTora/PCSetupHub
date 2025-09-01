@@ -7,7 +7,7 @@ namespace PCSetupHub.Core.Services
 		private int[] _agentsTasks = [];
 		private double[] _prices = [];
 
-		public int[] Solve(int[,] costs, bool findMax)
+		public int[] Solve(double[,] costs, bool findMax)
 		{
 			int n = costs.GetLength(0), m = costs.GetLength(1);
 			int minDimension = Math.Min(n, m);
@@ -27,14 +27,14 @@ namespace PCSetupHub.Core.Services
 			return RunAuctionIteration(costs, n, findMax, minDimension, hasMoreRows);
 		}
 
-		private static int[,] CreateSquareMatrix(int[,] matrix)
+		private static double[,] CreateSquareMatrix(double[,] matrix)
 		{
 			int n = matrix.GetLength(0), m = matrix.GetLength(1);
 			if (n == m)
 				return matrix;
 
 			int maxLength = Math.Max(n, m);
-			int[,] result = new int[maxLength, maxLength];
+			double[,] result = new double[maxLength, maxLength];
 
 			for (int i = 0; i < maxLength; i++)
 				for (int j = 0; j < maxLength; j++)
@@ -48,7 +48,7 @@ namespace PCSetupHub.Core.Services
 			return result;
 		}
 
-		private int[] RunAuctionIteration(int[,] costs, int n, bool findMax,
+		private int[] RunAuctionIteration(double[,] costs, int n, bool findMax,
 			int minDimension, bool? hasMoreRows)
 		{
 			double epsilon = 1.0 / (n + 1);
@@ -77,7 +77,7 @@ namespace PCSetupHub.Core.Services
 			return GenerateAgentsTasks(n, minDimension, hasMoreRows);
 		}
 		private (int bestTask, double bestValue, double secondBestValue) GetBestTasks(
-			int[,] costs, int n, int agent, bool findMax)
+			double[,] costs, int n, int agent, bool findMax)
 		{
 			int bestTask = -1;
 			double bestValue = double.NegativeInfinity, secondBestValue = double.NegativeInfinity;
