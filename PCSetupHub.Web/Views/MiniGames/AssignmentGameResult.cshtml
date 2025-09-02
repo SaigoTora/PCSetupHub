@@ -1,0 +1,13 @@
+﻿@model AssignmentGameViewModel
+
+@{
+    ViewData["Title"] = "Assignment Game Result";
+
+    <link rel="stylesheet" href="~/css/mini-game.css" />
+}
+
+<h1>@Model.CorrectCount / @Model.TotalQuestions</h1>
+
+<div>
+    @await Html.PartialAsync("MiniGames/_AssignmentGameOptions", Model)
+</div>

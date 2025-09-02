@@ -7,36 +7,46 @@
     ViewData["Title"] = "Assignment Game";
 
     <link rel="stylesheet" href="~/css/mini-game.css" />
+    <link rel="stylesheet" href="~/css/form.css" />
 }
 
-<h1 class="mb-5">Match the best <b class="text-accent">DUO</b></h1>
+<h1 class="mb-5">Match the best <b class="text-accent">DUOs</b></h1>
 
-<div class="options-header pt-3 mb-3">
-    <h3><b>Processors</b></h3>
-    <h3><b>Video Cards</b></h3>
+<div class="mb-4">
+    @await Html.PartialAsync("MiniGames/_AssignmentGameOptions", Model)
 </div>
 
-@for (int i = 0; i < Model.Processors.Length && i < Model.VideoCards.Length; i++)
-{
-    Processor processor = Model.Processors[i];
-    VideoCard videoCard = Model.VideoCards[i];
+<hr />
 
-    <div class="first-option-container">
-        <div class="me-3">
-            <b class="user-select-none fs-5">@(i + 1). </b>
-            <span id=@($"openModal-{typeof(Processor).Name}-{processor.Id}") class="pc-component-name fs-5" translate="no">
-                @processor.DisplayName
-            </span>
-            @await Html.PartialAsync("PcComponents/_ComponentModal", processor)
-        </div>
-    </div>
-    <div class="second-option-container">
-        <div class="">
-            <b class="user-select-none fs-5">@((char)('a' + i)). </b>
-            <span id=@($"openModal-{typeof(VideoCard).Name}-{videoCard.Id}") class="pc-component-name fs-5" translate="no">
-                @videoCard.DisplayName
-            </span>
-            @await Html.PartialAsync("PcComponents/_ComponentModal", videoCard)
-        </div>
-    </div>
-}
+<h1 class="mt-4 mb-4">Select <b class="text-accent">DUOs</b></h1>
+<form asp-controller="MiniGames" asp-action="AssignmentGame" class="w-100 d-flex flex-column justify-content-center align-items-center" method="post">
+    @for (int i = 0; i < Model.Processors.Length; i++)
+    {
+        <input type="hidden" name="ProcessorIds[@i]" value="@Model.Processors[i].Id" />
+    }
+
+    @for (int i = 0; i < Model.VideoCards.Length; i++)
+    {
+        <input type="hidden" name="VideoCardIds[@i]" value="@Model.VideoCards[i].Id" />
+    }
+    @for (int processorIndex = 0; processorIndex < Model.Processors.Length; processorIndex++)
+    {
+        <select class="mb-4" asp-for="SelectedAnswers[processorIndex]" required>
+            <optgroup label="DUO">
+                <option value="@null" hidden>Select option</option>
+                @for (int videoCardIndex = 0; videoCardIndex < Model.VideoCards.Length; videoCardIndex++)
+                {
+                    <option selected="@(Model.SelectedAnswers[processorIndex] == videoCardIndex)"
+                            value="@(videoCardIndex)">@(processorIndex + 1) - @((char)('a' + videoCardIndex))</option>
+                }
+            </optgroup>
+        </select>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(ViewData["FirstError"]?.ToString()))
+    {
+        <span class="text-danger mb-4" id="error-container">@ViewData["FirstError"]</span>
+    }
+
+    <button class="button-apply mt-2" type="submit">Apply</button>
+</form>
