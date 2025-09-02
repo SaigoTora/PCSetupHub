@@ -33,11 +33,10 @@
     {
         <select class="mb-4" asp-for="SelectedAnswers[processorIndex]" required>
             <optgroup label="DUO">
-                <option value="@null" hidden>Select option</option>
+                <option value="-1" hidden>@(processorIndex + 1). Select option</option>
                 @for (int videoCardIndex = 0; videoCardIndex < Model.VideoCards.Length; videoCardIndex++)
                 {
-                    <option selected="@(Model.SelectedAnswers[processorIndex] == videoCardIndex)"
-                            value="@(videoCardIndex)">@(processorIndex + 1) - @((char)('a' + videoCardIndex))</option>
+                    <option value="@(videoCardIndex)">@(processorIndex + 1) - @((char)('a' + videoCardIndex))</option>
                 }
             </optgroup>
         </select>

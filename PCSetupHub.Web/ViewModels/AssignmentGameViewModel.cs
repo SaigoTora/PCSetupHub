@@ -11,6 +11,7 @@ namespace PCSetupHub.Web.ViewModels
 
 		public int TotalQuestions => Math.Min(Processors.Length, VideoCards.Length);
 		public int CorrectCount { get; private set; }
+		public double CorrectPercent { get; private set; }
 
 		public AssignmentGameViewModel(Processor[] processors, VideoCard[] videoCards,
 			int[] selectedAnswers)
@@ -24,6 +25,7 @@ namespace PCSetupHub.Web.ViewModels
 		{
 			CorrectAnswers = correctAnswers;
 			SetCorrectCount();
+			SetCorrectPercent();
 		}
 		private void SetCorrectCount()
 		{
@@ -36,6 +38,14 @@ namespace PCSetupHub.Web.ViewModels
 			for (int i = 0; i < length; i++)
 				if (SelectedAnswers[i] == CorrectAnswers[i])
 					CorrectCount++;
+		}
+		private void SetCorrectPercent()
+		{
+			CorrectPercent = 0;
+			if (TotalQuestions == 0)
+				return;
+
+			CorrectPercent = (double)CorrectCount / TotalQuestions * 100.0;
 		}
 	}
 }

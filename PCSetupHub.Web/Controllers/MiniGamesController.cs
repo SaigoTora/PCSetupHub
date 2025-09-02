@@ -10,7 +10,7 @@ namespace PCSetupHub.Web.Controllers
 {
 	public class MiniGamesController : Controller
 	{
-		private const int COMPONENTS_COUNT = 5;
+		private const int COMPONENTS_COUNT = 4;
 
 		private readonly IRepository<Processor> _processorRepository;
 		private readonly IRepository<VideoCard> _videoCardRepository;
@@ -32,6 +32,7 @@ namespace PCSetupHub.Web.Controllers
 		{
 			const int PROCESSOR_MIN_PRICE_DIFFERENCE = 50;
 			const int VIDEOCARD_MIN_PRICE_DIFFERENCE = 100;
+			const int DEFAULT_SELECT_VALUE = -1;
 
 			int[] processorIds = await _processorRepository
 				.GetSomeAsync(p => p.IsDefault && p.Price.HasValue, p => p.Id);
@@ -42,7 +43,7 @@ namespace PCSetupHub.Web.Controllers
 				COMPONENTS_COUNT, PROCESSOR_MIN_PRICE_DIFFERENCE);
 			VideoCard[] videoCards = await GetRandomComponents(_videoCardRepository, videoCardIds,
 				COMPONENTS_COUNT, VIDEOCARD_MIN_PRICE_DIFFERENCE);
-			int[] defaultSelects = [.. Enumerable.Range(0, COMPONENTS_COUNT)];
+			int[] defaultSelects = [.. Enumerable.Repeat(DEFAULT_SELECT_VALUE, COMPONENTS_COUNT)];
 
 			AssignmentGameViewModel model = new(processors, videoCards, defaultSelects);
 			return View(model);
@@ -148,7 +149,8 @@ namespace PCSetupHub.Web.Controllers
 			}
 
 			HashSet<int> uniqueSelectedAnswers = [.. inputModel.SelectedAnswers];
-			if (uniqueSelectedAnswers.Count != COMPONENTS_COUNT)
+			if (uniqueSelectedAnswers.Count != COMPONENTS_COUNT
+				|| uniqueSelectedAnswers.Any(a => a < 0 || a >= COMPONENTS_COUNT))
 			{
 				ModelState.AddModelError(nameof(inputModel.SelectedAnswers),
 					$"You must select {COMPONENTS_COUNT} unique components (no duplicates).");

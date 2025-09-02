@@ -49,3 +49,23 @@
     .button-apply:hover {
         background-color: rgb(45, 154, 43);
     }
+
+
+.answer-container {
+    width: 50%;
+    text-align: center;
+    padding: 0.3rem 1rem;
+    user-select: none;
+    border-radius: var(--border-radius);
+    font-size: 1.2rem;
+}
+
+    .answer-container:hover {
+        background-color: var(--color-dark-background-hover);
+    }
+
+@media(max-width: 768px) {
+    .answer-container {
+        width: 75%;
+    }
+}

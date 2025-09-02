@@ -6,8 +6,62 @@
     <link rel="stylesheet" href="~/css/mini-game.css" />
 }
 
-<h1>@Model.CorrectCount / @Model.TotalQuestions</h1>
+@if (Model.CorrectPercent <= 20)
+{
+    <h1 class="text-danger fw-bold">Try Again =(</h1>
+}
+else if (Model.CorrectPercent <= 40)
+{
+    <h1 class="text-warning fw-bold">Not Bad</h1>
+}
+else if (Model.CorrectPercent <= 60)
+{
+    <h1 class="text-info fw-bold">Good</h1>
+}
+else if (Model.CorrectPercent <= 80)
+{
+    <h1 class="text-primary fw-bold">Perfect!</h1>
+}
+else
+{
+    <h1 class="text-success fw-bold">Excellent!</h1>
+}
 
-<div>
+<h4 class="text-center text-muted fw-bold mb-5">
+    @Model.CorrectPercent.ToString("F0")%
+</h4>
+
+
+
+<div class="mb-4">
     @await Html.PartialAsync("MiniGames/_AssignmentGameOptions", Model)
 </div>
+
+@if (Model.CorrectAnswers != null)
+{
+    <hr />
+
+    int answersCount = Math.Min(Model.SelectedAnswers.Length, Model.CorrectAnswers.Length);
+    <div>
+        <h1 class="mt-4 mb-4">Your Answers</h1>
+
+        <div class="d-flex align-items-center flex-column gap-1">
+            @for (int i = 0; i < answersCount; i++)
+            {
+                if (Model.SelectedAnswers[i] == Model.CorrectAnswers[i])
+                {
+                    <div class="answer-container" title="Correct">
+                        <span class="text-success"><b>@(i + 1) - @((char)('a' + Model.SelectedAnswers[i]))</b></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="answer-container" title="Wrong, correct answer: @((char)('a' + Model.CorrectAnswers[i]))">
+                        <span class="text-danger me-2"><b>@(i + 1) - @((char)('a' + Model.SelectedAnswers[i]))</b></span>
+                        <span class="text-success"><b>(@((char)('a' + Model.CorrectAnswers[i])))</b></span>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
