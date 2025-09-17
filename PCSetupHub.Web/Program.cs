@@ -1,5 +1,4 @@
 using Amazon.S3;
-using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +19,8 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 	loggerConfig.ReadFrom.Configuration(context.Configuration);
 });
 
+ConfigureSecretService(builder);
+await ConfigureCacheServiceAsync(builder);
 await ConfigureServicesAsync(builder.Services, builder.Configuration);
 
 
@@ -40,7 +41,7 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 		options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 	});
 
-	await ConfigureDatabaseAndCacheAsync(services, configuration);
+	ConfigureDatabase(services, configuration);
 
 	services.AddDatabaseDeveloperPageExceptionFilter();
 	services.ConfigureRateLimiter();
@@ -66,18 +67,43 @@ static async Task ConfigureServicesAsync(IServiceCollection services, IConfigura
 	services.Configure<AwsSettings>(configuration.GetSection("AwsSettings"));
 	services.AddSignalR();
 }
-static async Task ConfigureDatabaseAndCacheAsync(IServiceCollection services,
-	IConfiguration configuration)
+static void ConfigureSecretService(WebApplicationBuilder builder)
 {
-	KeyVaultSecret secretDb = await AzureSecretService.GetSecretAsync(configuration,
-		"ConnectionStrings--DefaultConnection");
-	services.AddDbContext<PcSetupContext>(options => options.UseSqlServer(secretDb.Value));
-
-	KeyVaultSecret secretRedis = await AzureSecretService.GetSecretAsync(configuration,
-		"ConnectionStrings--RedisConnection");
-	services.AddStackExchangeRedisCache(options =>
+	if (builder.Environment.IsDevelopment())
 	{
-		options.Configuration = secretRedis.Value;
+		builder.Configuration.AddUserSecrets<Program>();
+		builder.Services.AddSingleton<ISecretService, UserSecretService>();
+	}
+	else
+		builder.Services.AddSingleton<ISecretService, AzureSecretService>();
+}
+static async Task ConfigureCacheServiceAsync(WebApplicationBuilder builder)
+{
+	if (builder.Environment.IsDevelopment())
+		builder.Services.AddDistributedMemoryCache();
+	else
+	{
+		using var provider = builder.Services.BuildServiceProvider();
+		ISecretService secretService = provider.GetRequiredService<ISecretService>();
+		string redisConnection = await secretService.GetSecretAsync(builder.Configuration,
+			"ConnectionStrings--RedisConnection");
+		builder.Services.AddStackExchangeRedisCache(options =>
+		{
+			options.Configuration = redisConnection;
+		});
+	}
+}
+static void ConfigureDatabase(IServiceCollection services, IConfiguration configuration)
+{
+	services.AddDbContext<PcSetupContext>((serviceProvider, options) =>
+	{
+		ISecretService secretService = serviceProvider.GetRequiredService<ISecretService>();
+		string connection = secretService
+			.GetSecretAsync(configuration, "ConnectionStrings--DefaultConnection")
+			.GetAwaiter()
+			.GetResult();
+
+		options.UseSqlServer(connection);
 	});
 }
 static void CreateDbIfNotExists(IHost host, ILogger<Program> logger)

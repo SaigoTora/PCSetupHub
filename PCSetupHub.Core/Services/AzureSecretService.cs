@@ -2,26 +2,21 @@
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Configuration;
 
+using PCSetupHub.Core.Interfaces;
+
 namespace PCSetupHub.Core.Services
 {
-	public static class AzureSecretService
+	public class AzureSecretService : ISecretService
 	{
 		private static SecretClient? _client;
 
-		/// <summary>
-		/// Asynchronously retrieves a secret from Azure Key Vault using the provided configuration and secret name.
-		/// </summary>
-		/// <param name="configuration">The application configuration containing the Key Vault settings.</param>
-		/// <param name="name">The name of the secret to retrieve.</param>
-		/// <returns>A task that represents the asynchronous operation and contains the requested secret.</returns>
-		/// <exception cref="InvalidOperationException">
-		/// Thrown if the Key Vault name is not configured in the application settings.
-		/// </exception>
-		public static async Task<KeyVaultSecret> GetSecretAsync(IConfiguration configuration,
-			string name)
+		public async Task<string> GetSecretAsync(IConfiguration configuration, string name)
 		{
+			if (string.IsNullOrWhiteSpace(name))
+				throw new ArgumentException("Secret name must be provided", nameof(name));
+
 			var client = GetClient(configuration);
-			return await client.GetSecretAsync(name);
+			return (await client.GetSecretAsync(name)).Value.Value;
 		}
 
 		private static SecretClient GetClient(IConfiguration configuration)

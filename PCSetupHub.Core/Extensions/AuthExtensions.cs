@@ -1,5 +1,4 @@
-﻿using Azure.Security.KeyVault.Secrets;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -24,12 +23,12 @@ namespace PCSetupHub.Core.Extensions
 		public static async Task<IServiceCollection> AddExternalAuthProvidersAsync(
 			this IServiceCollection services, IConfiguration configuration)
 		{
-			KeyVaultSecret secretId = await AzureSecretService.GetSecretAsync(configuration,
-				"GoogleClientId");
-			string clientId = secretId.Value;
-			KeyVaultSecret secretSecret = await AzureSecretService.GetSecretAsync(configuration,
-				"GoogleClientSecret");
-			string clientSecret = secretSecret.Value;
+			using var provider = services.BuildServiceProvider();
+			ISecretService secretService = provider.GetRequiredService<ISecretService>();
+			string clientId = await secretService.GetSecretAsync(configuration,
+				"Google--ClientId");
+			string clientSecret = await secretService.GetSecretAsync(configuration,
+				"Google--ClientSecret");
 
 			services.AddAuthentication(options =>
 			{
@@ -71,7 +70,10 @@ namespace PCSetupHub.Core.Extensions
 
 			TokenSettings accessTokenSettings = authSettings.AccessToken;
 			TokenSettings refreshTokenSettings = authSettings.RefreshToken;
-			TokenKeyService tokenKeyService = new(configuration);
+			using var provider = serviceCollection.BuildServiceProvider();
+			ISecretService secretService = provider.GetRequiredService<ISecretService>();
+
+			TokenKeyService tokenKeyService = new(configuration, secretService);
 			string accessTokenKey = await tokenKeyService.GetAccessTokenKeyAsync();
 
 			serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

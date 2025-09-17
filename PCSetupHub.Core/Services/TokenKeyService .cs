@@ -1,5 +1,4 @@
-﻿using Azure.Security.KeyVault.Secrets;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 using PCSetupHub.Core.Interfaces;
 
@@ -11,14 +10,16 @@ namespace PCSetupHub.Core.Services
 		private const string REFRESH_TOKEN_SECRET_NAME = "Auth--RefreshToken--SecretKey";
 
 		private readonly IConfiguration _configuration;
+		private readonly ISecretService _secretService;
 		private string? _accessTokenKey;
 		private string? _refreshTokenKey;
 		private readonly SemaphoreSlim _accessTokenLock = new(1, 1);
 		private readonly SemaphoreSlim _refreshTokenLock = new(1, 1);
 
-		public TokenKeyService(IConfiguration configuration)
+		public TokenKeyService(IConfiguration configuration, ISecretService secretService)
 		{
 			_configuration = configuration;
+			_secretService = secretService;
 		}
 
 		public async Task<string> GetAccessTokenKeyAsync()
@@ -31,10 +32,8 @@ namespace PCSetupHub.Core.Services
 			{
 				if (_accessTokenKey == null)
 				{
-					KeyVaultSecret secret = await AzureSecretService.GetSecretAsync(_configuration,
+					_accessTokenKey = await _secretService.GetSecretAsync(_configuration,
 						ACCESS_TOKEN_SECRET_NAME);
-
-					_accessTokenKey = secret.Value;
 				}
 				return _accessTokenKey;
 			}
@@ -51,10 +50,8 @@ namespace PCSetupHub.Core.Services
 			{
 				if (_refreshTokenKey == null)
 				{
-					KeyVaultSecret secret = await AzureSecretService.GetSecretAsync(_configuration,
+					_refreshTokenKey = await _secretService.GetSecretAsync(_configuration,
 						REFRESH_TOKEN_SECRET_NAME);
-
-					_refreshTokenKey = secret.Value;
 				}
 				return _refreshTokenKey;
 			}

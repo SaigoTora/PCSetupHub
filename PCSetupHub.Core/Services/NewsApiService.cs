@@ -11,20 +11,21 @@ namespace PCSetupHub.Core.Services
 	{
 		private readonly ILogger<NewsApiService> _logger;
 		private readonly IConfiguration _configuration;
+		private readonly ISecretService _secretService;
 		private readonly HttpClient _httpClient;
 
 		public NewsApiService(ILogger<NewsApiService> logger, IConfiguration configuration,
-			HttpClient httpClient)
+			ISecretService secretService, HttpClient httpClient)
 		{
 			_logger = logger;
 			_configuration = configuration;
+			_secretService = secretService;
 			_httpClient = httpClient;
 		}
 
 		public async Task<Article[]> GetTechnologyHeadlinesAsync()
 		{
-			string apiKey = (await AzureSecretService.GetSecretAsync(_configuration, "NewsApiKey"))
-				.Value;
+			string apiKey = (await _secretService.GetSecretAsync(_configuration, "NewsApi--ApiKey"));
 			string category = "technology";
 
 			string url = $"https://newsapi.org/v2/top-headlines?apiKey={apiKey}" +
