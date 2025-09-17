@@ -125,15 +125,15 @@ Before running the project, the following cloud and API configurations are requi
 
 ### 3. Azure Key Vault
 - Create a Key Vault in Azure with the name: `azure-pc-setup-hub`.  
-- Add the following secrets with their corresponding values:
+- Add the following secrets with their corresponding values (the same secrets should also be stored in **User Secrets** for Development):
 
   - `Auth--AccessToken--SecretKey` — secret key for JWT **access token**.  
   - `Auth--RefreshToken--SecretKey` — secret key for JWT **refresh token**.  
   - `ConnectionStrings--DefaultConnection` — connection string to your database.  
   - `ConnectionStrings--RedisConnection` — connection string to your Redis instance in Azure.  
-  - `GoogleClientId` — obtained by creating credentials in the [Google Cloud API Library](https://console.cloud.google.com/apis/library). For guidance, see this tutorial starting at 6:40: [YouTube Link](https://youtu.be/gq1zNiKWCP4?t=400).  
-  - `GoogleClientSecret` — obtained together with `GoogleClientId` in Google Cloud.  
-  - `NewsApiKey` — you can obtain one from [https://newsapi.org/](https://newsapi.org/).
+  - `Google--ClientId` — obtained by creating credentials in the [Google Cloud API Library](https://console.cloud.google.com/apis/library). For guidance, see this tutorial starting at 6:40: [YouTube Link](https://youtu.be/gq1zNiKWCP4?t=400).  
+  - `Google--ClientSecret` — obtained together with `Google--ClientId` in Google Cloud.  
+  - `NewsApi--ApiKey` — you can obtain one from [https://newsapi.org/](https://newsapi.org/).
 
 - Ensure your application has permissions to read these secrets at runtime.
 
@@ -160,7 +160,7 @@ In the application, users can:
 - **Manage PC configurations**: users can view, select, create, edit and delete components such as processors, video cards, motherboards, power supplies, RAM, SSDs and HDDs.  
   - Multiple RAM, SSD and HDD components are supported.  
   - Some components can have color or color combinations.  
-- **View tech news**: news fetched from **NewsAPI** and cached in Redis for performance.  
+- **View tech news**: news fetched from **NewsAPI** and cached for performance — in-memory in Development, Redis in other environments.  
 - **Play the Mini-Game**: experiment with processor and video card pairings. The system calculates optimal assignments using the **assignment algorithm**, demonstrating real-time computation.
 
 ## Screenshots
