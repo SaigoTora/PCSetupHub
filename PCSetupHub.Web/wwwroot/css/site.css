@@ -11,6 +11,7 @@
     --border-radius: 8px;
     --nav-menu-width: 305px;
     --nav-menu-small-width: 80px;
+    --nav-menu-extra-small-width: 60px;
     --nav-menu-item-size: 22px;
 }
 
@@ -89,35 +90,6 @@ html {
     font-size: 16px;
     position: relative;
     min-height: 100%;
-}
-
-@media(max-width: 768px) {
-    html {
-        font-size: 14px;
-    }
-
-    .page-link {
-        font-size: 0.75rem !important;
-    }
-
-    .radio-button-container {
-        width: 85% !important;
-    }
-}
-
-@media(max-width: 640px) {
-    main {
-        width: 100%;
-    }
-
-    .container {
-        margin: 0px !important;
-        padding: 0px !important;
-    }
-
-    .radio-button-container {
-        width: 100% !important;
-    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -757,7 +729,59 @@ caption {
     color: var(--color-text-muted);
 }
 
-@media (max-width: 1264px) {
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-text-fill-color: white;
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px transparent;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button {
+    display: none;
+}
+
+@media(max-width: 360px) {
+    html {
+        font-size: 10px !important;
+    }
+}
+
+@media(max-width: 480px) {
+    html {
+        font-size: 12px !important;
+    }
+
+    .nav-menu {
+        width: var(--nav-menu-extra-small-width) !important;
+        padding-left: 3px !important;
+        padding-right: 3px !important;
+    }
+}
+
+@media(max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+
+    .nav-menu > ul:last-child {
+        margin-top: 1.5rem;
+        height: 100%;
+    }
+
+    main {
+        width: 100%;
+    }
+
+    .page-link {
+        font-size: 0.75rem !important;
+    }
+}
+
+@media (max-width: 1280px) {
     main {
         width: 85%;
     }
@@ -790,22 +814,4 @@ caption {
     .nav-menu-text {
         display: none !important;
     }
-
-    .radio-button-container {
-        width: 60%;
-    }
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-    -webkit-text-fill-color: white;
-    transition: background-color 5000s ease-in-out 0s;
-    box-shadow: inset 0 0 20px 20px transparent;
-}
-
-input[type="search"]::-webkit-search-decoration,
-input[type="search"]::-webkit-search-cancel-button {
-    display: none;
 }

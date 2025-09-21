@@ -1,5 +1,11 @@
-﻿.game-icon {
+﻿.game-icon-container {
+    top: 0%;
+    right: 0%;
+}
+
+.game-icon {
     font-size: 2.35rem;
+    margin-right: 3rem;
     transform: rotate(10deg);
     color: var(--color-secondary-accent);
     transition: 0.4s ease;
@@ -64,8 +70,27 @@
         background-color: var(--color-dark-background-hover);
     }
 
+@media(max-width: 360px) {
+    .game-icon-container {
+        top: 110%;
+        left: 42%;
+    }
+}
+
+@media(max-width: 480px) {
+    .game-icon {
+        margin-right: 0;
+    }
+}
+
 @media(max-width: 768px) {
     .answer-container {
         width: 75%;
+    }
+}
+
+@media(max-width: 1280px) {
+    .game-icon {
+        font-size: 2.15rem;
     }
 }
