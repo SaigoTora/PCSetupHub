@@ -757,8 +757,8 @@ input[type="search"]::-webkit-search-cancel-button {
 
     .nav-menu {
         width: var(--nav-menu-extra-small-width) !important;
-        padding-left: 3px !important;
-        padding-right: 3px !important;
+        padding-left: 5px !important;
+        padding-right: 5px !important;
     }
 }
 
@@ -768,7 +768,7 @@ input[type="search"]::-webkit-search-cancel-button {
     }
 
     .nav-menu > ul:last-child {
-        margin-top: 1.5rem;
+        margin-top: 6rem;
         height: 100%;
     }
 
