@@ -34,6 +34,7 @@
 
 .login-context {
     margin-left: 1rem;
+    margin-bottom: 1rem;
     color: var(--color-text-muted);
     font-size: 0.93rem;
 }
@@ -52,7 +53,6 @@
     text-decoration: none;
 }
 
-
 .user-login {
     font-size: 1.15rem;
     font-weight: bold;
@@ -61,4 +61,33 @@
 .user-name {
     font-size: 1.1rem;
     padding-left: 0.5rem;
+}
+
+@media(max-width: 768px) {
+    .contacts-nav-link {
+        font-size: 1.15rem;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .login-context {
+        margin-left: 0rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .user-avatar {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media(max-width: 480px) {
+    .contacts-nav-link {
+        font-size: 1.1rem !important;
+        padding: 0.2rem 0.4rem !important;
+    }
+
+    .user-avatar {
+        width: 55px;
+        height: 55px;
+    }
 }
