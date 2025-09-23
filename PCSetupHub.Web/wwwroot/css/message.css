@@ -12,12 +12,24 @@
     text-decoration: none;
 }
 
+.preview-user-avatar-container {
+    display: flex;
+    align-items: center;
+    margin-right: 0.75rem;
+}
+
+.preview-user-avatar {
+    width: 65px;
+    height: 65px;
+}
+
 .preview-user-login {
     font-size: 1.15rem;
     font-weight: bold;
 }
 
 .preview-message-datetime {
+    text-align: end;
     font-size: 0.85rem;
     color: var(--color-text-muted);
 }
@@ -35,8 +47,16 @@
     color: var(--color-secondary-accent);
 }
 
+.preview-message-text, .preview-user-login {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
 .preview-message-text {
-    font-size: 1rem;
+    font-size: 0.95rem;
     padding-left: 0.5rem;
     max-width: 80%;
 }
@@ -49,11 +69,25 @@
     margin-inline: 1rem;
 }
 
+.chat-avatar-container {
+    display: flex;
+    align-items: center;
+    margin-left: 0.25rem;
+    margin-right: 0.75rem;
+}
+
 .back-icon {
     font-size: 1.7rem;
 }
 
+.chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 95dvh;
+}
+
 .messages-container {
+    flex: 1;
     display: flex;
     flex-direction: column-reverse;
     gap: 0.5rem;
@@ -208,9 +242,78 @@
     display: none;
 }
 
-@media(max-width: 420px) {
+@media(max-width: 768px) {
+    .message-container {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .preview-user-avatar-container {
+        margin-right: 0.5rem;
+    }
+
+    .preview-user-avatar {
+        width: 55px;
+        height: 55px;
+    }
+
+    .preview-message-text {
+        font-size: 1rem;
+        padding-left: 0.25rem;
+        max-width: 100%;
+    }
+
+    .empty-chat-message {
+        font-size: 1rem;
+    }
+}
+
+@media(max-width: 480px) {
+    .preview-user-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .preview-message-datetime {
+        font-size: 0.8rem;
+    }
+
+    .preview-message-text {
+        font-size: 1.1rem;
+    }
+
     .chat-header {
         justify-content: flex-end;
         margin-inline: 0;
+    }
+
+    .user-login {
+        order: -1;
+    }
+
+    .chat-avatar-container {
+        margin-left: 0.75rem;
+        margin-right: 0;
+    }
+
+    .message-in {
+        margin-left: 0.25rem;
+    }
+
+    .message-out {
+        margin-right: 0.25rem;
+    }
+}
+
+@media(max-width: 360px) {
+    .preview-message-datetime {
+        display: none;
+    }
+
+    .message-in {
+        margin-left: 0;
+    }
+
+    .message-out {
+        margin-right: 0;
     }
 }

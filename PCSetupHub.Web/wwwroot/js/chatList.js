@@ -45,13 +45,13 @@ function getChatContainerInnerHTML(response) {
     return `
         <a class="message-link" href="/Chat/${response.chatPublicId}">
             <div class="d-flex justify-content-start align-items-start">
-                <div class="d-flex align-items-center me-2-5">
+                <div class="preview-user-avatar-container">
                     <img src="${response.senderAvatarUrl}" alt="User avatar ${response.senderLogin}"
-                         title="${response.senderLogin}" width="65" height="65"
-                         class="user-avatar" loading="lazy" />
+                         title="${response.senderLogin}"
+                         class="user-avatar preview-user-avatar" loading="lazy" />
                 </div>
                 <div class="d-flex flex-column w-100" style="min-width: 0;">
-                    <div class="d-flex justify-content-between mb-1">
+                    <div class="d-flex justify-content-between mb-1 gap-1">
                         <div class="d-flex align-items-center">
                             <span class="preview-user-login" title="${response.senderName}">
                                 ${response.senderLogin}
@@ -66,7 +66,7 @@ function getChatContainerInnerHTML(response) {
                             ${displayCreatedAt}
                         </div>
                     </div>
-                    <div class="preview-message-text text-truncate ${(response.senderId !== userId) ? 'message-unread' : 'message-read'}"
+                    <div class="preview-message-text ${(response.senderId !== userId) ? 'message-unread' : 'message-read'}"
                          title="${response.text}">
                         ${response.text}
                     </div>
