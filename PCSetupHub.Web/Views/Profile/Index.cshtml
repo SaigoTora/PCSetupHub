@@ -36,7 +36,7 @@
 }
 
 <section>
-    <section class="d-inline">
+    <section class="profile-avatar-container">
         <img id="avatar-preview" src="@Model.User.AvatarUrl" alt="User avatar @Model.User.Login"
              title="@(canEditAvatar ? "Change avatar" : "")" width="110" height="110"
              class="user-avatar me-3 mb-3 @(canEditAvatar ? "cursor-pointer" : "")"
@@ -132,29 +132,29 @@
         </div>
     </section>
 
-    <section class="mb-4">
+    <section class="profile-contacts-section">
         @if (Model.User.Friends != null)
         {
             if (Model.User.Friends.Count == 1)
             {
                 if (Model.ContactsPrivacy.AreFriendsVisible)
                 {
-                    <a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> friend</span></a>
+                    <a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.User.Login" class="profile-contacts-item">1<span class="ms-1 text-muted"> friend</span></a>
                 }
                 else
                 {
-                    <span class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> friend</span></span>
+                    <span class="profile-contacts-item">1<span class="ms-1 text-muted"> friend</span></span>
                 }
             }
             else
             {
                 if (Model.ContactsPrivacy.AreFriendsVisible)
                 {
-                    <a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Friends.Count<span class="ms-1 text-muted"> friends</span></a>
+                    <a asp-controller="Contacts" asp-action="Friends" asp-route-login="@Model.User.Login" class="profile-contacts-item">@Model.User.Friends.Count<span class="ms-1 text-muted"> friends</span></a>
                 }
                 else
                 {
-                    <span class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Friends.Count<span class="ms-1 text-muted"> friends</span></span>
+                    <span class="profile-contacts-item">@Model.User.Friends.Count<span class="ms-1 text-muted"> friends</span></span>
                 }
             }
         }
@@ -164,22 +164,22 @@
             {
                 if (Model.ContactsPrivacy.AreFollowersVisible)
                 {
-                    <a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> follower</span></a>
+                    <a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.User.Login" class="profile-contacts-item">1<span class="ms-1 text-muted"> follower</span></a>
                 }
                 else
                 {
-                    <span class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> follower</span></span>
+                    <span class="profile-contacts-item">1<span class="ms-1 text-muted"> follower</span></span>
                 }
             }
             else
             {
                 if (Model.ContactsPrivacy.AreFollowersVisible)
                 {
-                    <a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Followers.Count<span class="ms-1 text-muted"> followers</span></a>
+                    <a asp-controller="Contacts" asp-action="Followers" asp-route-login="@Model.User.Login" class="profile-contacts-item">@Model.User.Followers.Count<span class="ms-1 text-muted"> followers</span></a>
                 }
                 else
                 {
-                    <span class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Followers.Count<span class="ms-1 text-muted"> followers</span></span>
+                    <span class="profile-contacts-item">@Model.User.Followers.Count<span class="ms-1 text-muted"> followers</span></span>
                 }
             }
         }
@@ -189,22 +189,22 @@
             {
                 if (Model.ContactsPrivacy.AreFollowingsVisible)
                 {
-                    <a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> following</span></a>
+                    <a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.User.Login" class="profile-contacts-item">1<span class="ms-1 text-muted"> following</span></a>
                 }
                 else
                 {
-                    <span class="text-decoration-none me-5 py-1 pe-1 text-white">1<span class="ms-1 text-muted"> following</span></span>
+                    <span class="profile-contacts-item">1<span class="ms-1 text-muted"> following</span></span>
                 }
             }
             else
             {
                 if (Model.ContactsPrivacy.AreFollowingsVisible)
                 {
-                    <a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.User.Login" class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Followings.Count<span class="ms-1 text-muted"> followings</span></a>
+                    <a asp-controller="Contacts" asp-action="Followings" asp-route-login="@Model.User.Login" class="profile-contacts-item">@Model.User.Followings.Count<span class="ms-1 text-muted"> followings</span></a>
                 }
                 else
                 {
-                    <span class="text-decoration-none me-5 py-1 pe-1 text-white">@Model.User.Followings.Count<span class="ms-1 text-muted"> followings</span></span>
+                    <span class="profile-contacts-item">@Model.User.Followings.Count<span class="ms-1 text-muted"> followings</span></span>
                 }
             }
         }
@@ -225,7 +225,7 @@
         {
             if (pcConfig.Type != null)
             {
-                <div class="mb-2 text-end">
+                <div class="profile-pc-type">
                     @if (pcConfig.Type.Name == "Desktop")
                     {
                         <i class="fa fa-display fs-6 me-1"></i>
@@ -259,7 +259,7 @@
                                     @await Html.PartialAsync("PcComponents/_ComponentModal", pcConfig.Processor)
                                 </td>
 
-                                @Html.RenderPriceInTable(pcConfig.Processor.Price)
+                                @Html.RenderPriceInTable(pcConfig.Processor.Price, TextAlignment.Right)
                             </tr>
                         }
                         @if (pcConfig.VideoCard != null)
@@ -272,7 +272,7 @@
                                     </span>
                                     @await Html.PartialAsync("PcComponents/_ComponentModal", pcConfig.VideoCard)
                                 </td>
-                                @Html.RenderPriceInTable(pcConfig.VideoCard.Price)
+                                @Html.RenderPriceInTable(pcConfig.VideoCard.Price, TextAlignment.Right)
                             </tr>
                         }
                         @if (pcConfig.Motherboard != null)
@@ -285,7 +285,7 @@
                                     </span>
                                     @await Html.PartialAsync("PcComponents/_ComponentModal", pcConfig.Motherboard)
                                 </td>
-                                @Html.RenderPriceInTable(pcConfig.Motherboard.Price)
+                                @Html.RenderPriceInTable(pcConfig.Motherboard.Price, TextAlignment.Right)
                             </tr>
                         }
                         @if (pcConfig.PowerSupply != null)
@@ -298,7 +298,7 @@
                                     </span>
                                     @await Html.PartialAsync("PcComponents/_ComponentModal", pcConfig.PowerSupply)
                                 </td>
-                                @Html.RenderPriceInTable(pcConfig.PowerSupply.Price)
+                                @Html.RenderPriceInTable(pcConfig.PowerSupply.Price, TextAlignment.Right)
                             </tr>
                         }
                         @if (rams != null && rams.Length != 0)
@@ -320,7 +320,7 @@
                                         </span>
                                         @await Html.PartialAsync("PcComponents/_ComponentModal", rams[i])
                                     </td>
-                                    @Html.RenderPriceInTable(rams[i]?.Price)
+                                    @Html.RenderPriceInTable(rams[i]?.Price, TextAlignment.Right)
                                 </tr>
                             }
                         }
@@ -343,7 +343,7 @@
                                         </span>
                                         @await Html.PartialAsync("PcComponents/_ComponentModal", ssds[i])
                                     </td>
-                                    @Html.RenderPriceInTable(ssds[i]?.Price)
+                                    @Html.RenderPriceInTable(ssds[i]?.Price, TextAlignment.Right)
                                 </tr>
                             }
                         }
@@ -366,21 +366,21 @@
                                         </span>
                                         @await Html.PartialAsync("PcComponents/_ComponentModal", hdds[i])
                                     </td>
-                                    @Html.RenderPriceInTable(hdds[i]?.Price)
+                                    @Html.RenderPriceInTable(hdds[i]?.Price, TextAlignment.Right)
                                 </tr>
                             }
                         }
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="2">
+                            <td>
                                 Total
                                 @if (!pcConfig.AreAllComponentsDefault)
                                 {
                                     <i class="ps-1 fs-5 fa fa-circle-exclamation text-warning" title="Some components were entered by a user and may be inaccurate."></i>
                                 }
                             </td>
-                            @Html.RenderPriceInTable(pcConfig.TotalPrice)
+                            @Html.RenderPriceInTable(pcConfig.TotalPrice, TextAlignment.Right, 2)
                         </tr>
                     </tfoot>
                 </table>

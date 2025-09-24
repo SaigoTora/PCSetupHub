@@ -7,9 +7,23 @@ using PCSetupHub.Data.Models.Attributes;
 
 namespace PCSetupHub.Web.Helpers
 {
+	public enum TextAlignment : byte
+	{
+		Left,
+		Center,
+		Right
+	}
+
 	public static class HtmlComponentHelpers
 	{
 		private const string NOT_AVAILABLE_TEXT = "N/A";
+
+		private static Dictionary<TextAlignment, string> alignmentMap = new()
+		{
+			[TextAlignment.Left] = "text-start",
+			[TextAlignment.Center] = "text-center",
+			[TextAlignment.Right] = "text-end"
+		};
 
 		#region Number rendering
 		/// <summary>
@@ -18,12 +32,18 @@ namespace PCSetupHub.Web.Helpers
 		/// </summary>
 		/// <param name="html">Html helper instance.</param>
 		/// <param name="price">Nullable price value.</param>
+		/// <param name="alignment">Text alignment inside the cell.</param>
+		/// <param name="colspanValue">Number of columns the cell should span.</param>
 		/// <returns>HTML content for the price cell.</returns>
-		public static IHtmlContent RenderPriceInTable(this IHtmlHelper html, double? price)
+		public static IHtmlContent RenderPriceInTable(this IHtmlHelper html, double? price,
+			TextAlignment alignment = TextAlignment.Center, int colspanValue = 1)
 		{
+			string alignmentClass = alignmentMap[alignment];
 			string content = price.HasValue
-				? $"<td class='text-money'><b>{ToRoundedString(price.Value)} $</b></td>"
-				: $"<td class='text-muted'>{NOT_AVAILABLE_TEXT}</td>";
+				? $"<td colspan='{colspanValue}' class='text-money {alignmentClass}'>" +
+					$"<b>{ToRoundedString(price.Value)} $</b></td>"
+				: $"<td colspan='{colspanValue}' class='text-muted {alignmentClass}'>" +
+					$"{NOT_AVAILABLE_TEXT}</td>";
 
 			return new HtmlString(content);
 		}

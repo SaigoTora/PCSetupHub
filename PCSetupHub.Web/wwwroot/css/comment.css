@@ -69,6 +69,7 @@
 
 .comment-text {
     font-size: 0.93rem;
+    padding-left: 0.5rem;
 }
 
 .delete-comment-button {
@@ -86,3 +87,9 @@
         .delete-comment-button i:hover {
             color: red !important;
         }
+
+@media (max-width: 768px) {
+    .comment-container {
+        margin-bottom: 1rem;
+    }
+}
