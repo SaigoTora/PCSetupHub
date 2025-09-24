@@ -36,7 +36,7 @@ namespace PCSetupHub.Web.Helpers
 		/// <param name="colspanValue">Number of columns the cell should span.</param>
 		/// <returns>HTML content for the price cell.</returns>
 		public static IHtmlContent RenderPriceInTable(this IHtmlHelper html, double? price,
-			TextAlignment alignment = TextAlignment.Center, int colspanValue = 1)
+			TextAlignment alignment = TextAlignment.Left, int colspanValue = 1)
 		{
 			string alignmentClass = alignmentMap[alignment];
 			string content = price.HasValue
@@ -118,9 +118,9 @@ namespace PCSetupHub.Web.Helpers
 		public static IHtmlContent RenderBoolIndicator(this IHtmlHelper html, bool value)
 		{
 			if (value)
-				return new HtmlString("<i class='fa fa-check text-success'></i>");
+				return new HtmlString("<i class='fa fa-check text-success text-start fs-5'></i>");
 			else
-				return new HtmlString("<i class='fa fa-xmark text-danger'></i>");
+				return new HtmlString("<i class='fa fa-xmark text-danger text-start fs-5'></i>");
 		}
 
 		/// <summary>

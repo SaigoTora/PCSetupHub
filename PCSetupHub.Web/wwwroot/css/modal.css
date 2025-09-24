@@ -8,7 +8,7 @@
 }
 
 .modal-body {
-    padding-inline: 30px;
+    padding: 0.625rem 1.875rem;
 }
 
 .modal-content {
@@ -48,13 +48,13 @@
 }
 
 .model-name {
-    font-size: 1.2rem;
+    font-size: 1.35rem;
     color: var(--color-secondary-accent);
     font-weight: bold;
 }
 
 .characteristics-table td {
-    padding-block: 8px !important;
+    padding-block: 0.5rem !important;
 }
 
 .characteristics-table tr:nth-child(even) {
@@ -62,12 +62,12 @@
 }
 
 .characteristics-table td:nth-child(1) {
-    font-size: 0.85rem !important;
+    font-size: 0.875rem !important;
     text-align: left;
     color: var( --color-light-text);
     text-transform: uppercase;
     font-weight: bold;
-    padding-left: 10px;
+    padding-left: 0.625rem;
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
 }
@@ -75,9 +75,9 @@
 .characteristics-table td:nth-last-child(1) {
     text-align: left;
     font-size: 1.15rem;
-    padding-left: 15px;
-    padding-right: 10px;
-    width: 35%;
+    padding-left: 1rem;
+    padding-right: 0.625rem;
+    width: 37%;
     border-top-right-radius: var(--border-radius);
     border-bottom-right-radius: var(--border-radius);
 }

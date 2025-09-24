@@ -585,36 +585,33 @@ caption {
     text-align: right;
 }
 
-.search-components-table {
+.search-components-table tr:nth-child(even) {
+    background-color: var(--color-dark-background-hover);
 }
 
-    .search-components-table tr:nth-child(even) {
-        background-color: var(--color-dark-background-hover);
+.search-components-table td {
+    padding-block: 1.5rem;
+}
+
+    .search-components-table td:nth-child(1) {
+        font-size: 0.95rem;
+        font-weight: bold;
+        color: rgba(85, 85, 85, 0.4);
+        text-align: center;
+        border-start-start-radius: var(--border-radius);
+        border-end-start-radius: var(--border-radius);
     }
 
-    .search-components-table td {
-        padding-block: 1.5rem;
+    .search-components-table td:nth-child(2) {
+        padding-left: 2rem;
+        font-size: 1.25rem;
     }
 
-        .search-components-table td:nth-child(1) {
-            font-size: 0.95rem;
-            font-weight: bold;
-            color: rgba(85, 85, 85, 0.4);
-            text-align: center;
-            border-start-start-radius: var(--border-radius);
-            border-end-start-radius: var(--border-radius);
-        }
-
-        .search-components-table td:nth-child(2) {
-            padding-left: 2rem;
-            font-size: 1.25rem;
-        }
-
-        .search-components-table td:nth-child(3) {
-            width: 20%;
-            border-start-end-radius: var(--border-radius);
-            border-end-end-radius: var(--border-radius);
-        }
+    .search-components-table td:nth-child(3) {
+        width: 20%;
+        border-start-end-radius: var(--border-radius);
+        border-end-end-radius: var(--border-radius);
+    }
 
 
 .select-component-button, .create-component-button, .edit-component-button {
@@ -646,7 +643,6 @@ caption {
         transform: none;
         background-color: rgb(200, 125, 26);
     }
-
 
 .page-item {
     margin-inline: 0.15rem;
@@ -800,6 +796,10 @@ input[type="search"]::-webkit-search-cancel-button {
     .nav-menu-text {
         display: none !important;
     }
+
+    .select-component-button:hover {
+        transform: translateX(0.2rem);
+    }
 }
 
 @media (max-width: 768px) {
@@ -855,8 +855,16 @@ input[type="search"]::-webkit-search-cancel-button {
         font-size: 1rem;
     }
 
+    .pagination li:first-child, .pagination li:last-child {
+        display: none;
+    }
+
     .page-link {
-        font-size: 0.75rem;
+        font-size: 1.3rem;
+    }
+
+    .select-component-button:hover {
+        transform: translateX(0rem);
     }
 }
 

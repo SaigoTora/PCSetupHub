@@ -16,9 +16,9 @@
     color: var(--color-light-text);
     border: none;
     border-radius: var(--border-radius);
-    padding: 5px 12px;
+    padding: 0.3rem 0.75rem;
     text-align: justify;
-    height: 35px;
+    height: 2.15rem;
     cursor: pointer;
 }
 
@@ -32,7 +32,7 @@
 
 .component-card {
     padding: 1rem;
-    padding-bottom: 0px;
+    padding-bottom: 0;
     margin-bottom: 2rem;
     border-bottom: 2px solid var(--color-nav-menu-border);
 }
@@ -50,6 +50,12 @@
     font-size: 1.5rem;
     padding-right: 0.5rem;
     color: var(--color-secondary-accent);
+}
+
+.component-actions {
+    display: flex;
+    justify-content: right;
+    flex-direction: row;
 }
 
 .component-table {
@@ -85,26 +91,6 @@
         padding-right: 0rem;
     }
 
-@media (max-width: 1264px) {
-    .component-table td:first-child,
-    .component-table th:first-child,
-    .component-table td:nth-child(2),
-    .component-table th:nth-child(2) {
-        padding-left: 1rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .component-table td:first-child,
-    .component-table th:first-child {
-        padding-left: 0rem;
-    }
-
-    .component-table td:nth-child(2),
-    .component-table th:nth-child(2) {
-        padding-left: 0.4rem;
-    }
-}
 
 .add-button,
 .select-button,
@@ -118,12 +104,12 @@
     border-style: solid;
     width: 6rem;
     height: 2.5rem;
-    padding: 2px 12px;
+    padding: 0.125rem 0.75rem;
     background-color: transparent;
     color: var(--color-light-text);
     border-color: transparent;
     transition: all 0.3s ease;
-    font-size: 1rem;
+    font-size: 1.05rem;
     text-transform: uppercase;
     user-select: none;
 }
@@ -220,3 +206,42 @@
         background-color: var(--color-delete-active);
         border-color: var(--color-delete-active);
     }
+
+@media (max-width: 1280px) {
+    .component-table td:first-child {
+        width: 45%;
+    }
+
+    .component-table td:first-child,
+    .component-table th:first-child,
+    .component-table td:nth-child(2),
+    .component-table th:nth-child(2) {
+        padding-left: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .component-actions {
+        flex-direction: column;
+    }
+
+    .component-table td:first-child,
+    .component-table th:first-child {
+        padding-left: 0rem;
+    }
+
+    .component-table td:nth-child(2),
+    .component-table th:nth-child(2) {
+        padding-left: 0.4rem;
+    }
+
+    .component-table td:first-child {
+        width: 55%;
+    }
+}
+
+@media (max-width: 480px) {
+    .component-table td:first-child {
+        width: 60%;
+    }
+}
