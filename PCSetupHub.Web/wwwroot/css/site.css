@@ -268,19 +268,19 @@ h1 {
     color: var(--color-light-text);
     border: none;
     border-radius: var(--border-radius);
-    padding: 5px 12px;
+    padding: 0.33rem 0.8rem;
     text-align: justify;
-    height: 35px;
+    height: 2.35rem;
     cursor: pointer;
 }
 
     .user-action-btn:has(i) {
-        width: 35px;
+        width: 2.35rem;
     }
 
     .user-action-btn i {
         justify-self: center;
-        font-size: 19px;
+        font-size: 1.25rem;
     }
 
 
@@ -780,7 +780,7 @@ input[type="search"]::-webkit-search-cancel-button {
     }
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
     html {
         font-size: 14px;
     }
@@ -809,7 +809,7 @@ input[type="search"]::-webkit-search-cancel-button {
     }
 }
 
-@media(max-width: 480px) {
+@media (max-width: 480px) {
     html {
         font-size: 12px;
     }
@@ -824,7 +824,7 @@ input[type="search"]::-webkit-search-cancel-button {
     }
 }
 
-@media(max-width: 360px) {
+@media (max-width: 360px) {
     html {
         font-size: 10px;
     }
