@@ -44,7 +44,7 @@
 
     @if (!string.IsNullOrWhiteSpace(ViewData["FirstError"]?.ToString()))
     {
-        <span class="text-danger mb-4" id="error-container">@ViewData["FirstError"]</span>
+        <span class="text-danger text-center mb-4" id="error-container">@ViewData["FirstError"]</span>
     }
 
     <button class="button-apply mt-2" type="submit">Apply</button>

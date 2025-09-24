@@ -43,9 +43,9 @@ else
 
     int answersCount = Math.Min(Model.SelectedAnswers.Length, Model.CorrectAnswers.Length);
     <div>
-        <h1 class="mt-4 mb-4">Your Answers</h1>
+        <h1 class="mt-4 mb-3">Your Answers</h1>
 
-        <div class="d-flex align-items-center flex-column gap-1">
+        <div class="d-flex align-items-center flex-column gap-1 mb-3">
             @for (int i = 0; i < answersCount; i++)
             {
                 if (Model.SelectedAnswers[i] == Model.CorrectAnswers[i])
@@ -63,5 +63,9 @@ else
                 }
             }
         </div>
+
+        <form asp-controller="MiniGames" asp-action="AssignmentGame" class="w-100 d-flex justify-content-center align-items-center" method="get">
+            <button class="button-apply" type="submit">Play Again</button>
+        </form>
     </div>
 }
