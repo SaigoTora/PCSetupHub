@@ -14,7 +14,7 @@
         @for (int i = 0; i < colors.Count(); i++)
         {
             var color = colors.ElementAt(i);
-            <div class="col-4 mb-2-5 d-flex align-items-center">
+            <div class="color-item">
                 <label class="checkbox-container me-2" for="color-@color.Id">
                     <input type="checkbox" name="SelectedColorsId" value="@color.Id" id="color-@color.Id" @(Model != null && Model.Any(item => item == color.Id) ? "checked" : "")>
                     <div class="checkmark color-container-@(color.Name.Replace(' ', '-').ToLower())" title="@color.Name"></div>

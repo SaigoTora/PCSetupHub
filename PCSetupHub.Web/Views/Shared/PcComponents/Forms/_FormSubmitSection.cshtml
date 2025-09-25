@@ -4,7 +4,7 @@
 {
     if (ViewData["FirstError"] != null)
     {
-        <span class="text-danger mt-4">@ViewData["FirstError"]</span>
+        <span class="text-error mt-4">@ViewData["FirstError"]</span>
         <button type="submit" class="create-component-button mt-4 mb-4">Create</button>
     }
     else
@@ -16,7 +16,7 @@ else if (Model == FormMode.Edit)
 {
     if (ViewData["FirstError"] != null)
     {
-        <span class="text-danger mt-4">@ViewData["FirstError"]</span>
+        <span class="text-error mt-4">@ViewData["FirstError"]</span>
         <button type="submit" class="edit-component-button mt-4 mb-4">Edit</button>
     }
     else

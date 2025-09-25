@@ -37,7 +37,7 @@
             <label for="Price" class="form__label">Price ($)</label>
         </div>
 
-        <select class="mb-3" asp-for="Component.MemoryType" required>
+        <select class="mb-3 fs-6" asp-for="Component.MemoryType" required>
             <optgroup label="Memory type">
                 <option value="0">DDR (DDR1)</option>
                 <option value="0" hidden>Select memory type</option>
@@ -53,7 +53,7 @@
             <label for="Frequency" class="form__label">Frequency (MHz)</label>
         </div>
 
-        <select class="mb-4" asp-for="Component.ModulesCount" required>
+        <select class="mb-4 fs-6" asp-for="Component.ModulesCount" required>
             <optgroup label="Modules count">
                 <option value="0" hidden>Select modules count</option>
                 <option value="1">1</option>
@@ -65,7 +65,7 @@
             </optgroup>
         </select>
 
-        <select class="mb-3" asp-for="Component.ModuleCapacity" required>
+        <select class="mb-3 fs-6" asp-for="Component.ModuleCapacity" required>
             <optgroup label="Module capacity (GB)">
                 <option value="0" hidden>Select module capacity (GB)</option>
                 <option value="1">1</option>

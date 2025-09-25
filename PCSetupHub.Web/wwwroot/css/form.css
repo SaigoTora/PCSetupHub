@@ -32,7 +32,7 @@
     position: relative;
     padding: 1.25rem 0 0;
     margin-bottom: 1.7rem;
-    width: 50%;
+    width: 60%;
 }
 
 .form__field {
@@ -151,6 +151,13 @@
     box-shadow: 0 0 1.25rem var(--color-accent);
 }
 
+.color-item {
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
+    margin-bottom: 0.625rem;
+    display: flex;
+    align-items: center;
+}
 
 .checkbox-container input {
     position: absolute;
@@ -241,9 +248,10 @@ select {
     border-radius: var(--border-radius);
     border: 1px solid var(--color-text-muted);
     padding: 0.4rem;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     width: 30%;
     text-align: center;
+    text-align-last: center;
 }
 
     select:focus {
@@ -300,23 +308,36 @@ option {
     font-size: 1.1rem;
 }
 
-@media (max-width: 1264px) {
+@media (max-width: 1280px) {
     .form__group {
-        width: 60%;
+        width: 75%;
     }
 
     select {
-        width: 40%;
+        width: 42%;
     }
 
     .privacy-setting-select {
         width: 50%;
     }
+
+    .radio-button-container {
+        width: 60%;
+    }
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
     .form__group {
-        width: 85% !important;
+        width: 85%;
+    }
+
+    .color-item {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .color-checkbox-label {
+        font-size: 1.1rem;
     }
 
     select {
@@ -330,12 +351,14 @@ option {
     .privacy-setting-select {
         width: 75%;
     }
+
+    .radio-button-container {
+        width: 85%;
+    }
 }
 
-@media(max-width: 640px) {
-    .form__group {
-        width: 100% !important;
-    }
+@media (max-width: 480px) {
+
 
     select {
         width: 85%;
@@ -343,5 +366,9 @@ option {
 
     .privacy-setting-select {
         width: 95%;
+    }
+
+    .radio-button-container {
+        width: 100%;
     }
 }

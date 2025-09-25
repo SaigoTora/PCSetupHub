@@ -729,6 +729,11 @@ caption {
     margin-bottom: 0.75rem;
 }
 
+.text-error {
+    text-align: center;
+    color: var(--bs-danger);
+}
+
 .text-accent {
     color: var(--color-accent);
 }
